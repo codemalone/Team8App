@@ -1,4 +1,6 @@
-# Team 8 App Client Code
+# Team 8: Android Client Code
+TCSS 450 Autumn 2018  
+  
 Evan Lindsay <evandl@uw.edu>  
 Jared Malone <jaredmm@uw.edu>  
 Jim Phan <akari0@uw.edu>  
