@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Team8App</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="hint_email">Enter Email Address</string>
+    <string name="hint_password1">Enter a password</string>
+    <string name="hint_password2">Reenter the same password</string>
+    <string name="hint_username">Enter a username (Optional)</string>
+    <string name="hint_first_name">Enter your first name</string>
+    <string name="hint_last_name">Enter your last name</string>
+    <string name="register_message">Please register for an account</string>
+    <string name="welcome_message">Welcome!</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
