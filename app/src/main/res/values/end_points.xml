@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
-    <string name="ep_base_url">akari0-lab4-backend.herokuapp.com</string>
+    <string name="ep_base_url">tcss450a18-team8-test.herokuapp.com</string>
     <string name="ep_login">login</string>
     <string name="ep_register">register</string>
     <string name="ep_get">get</string>
