@@ -1,6 +1,8 @@
 package tcss450.uw.edu.team8app;
 
+import android.content.Intent;
 import android.net.Credentials;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -27,22 +29,21 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
 
     }
 
-    private void loginSuccess(boolean success) {
-        if(success) {
-
-        } else {
-
-        }
-    }
-
     @Override
     public void onRegisterClicked() {
-
+        //should we add a backstack to the login page?
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, new RegisterFragment());
+        transaction.commit();
     }
 
     @Override
     public void onLoginSuccess(tcss450.uw.edu.team8app.model.Credentials credentials) {
-
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra(tcss450.uw.edu.team8app.model.Credentials.CREDIT_TAG, credentials);
+        startActivity(intent);
+        //End this activity and remove it from the Activity back stack.
+        finish();
     }
 
     @Override
@@ -64,9 +65,17 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
 
     @Override
     public void onRegisterSuccess(tcss450.uw.edu.team8app.model.Credentials credentials) {
+        tellUserToVerify();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.login_fragment, new LoginFragment())
+                .add(R.id.main_fragment_container, new LoginFragment()).addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void tellUserToVerify() {
+        VerifyAccountDialog dialog = new VerifyAccountDialog();
+        dialog.setWarningDialog(getString(R.string.notify_check_email));
+        dialog.show(getSupportFragmentManager(), VerifyAccountDialog.DIALOG_TAG);
     }
 }

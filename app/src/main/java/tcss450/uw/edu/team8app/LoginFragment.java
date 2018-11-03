@@ -25,6 +25,7 @@ import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
  * to handle interaction events.
  */
 public class LoginFragment extends Fragment {
+    public static final String FRAGMENT_TAG = "login fragment";
 
     private OnFragmentInteractionListener mListener;
     private Credentials mCredentials;
@@ -85,25 +86,26 @@ public class LoginFragment extends Fragment {
             passwordEdit.setError("Field must not be empty.");
         }
         if(!hasError) {
-            Credentials credentials = new Credentials.Builder(
-                    emailEdit.getText().toString(),
-                    passwordEdit.getText().toString())
-                    .build();
-            //build the web service URL
-            Uri uri = new Uri.Builder()
-                    .scheme("https")
-                    .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_login))
-                    .build();
-            JSONObject msg = credentials.asJSONObject();
-            mCredentials = credentials;
-
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    .onPreExecute(this::handleLoginOnPre)
-                    .onPostExecute(this::handleLoginOnPost)
-                    .onCancelled(this::handleErrorsInTask)
-                    .build().execute();
+            doLogin(emailEdit.getText().toString(), passwordEdit.getText().toString());
         }
+    }
+
+    private void doLogin(String email, String password) {
+        Credentials credentials = new Credentials.Builder(email, password).build();
+        //build the web service URL
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_login))
+                .build();
+        JSONObject msg = credentials.asJSONObject();
+        mCredentials = credentials;
+
+        new SendPostAsyncTask.Builder(uri.toString(), msg)
+                .onPreExecute(this::handleLoginOnPre)
+                .onPostExecute(this::handleLoginOnPost)
+                .onCancelled(this::handleErrorsInTask)
+                .build().execute();
     }
 
     /**
@@ -139,6 +141,10 @@ public class LoginFragment extends Fragment {
                 //Login was unsuccessful. Don’t switch fragments and inform the user
                 ((TextView) getView().findViewById(R.id.login_email_edit))
                         .setError("Login Unsuccessful");
+                String message = resultsJSON.getString("message");
+                if(message.equals("not verified")) {
+                    mListener.tellUserToVerify();
+                }
             }
         } catch (JSONException e) {
             //It appears that the web service didn’t return a JSON formatted String
@@ -165,5 +171,6 @@ public class LoginFragment extends Fragment {
     public interface OnFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
         void onRegisterClicked();
         void onLoginSuccess(Credentials credentials);
+        void tellUserToVerify();
     }
 }

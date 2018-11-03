@@ -17,6 +17,7 @@ import java.io.Serializable;
  * @version 1 October 2018
  */
 public class Credentials implements Serializable {
+    public static final String CREDIT_TAG = "credentials";
     private static final long serialVersionUID = -1634677417576883013L;
 
     private final String mUsername;
