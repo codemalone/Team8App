@@ -22,6 +22,8 @@
     <string name="hint_last_name">Enter your last name</string>
     <string name="register_message">Please register for an account</string>
     <string name="welcome_message">Welcome!</string>
+    <string name="chat_edit_hint">Write a message</string>
+
 
     <string name="notify_check_email">Please go to your email and verify your account.</string>
     <!-- TODO: Remove or change this placeholder text -->

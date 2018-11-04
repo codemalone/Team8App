@@ -15,6 +15,7 @@
             android:id="@+id/nav_item_connections"
             android:icon="@android:drawable/ic_menu_my_calendar"
             android:title="@string/nav_item_connections" />
+        <item android:title="Item" />
         <item
             android:id="@+id/nav_item_messages"
             android:icon="@android:drawable/ic_menu_sort_by_size"
