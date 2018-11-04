@@ -3,11 +3,13 @@ package tcss450.uw.edu.team8app;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Credentials;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -26,6 +28,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -68,10 +72,24 @@ public class HomeActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        askPermission();
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
 
-        askPermission();
+        tcss450.uw.edu.team8app.model.Credentials credentials = (tcss450.uw.edu.team8app.model.Credentials) getIntent().getExtras().get(tcss450.uw.edu.team8app.model.Credentials.CREDIT_TAG);
+        TextView username = header.findViewById(R.id.textView_nav_header_username);
+        Log.e("test", credentials.getEmail());
+        Log.e("test", credentials.getFirstName());
+        Log.e("test", credentials.getUsername());
+        if (!credentials.getUsername().isEmpty()) {
+            username.setText(credentials.getUsername());
+        } else {
+            username.setText(credentials.getFirstName() + " " + credentials.getLastName());
+        }
+        TextView email = header.findViewById(R.id.textView_nav_header_email);
+        email.setText(credentials.getEmail());
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefEditor = mPreferences.edit();
@@ -103,10 +121,10 @@ public class HomeActivity extends AppCompatActivity
 
     public void onLocationChanged(Location location) {
         // New location has now been determined
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+//        String msg = "Updated Location: " +
+//                Double.toString(location.getLatitude()) + "," +
+//                Double.toString(location.getLongitude());
+//        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         mLocation = location;
     }
 
@@ -257,7 +275,10 @@ public class HomeActivity extends AppCompatActivity
             toolbar.setTitle(getResources().getString(R.string.nav_item_settings));
             loadFragment(new SettingsFragment());
         } else if (id == R.id.nav_item_logout) {
-
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            //End this activity and remove it from the Activity back stack.
+            finish();
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
