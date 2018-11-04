@@ -19,14 +19,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(savedInstanceState == null) {
-            if(findViewById(R.id.main_fragment_container) != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.main_fragment_container, new LoginFragment())
-                        .commit();
-            }
-        }
+//        if(savedInstanceState == null) {
+//            if(findViewById(R.id.main_fragment_container) != null) {
+//                getSupportFragmentManager().beginTransaction()
+//                        .add(R.id.main_fragment_container, new LoginFragment())
+//                        .commit();
+//            }
+//        }
 
+        Intent myIntent = new Intent(this, HomeActivity.class);
+        startActivity(myIntent);
     }
 
     @Override

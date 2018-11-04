@@ -1,11 +1,23 @@
 package tcss450.uw.edu.team8app;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,43 +26,180 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.Locale;
+
+import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
+
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, WaitFragment.OnFragmentInteractionListener {
 
     Toolbar toolbar;
+    private Location mLocation;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mPrefEditor;
+    private boolean mUpdateWeather = false;
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        askPermission();
+
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mPrefEditor = mPreferences.edit();
+        //Long oldTimestamp = Long.valueOf(0);
+        Long oldTimestamp = mPreferences.getLong("timestamp", 0);
+        Long newTimestamp = System.currentTimeMillis();
+        mPrefEditor.putLong("timestamp", newTimestamp);
+        mPrefEditor.apply();
+        if (newTimestamp - oldTimestamp > 3600000) {
+            mUpdateWeather = true;
+        }
+
+        if (checkPermission()) {
+            toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            //if (mUpdateWeather) {
+            getLastLocation();
+            sendMyLocation();
+            //} else {
+            //   handleHomeOnPostExecute(mPreferences.getString("weatherData", null));
+            //}
+        } else {
+            toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+            loadFragment(new HomeFragment());
+        }
+
+    }
+
+    public void onLocationChanged(Location location) {
+        // New location has now been determined
+        String msg = "Updated Location: " +
+                Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLongitude());
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        mLocation = location;
+    }
+
+    @SuppressLint("MissingPermission")
+    public void getLastLocation() {
+        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
+        locationClient.getLastLocation()
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        onLocationChanged(location);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("MapDemoActivity", "Error trying to get last GPS location");
+                    e.printStackTrace();
+                });
+    }
+
+    private void sendMyLocation() {
+        //build the web service URL
+        Uri uri = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_weather))
+                .build();
+        //build the JSONObject
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("latitude", mLocation.getLatitude());
+            msg.put("longitude", mLocation.getLongitude());
+            msg.put("zipcode",geocoder.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1).get(0).getPostalCode());
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+        //instantiate and execute the AsyncTask.
+        //Feel free to add a handler for onPreExecution so that a progress bar
+        //is displayed or maybe disable buttons.
+        new SendPostAsyncTask.Builder(uri.toString(), msg)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleHomeOnPostExecute)
+                //.onCancelled(this::handleErrorsInTask)
+                .build().execute();
+    }
+
+    public void askPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ){//Can add more as per requirement
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
+                    123);
+        }
+    }
+
+    public boolean checkPermission() {
+        String permission = Manifest.permission.ACCESS_FINE_LOCATION;
+        int res = getApplicationContext().checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void handleHomeOnPostExecute(final String result) {
+        mPrefEditor.putString("weatherJSON", result);
+        mPrefEditor.apply();
+        Bundle args = new Bundle();
+        args.putString("weather", result);
+        Fragment frag = new HomeFragment();
+        frag.setArguments(args);
+        onWaitFragmentInteractionHide();
+        loadFragment(frag);
+    }
+
+    @Override
+    public void onWaitFragmentInteractionShow() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_home_container, new WaitFragment(), "WAIT")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onWaitFragmentInteractionHide() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -80,6 +229,7 @@ public class HomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("MissingPermission")
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -87,8 +237,16 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_item_home) {
-            toolbar.setTitle(getResources().getString(R.string.nav_item_home));
-            loadFragment(new HomeFragment());
+            if (checkPermission()) {
+                toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                getLastLocation();
+                sendMyLocation();
+            } else {
+                toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+                loadFragment(new HomeFragment());
+            }
         } else if (id == R.id.nav_item_connections) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_connections));
             loadFragment(new ConnectionsFragment());
@@ -101,7 +259,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_item_logout) {
 
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
