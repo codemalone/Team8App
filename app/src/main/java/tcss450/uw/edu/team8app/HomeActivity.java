@@ -301,12 +301,12 @@ public class HomeActivity extends AppCompatActivity
         prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
 
         //close the app
-        finishAndRemoveTask();
+//        finishAndRemoveTask();
 
         //or close this activity and bring back the Login
-        //Intent i = new Intent(this, MainActivity.class);
-        //startActivity(i);
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
         //End this Activity and remove it from the Activity back stack.
-        //finish();
+        finish();
     }
 }
