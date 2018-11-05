@@ -6,8 +6,8 @@
         <item name="colorPrimary">@color/uw_gold</item>
         <item name="colorPrimaryDark">@color/uw_purple</item>
         <item name="colorAccent">@color/uw_metallic_gold</item>
-        <item name="android:windowBackground">@color/greyple</item>
-        <item name="android:colorBackground">@color/greyple</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:colorBackground">@color/white</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -21,7 +21,7 @@
 
     <style name="Team8DefaultTheme" parent="AppTheme" >
         <item name="colorPrimary">@color/uw_purple</item>
-        <item name="android:colorBackground">@color/greyple</item>
+        <item name="android:colorBackground">@color/white</item>
         <item name="colorPrimaryDark">@color/not_quite_black</item>
         <item name="colorAccent">@color/uw_metallic_gold</item>
     </style>
