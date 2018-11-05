@@ -98,9 +98,9 @@ public class HomeActivity extends AppCompatActivity
         Long newTimestamp = System.currentTimeMillis();
         mPrefEditor.putLong("timestamp", newTimestamp);
         mPrefEditor.apply();
-        if (newTimestamp - oldTimestamp > 3600000) {
+//        if (newTimestamp - oldTimestamp > 3600000) {
             mUpdateWeather = true;
-        }
+//        }
 
         if (checkPermission()) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_home));
@@ -108,7 +108,7 @@ public class HomeActivity extends AppCompatActivity
             mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             //if (mUpdateWeather) {
             getLastLocation();
-            sendMyLocation();
+//            sendMyLocation();
             //} else {
             //   handleHomeOnPostExecute(mPreferences.getString("weatherData", null));
             //}
@@ -135,6 +135,7 @@ public class HomeActivity extends AppCompatActivity
                 .addOnSuccessListener(location -> {
                     if (location != null) {
                         onLocationChanged(location);
+                        sendMyLocation();
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -263,7 +264,7 @@ public class HomeActivity extends AppCompatActivity
                 LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 getLastLocation();
-                sendMyLocation();
+//                sendMyLocation();
             } else {
                 toolbar.setTitle(getResources().getString(R.string.nav_item_home));
                 loadFragment(new HomeFragment());
