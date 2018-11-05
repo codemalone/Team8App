@@ -144,6 +144,8 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void sendMyLocation() {
+        if (mLocation == null) return;
+
         //build the web service URL
         Uri uri = new Uri.Builder()
                 .scheme("https")
@@ -240,9 +242,10 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_logout) {
+//            logout();
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -275,10 +278,7 @@ public class HomeActivity extends AppCompatActivity
             toolbar.setTitle(getResources().getString(R.string.nav_item_settings));
             loadFragment(new SettingsFragment());
         } else if (id == R.id.nav_item_logout) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            //End this activity and remove it from the Activity back stack.
-            finish();
+            logout();
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -292,5 +292,24 @@ public class HomeActivity extends AppCompatActivity
                 .addToBackStack(null);
         // Commit the transaction
         transaction.commit();
+    }
+
+    public void logout() {
+        SharedPreferences prefs =
+                getSharedPreferences(
+                        getString(R.string.keys_shared_prefs),
+                        Context.MODE_PRIVATE);
+        //remove the saved credentials from StoredPrefs
+        prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
+        prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
+
+        //close the app
+        finishAndRemoveTask();
+
+        //or close this activity and bring back the Login
+        //Intent i = new Intent(this, MainActivity.class);
+        //startActivity(i);
+        //End this Activity and remove it from the Activity back stack.
+        //finish();
     }
 }
