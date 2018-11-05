@@ -3,5 +3,14 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="white">#FFFFFF</color>
+
+    <color name="white">#ffffff</color>
+    <color name="uw_purple">#4b2e83</color>
+    <color name="uw_gold">#b7a57a</color>
+    <color name="uw_metallic_gold">#85754d</color>
+    <color name="not_so_dark">#2c2f33</color>
+    <color name="blurple">#7289da</color>
+    <color name="greyple">#99aab5</color>
+    <color name="not_quite_black">#23272a</color>
+
 </resources>
