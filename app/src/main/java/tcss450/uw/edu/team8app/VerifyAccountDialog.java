@@ -16,8 +16,15 @@ public class VerifyAccountDialog extends AppCompatDialogFragment {
         if(warningDialog == null) {
             warningDialog = "";
         }
+
         return new AlertDialog.Builder(getActivity()).setTitle("Email Verification")
                 .setMessage(warningDialog)
+                .setNeutralButton("Resent Verification", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //TODO: Add sync task to resend an email verification.
+                    }
+                })
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
