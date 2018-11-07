@@ -46,6 +46,9 @@ public class VerificationFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        //int myTheme = R.style.DarkTheme;
+        //getActivity().setTheme(myTheme);
+        //saveTheme(myTheme);
     }
 
     /**

@@ -179,7 +179,7 @@ public class LoginFragment extends Fragment {
                         .setError("Login Unsuccessful");
                 String message = resultsJSON.getString("message");
                 if(message.equals("not verified")) {
-                    mListener.tellUserToVerify();
+                    mListener.tellUserToVerify(mCredentials);
                 }
             }
         } catch (JSONException e) {
@@ -207,6 +207,6 @@ public class LoginFragment extends Fragment {
     public interface OnFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
         void onRegisterClicked();
         void onLoginSuccess(Credentials credentials);
-        void tellUserToVerify();
+        void tellUserToVerify(Credentials credentials);
     }
 }

@@ -1,10 +1,11 @@
 package tcss450.uw.edu.team8app;
 
 import android.content.Intent;
-import android.net.Credentials;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import tcss450.uw.edu.team8app.model.Credentials;
 
 /**
  * The entry activity for the application.
@@ -40,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     }
 
     @Override
-    public void onLoginSuccess(tcss450.uw.edu.team8app.model.Credentials credentials) {
+    public void onLoginSuccess(Credentials credentials) {
         Intent intent = new Intent(this, HomeActivity.class);
-        intent.putExtra(tcss450.uw.edu.team8app.model.Credentials.CREDIT_TAG, credentials);
+        intent.putExtra(Credentials.CREDIT_TAG, credentials);
         startActivity(intent);
         //End this activity and remove it from the Activity back stack.
         finish();
@@ -66,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     }
 
     @Override
-    public void onRegisterSuccess(tcss450.uw.edu.team8app.model.Credentials credentials) {
-        tellUserToVerify();
+    public void onRegisterSuccess(Credentials credentials) {
+        tellUserToVerify(credentials);
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.main_fragment_container, new LoginFragment()).addToBackStack(null)
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     }
 
     @Override
-    public void tellUserToVerify() {
+    public void tellUserToVerify(Credentials credentials) {
         VerifyAccountDialog dialog = new VerifyAccountDialog();
         dialog.setWarningDialog(getString(R.string.notify_check_email));
         dialog.show(getSupportFragmentManager(), VerifyAccountDialog.DIALOG_TAG);
