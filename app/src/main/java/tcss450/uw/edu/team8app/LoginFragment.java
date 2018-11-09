@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import org.json.JSONObject;
 
 import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
+import tcss450.uw.edu.team8app.utils.ValidationUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,7 +57,15 @@ public class LoginFragment extends Fragment {
             passwordEdit.setText(password);
 
             if (!email.isEmpty() && !password.isEmpty()) {
-                doLogin(email, password);
+                boolean useEmail = true;
+
+                if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    useEmail = true;
+                } else if (ValidationUtils.USERNAME.matcher(email).matches()) {
+                    useEmail = false;
+                }
+
+                doLogin(email, password, useEmail);
             }
         }
     }
@@ -106,33 +117,63 @@ public class LoginFragment extends Fragment {
     }
 
     private void attemptLogin(final View button) {
-        EditText emailEdit = getActivity().findViewById(R.id.login_email_edit);
-        EditText passwordEdit = getActivity().findViewById(R.id.login_password_edit);
-        boolean hasError = false;
-        if(emailEdit.getText().toString().length() == 0) {
-            hasError = true;
-            emailEdit.setError("Field must not be empty.");
-        } else if(emailEdit.getText().toString().chars().filter(ch -> ch == '@').count() != 1) {
-            hasError = true;
-            emailEdit.setError("Field must contain a valid email address.");
+        View v = getView();
+
+        EditText emailEditText = v.findViewById(R.id.login_email_edit);
+        EditText passwordEditText = v.findViewById(R.id.login_password_edit);
+
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+
+        boolean error = false;
+        boolean useEmail = true;
+
+        if (TextUtils.isEmpty(email)) {
+            error = true;
+            emailEditText.setError("Field must not be empty");
+        } else {
+            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                useEmail = true;
+            } else if (ValidationUtils.USERNAME.matcher(email).matches()) {
+                useEmail = false;
+            } else {
+                error = true;
+                emailEditText.setError("Field must contain a valid email address or username");
+            }
         }
-        if(passwordEdit.getText().toString().length() == 0) {
-            hasError = true;
-            passwordEdit.setError("Field must not be empty.");
+
+        if (TextUtils.isEmpty(password)) {
+            error = true;
+            passwordEditText.setError("Field must not be empty");
+        } else if (!ValidationUtils.PASSWORD.matcher(password).matches()) {
+            error = true;
+            passwordEditText.setError("Field must consist of alphanumeric, period, hyphen, "
+                    + "underscore, and apostrophe characters only");
         }
-        if(!hasError) {
-            doLogin(emailEdit.getText().toString(), passwordEdit.getText().toString());
+
+        if(!error) {
+            doLogin(email, password, useEmail);
         }
     }
 
-    private void doLogin(String email, String password) {
-        Credentials credentials = new Credentials.Builder(email, password).build();
+    private void doLogin(String email, String password, boolean useEmail) {
+        Credentials.Builder credentialsBuilder = new Credentials.Builder(useEmail ? email : null, password);
         //build the web service URL
-        Uri uri = new Uri.Builder()
-                .scheme("https")
-                .appendPath(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_login))
-                .build();
+        Uri.Builder uriBuilder = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_account))
+                .appendPath(getString(R.string.ep_login));
+
+        if (useEmail) {
+            uriBuilder.appendPath(getString(R.string.ep_email));
+        } else {
+            credentialsBuilder.addUsername(email);
+            uriBuilder.appendPath(getString(R.string.ep_username));
+        }
+
+        Credentials credentials = credentialsBuilder.build();
+        Uri uri = uriBuilder.build();
         JSONObject msg = credentials.asJSONObject();
         mCredentials = credentials;
 
@@ -148,7 +189,8 @@ public class LoginFragment extends Fragment {
      * @param result the error message provide from the AsyncTask
      */
     private void handleErrorsInTask(String result) {
-        Log.e("ASYNCT_TASK_ERROR", result);
+        Log.e("ASYNC_TASK_ERROR", result);
+        mListener.onWaitFragmentInteractionHide();
     }
 
     /**
@@ -170,6 +212,15 @@ public class LoginFragment extends Fragment {
             boolean success = resultsJSON.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
             if (success) {
+                if (resultsJSON.has("user")) {
+                    JSONObject userJSON = resultsJSON.getJSONObject("user");
+                    mCredentials = new Credentials.Builder(userJSON.getString("email"), mCredentials.getPassword())
+                            .addFirstName(userJSON.getString("first"))
+                            .addLastName(userJSON.getString("last"))
+                            .addUsername(userJSON.getString("username"))
+                            .build();
+                }
+
                 //Login was successful. Inform the Activity so it can do its thing.
                 saveCredentials(mCredentials);
                 mListener.onLoginSuccess(mCredentials);

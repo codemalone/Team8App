@@ -145,8 +145,8 @@ public class HomeActivity extends AppCompatActivity
 
         //build the web service URL
         Uri uri = new Uri.Builder()
-                .scheme("https")
-                .appendPath(getString(R.string.ep_base_url))
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
                 .appendPath(getString(R.string.ep_weather))
                 .build();
         //build the JSONObject

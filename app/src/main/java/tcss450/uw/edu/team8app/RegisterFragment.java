@@ -4,7 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import org.json.JSONObject;
 
 import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
+import tcss450.uw.edu.team8app.utils.ValidationUtils;
 
 
 /**
@@ -45,59 +48,88 @@ public class RegisterFragment extends Fragment {
     }
 
     private void attemptRegister(View view) {
-        if(mListener != null) {
+        if (mListener != null) {
             View v = this.getView();
+
+            EditText emailEditText = v.findViewById(R.id.register_email_edit);
+            EditText firstNameEditText = v.findViewById(R.id.register_firstname_edit);
+            EditText lastNameEditText = v.findViewById(R.id.register_lastname_edit);
+            EditText usernameEditText = v.findViewById(R.id.register_username_edit);
+            EditText password1EditText = v.findViewById(R.id.register_password1_edit);
+            EditText password2EditText = v.findViewById(R.id.register_password2_edit);
+
+            String email = emailEditText.getText().toString().trim();
+            String firstName = firstNameEditText.getText().toString().trim();
+            String lastName = lastNameEditText.getText().toString().trim();
+            String username = usernameEditText.getText().toString().trim();
+            String password1 = password1EditText.getText().toString().trim();
+            String password2 = password2EditText.getText().toString().trim();
+
             boolean error = false;
-            EditText email = v.findViewById(R.id.register_email_edit);
-            if(email.getText().toString().chars().filter(ch -> ch == '@').count() != 1) {
+
+            if (TextUtils.isEmpty(email)) {
                 error = true;
-                email.setError("Field must contain a valid email address.");
-            } else if(email.getText().toString().length() == 0) {
+                emailEditText.setError("Field must not be empty");
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 error = true;
-                email.setError("Field must not be empty");
+                emailEditText.setError("Field must contain a valid email address");
             }
-            EditText first = v.findViewById(R.id.register_firstname_edit);
-            if(first.getText().toString().length() == 0) {
+
+            if (TextUtils.isEmpty(firstName)) {
                 error = true;
-                first.setError("Field must not be empty");
+                firstNameEditText.setError("Field must not be empty");
             }
-            EditText last = v.findViewById(R.id.register_lastname_edit);
-            if(last.getText().toString().length() == 0) {
+
+            if (TextUtils.isEmpty(lastName)) {
                 error = true;
-                last.setError("Field must not be empty");
+                lastNameEditText.setError("Field must not be empty");
             }
-            EditText username = v.findViewById(R.id.register_username_edit);
-            if(username.getText().toString().length() == 0) {
+
+            if (TextUtils.isEmpty(username)) {
                 error = true;
-                username.setError("Field must not be empty");
+                usernameEditText.setError("Field must not be empty");
+            } else if (!ValidationUtils.USERNAME.matcher(username).matches()) {
+                error = true;
+                usernameEditText.setError("Field must consist of alphanumeric characters only");
             }
-            EditText password1 = v.findViewById(R.id.register_password1_edit);
-            if(password1.getText().toString().length() == 0) {
+
+            if (TextUtils.isEmpty(password1)) {
                 error = true;
-                password1.setError("Field must not be empty");
+                password1EditText.setError("Field must not be empty");
+            } else if (!ValidationUtils.PASSWORD.matcher(password1).matches()) {
+                error = true;
+                password1EditText.setError("Field must consist of alphanumeric, period, hyphen, "
+                        + "underscore, and apostrophe characters only");
             }
-            EditText password2 = v.findViewById(R.id.register_password2_edit);
-            if(password2.getText().toString().length() == 0) {
+
+            if (TextUtils.isEmpty(password2)) {
                 error = true;
-                password2.setError("Field must not be empty");
-            } else if(!password1.getText().toString().equals(password2.getText().toString())) {
+                password2EditText.setError("Field must not be empty");
+            } else if (!ValidationUtils.PASSWORD.matcher(password2).matches()) {
                 error = true;
-                password2.setError("Password must match");
+                password1EditText.setError("Field must consist of alphanumeric, period, hyphen, "
+                        + "underscore, and apostrophe characters only");
+            } else if (!password2.equals(password1)) {
+                error = true;
+                password2EditText.setError("Password must match");
             }
-            if(!error) {
-                Credentials.Builder builder = new Credentials.Builder(email.getText().toString(),
-                        password1.getText().toString());
-                builder.addFirstName(first.getText().toString());
-                builder.addLastName(last.getText().toString());
-                builder.addUsername(username.getText().toString());
+
+            if (!error) {
+                Credentials.Builder builder = new Credentials.Builder(emailEditText.getText().toString(),
+                        password1EditText.getText().toString())
+                        .addFirstName(firstNameEditText.getText().toString())
+                        .addLastName(lastNameEditText.getText().toString())
+                        .addUsername(usernameEditText.getText().toString());
                 Credentials credentials = builder.build();
                 Uri uri = new Uri.Builder()
-                        .scheme("https")
-                        .appendPath(getString(R.string.ep_base_url))
+                        .scheme(getString(R.string.ep_scheme))
+                        .encodedAuthority(getString(R.string.ep_base_url))
+                        .appendPath(getString(R.string.ep_account))
                         .appendPath(getString(R.string.ep_register))
                         .build();
                 JSONObject msg = credentials.asJSONObject();
                 mCredientials = credentials;
+
                 new SendPostAsyncTask.Builder(uri.toString(), msg)
                         .onPreExecute(this::handleRegisterOnPre)
                         .onPostExecute(this::handleRegisterOnPost)
@@ -109,6 +141,7 @@ public class RegisterFragment extends Fragment {
 
     /**
      * Handle errors that may occur during the AsyncTask.
+     *
      * @param result the error message provide from the AsyncTask
      */
     private void handleErrorsInTask(String result) {
@@ -128,7 +161,7 @@ public class RegisterFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(result);
             boolean success = jsonObject.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
-            if(success) {
+            if (success) {
                 mListener.onRegisterSuccess(mCredientials);
             } else {
                 ((TextView) getView().findViewById(R.id.register_email_edit)).setError("Registration Failure");
@@ -169,7 +202,7 @@ public class RegisterFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener{
+    public interface OnFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
         void onRegisterSuccess(Credentials credentials);
     }
 }

@@ -50,8 +50,8 @@ public class ChatFragment extends Fragment {
         }
         //We will use this url every time the user hits send. Let's only build it once, ya?
         mSendUrl = new Uri.Builder()
-                .scheme("https")
-                .appendPath(getString(R.string.ep_base_url))
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
                 .appendPath(getString(R.string.ep_messaging_base))
                 .appendPath(getString(R.string.ep_messaging_send))
                 .build()
