@@ -38,4 +38,14 @@
         <item name="android:colorButtonNormal">@color/uw_purple</item>
     </style>
 
+    <style name="FruitSaladTheme" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="colorPrimary">@color/strawberry</item>
+        <item name="colorPrimaryDark">@color/cherry</item>
+        <item name="colorAccent">@color/grape</item>
+        <item name="android:colorBackground">@color/kiwi</item>
+        <item name="android:textColor">@color/blackberry</item>
+        <item name="android:colorButtonNormal">@color/orange</item>
+        <item name="android:textColorPrimary">@color/blackberry</item>
+    </style>
+
 </resources>

@@ -42,11 +42,13 @@ import java.io.IOException;
 import java.util.Locale;
 
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
+import tcss450.uw.edu.team8app.utils.Themes;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, WaitFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, WaitFragment.OnFragmentInteractionListener,
+        SettingsFragment.OnFragmentInteractionListener, ChangeThemeFragment.OnFragmentInteractionListener {
 
     Toolbar toolbar;
     private Location mLocation;
@@ -308,5 +310,31 @@ public class HomeActivity extends AppCompatActivity
         startActivity(i);
         //End this Activity and remove it from the Activity back stack.
         finish();
+    }
+
+    @Override
+    public void clickedSettings() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_home_container, new SettingsFragment())
+                .addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void clickedChangeTheme() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_home_container, new ChangeThemeFragment())
+                .addToBackStack("theme");
+        transaction.commit();
+    }
+
+    public void selectTheme(Themes theme) {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
+        prefs.edit().putString(Themes.TAG, theme.toString());
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_home_container, new HomeFragment())
+                .addToBackStack(null);
+        transaction.commit();
     }
 }

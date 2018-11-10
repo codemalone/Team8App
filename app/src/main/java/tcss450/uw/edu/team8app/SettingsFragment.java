@@ -13,6 +13,7 @@ import android.view.ViewGroup;
  */
 public class SettingsFragment extends Fragment {
 
+    private OnFragmentInteractionListener mListener;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -26,4 +27,7 @@ public class SettingsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
+    public interface OnFragmentInteractionListener {
+        void clickedSettings();
+    }
 }
