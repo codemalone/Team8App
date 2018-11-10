@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     public void tellUserToVerify(Credentials credentials) {
         VerifyAccountDialog dialog = new VerifyAccountDialog();
         dialog.setWarningDialog(getString(R.string.notify_check_email));
+        dialog.setEmail(credentials.getEmail());
+        dialog.setUsername(credentials.getUsername());
         dialog.show(getSupportFragmentManager(), VerifyAccountDialog.DIALOG_TAG);
     }
 }
