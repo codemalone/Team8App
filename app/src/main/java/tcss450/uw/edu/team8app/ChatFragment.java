@@ -53,7 +53,7 @@ public class ChatFragment extends Fragment {
                 .scheme(getString(R.string.ep_scheme))
                 .encodedAuthority(getString(R.string.ep_base_url))
                 .appendPath(getString(R.string.ep_messaging_base))
-                .appendPath(getString(R.string.ep_messaging_send))
+                .appendPath(getString(R.string.ep_send))
                 .build()
                 .toString();
     }

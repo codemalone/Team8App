@@ -228,10 +228,14 @@ public class LoginFragment extends Fragment {
                 //Login was unsuccessful. Don’t switch fragments and inform the user
                 ((TextView) getView().findViewById(R.id.login_email_edit))
                         .setError("Login Unsuccessful");
-                String message = resultsJSON.getString("message");
-                if(message.equals("not verified")) {
+
+                //get error message
+                JSONObject error = resultsJSON.getJSONObject("message");
+
+                if (error.getInt("code") == 207) {
                     mListener.tellUserToVerify(mCredentials);
                 }
+
             }
         } catch (JSONException e) {
             //It appears that the web service didn’t return a JSON formatted String
