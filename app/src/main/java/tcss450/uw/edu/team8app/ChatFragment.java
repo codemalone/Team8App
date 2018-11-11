@@ -34,6 +34,7 @@ public class ChatFragment extends Fragment {
     private EditText mMessageInputEditText;
     private String mEmail;
     private String mSendUrl;
+    private String mGetAllMsgUrl;
 
     private FirebaseMessageReciever mFirebaseMessageReciever;
 
@@ -62,6 +63,16 @@ public class ChatFragment extends Fragment {
                 .appendPath(getString(R.string.ep_send))
                 .build()
                 .toString();
+
+        mGetAllMsgUrl = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_chats))
+                .appendPath(getString(R.string.ep_messaging_base))
+                .appendPath(getString(R.string.ep_get_all))
+                .build()
+                .toString();
+
     }
 
     @Override
@@ -72,7 +83,20 @@ public class ChatFragment extends Fragment {
         }
         IntentFilter iFilter = new IntentFilter(MyFirebaseMessagingService.RECEIVED_NEW_MESSAGE);
         getActivity().registerReceiver(mFirebaseMessageReciever, iFilter);
+
+        //request all messages
+        JSONObject messageJson = new JSONObject();
+        try {
+            messageJson.put("chatId", CHAT_ID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(mGetAllMsgUrl, messageJson)
+                .onPostExecute(this::endOfGetAllMsgTask)
+                .onCancelled(error -> Log.e(TAG, error))
+                .build().execute();
     }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -122,6 +146,29 @@ public class ChatFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
+    private void endOfGetAllMsgTask(final String result) {
+        Log.i("called getAllPostExec", "blah");
+
+        try {
+            JSONObject res = new JSONObject(result);
+            Log.v("getAll", res.toString());
+
+
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+    };
+
+
+
 
     /**
      * A BroadcastReceiver setup to listen for messages sent from

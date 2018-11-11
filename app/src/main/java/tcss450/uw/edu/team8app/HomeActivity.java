@@ -319,22 +319,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     public void logout() {
-//        SharedPreferences prefs =
-//                getSharedPreferences(
-//                        getString(R.string.keys_shared_prefs),
-//                        Context.MODE_PRIVATE);
-//        //remove the saved credentials from StoredPrefs
-//        prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
-//        prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
-//
-//        //close the app
-////        finishAndRemoveTask();
-//
-//        //or close this activity and bring back the Login
-//        Intent i = new Intent(this, MainActivity.class);
-//        startActivity(i);
-//        //End this Activity and remove it from the Activity back stack.
-//        finish();
         new DeleteTokenAsyncTask().execute();
     }
 
@@ -368,6 +352,15 @@ public class HomeActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            SharedPreferences prefs =
+                    getSharedPreferences(
+                            getString(R.string.keys_shared_prefs),
+                            Context.MODE_PRIVATE);
+            //remove the saved credentials from StoredPrefs
+            prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
+            prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
+
             //close the app
             //finishAndRemoveTask();
             //or close this activity and bring back the Login
@@ -376,23 +369,6 @@ public class HomeActivity extends AppCompatActivity
             //End this Activity and remove it from the Activity back stack.
             finish();
         }
-    }
-        SharedPreferences prefs =
-                getSharedPreferences(
-                        getString(R.string.keys_shared_prefs),
-                        Context.MODE_PRIVATE);
-        //remove the saved credentials from StoredPrefs
-        prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
-        prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
-
-        //close the app
-//        finishAndRemoveTask();
-
-        //or close this activity and bring back the Login
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
-        //End this Activity and remove it from the Activity back stack.
-        finish();
     }
 
     @Override
@@ -417,7 +393,5 @@ public class HomeActivity extends AppCompatActivity
         //End this activity and remove it from the Activity back stack.
         finish();
     }
-
-}
 
 }
