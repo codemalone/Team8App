@@ -208,6 +208,14 @@ public class LoginFragment extends Fragment {
         Credentials credentials = credentialsBuilder.build();
         Uri uri = uriBuilder.build();
         JSONObject msg = credentials.asJSONObject();
+
+        // add firebase token
+        try {
+            msg.put("token", mFirebaseToken);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         mCredentials = credentials;
 
         new SendPostAsyncTask.Builder(uri.toString(), msg)
