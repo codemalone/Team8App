@@ -19,11 +19,33 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="Team8DefaultTheme" parent="AppTheme" >
+    <style name="Team8DefaultTheme" parent="AppTheme.NoActionBar" >
         <item name="colorPrimary">@color/uw_purple</item>
         <item name="android:colorBackground">@color/white</item>
         <item name="colorPrimaryDark">@color/not_quite_black</item>
         <item name="colorAccent">@color/uw_metallic_gold</item>
+    </style>
+
+    <style name="DarkTheme" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="colorAccent">@color/uw_gold</item>
+        <item name="android:colorBackground">@color/not_so_dark</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/design_default_color_primary_dark</item>
+        <item name="colorPrimaryDark">@color/design_default_color_primary</item>
+        <item name="android:textColorSecondaryInverse">@color/uw_gold</item>
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:colorButtonNormal">@color/uw_purple</item>
+    </style>
+
+    <style name="FruitSaladTheme" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="colorPrimary">@color/strawberry</item>
+        <item name="colorPrimaryDark">@color/cherry</item>
+        <item name="colorAccent">@color/grape</item>
+        <item name="android:colorBackground">@color/kiwi</item>
+        <item name="android:textColor">@color/blackberry</item>
+        <item name="android:colorButtonNormal">@color/orange</item>
+        <item name="android:textColorPrimary">@color/blackberry</item>
     </style>
 
 </resources>

@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Credentials;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -41,23 +40,38 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Locale;
 
+import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
+import tcss450.uw.edu.team8app.utils.Themes;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, WaitFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, WaitFragment.OnFragmentInteractionListener,
+        SettingsFragment.OnFragmentInteractionListener, ChangeThemeFragment.OnFragmentInteractionListener {
 
     Toolbar toolbar;
     private Location mLocation;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mPrefEditor;
     private boolean mUpdateWeather = false;
+    private Credentials mCredentials;
 
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(mPreferences != null) {
+            if(mPreferences.getString(Themes.TAG, "") != null) {
+                String theme = mPreferences.getString(Themes.TAG, "");
+
+                this.setTheme(Themes.getTheme(theme).getId());
+            } else {
+                mPreferences.edit().putString(Themes.TAG, Themes.Default.toString());
+            }
+        }
+        //this.setTheme(Themes.getTheme("FruitSalad").getId());
         setContentView(R.layout.activity_home);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,7 +88,8 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
 
-        tcss450.uw.edu.team8app.model.Credentials credentials = (tcss450.uw.edu.team8app.model.Credentials) getIntent().getExtras().get(tcss450.uw.edu.team8app.model.Credentials.CREDIT_TAG);
+        Credentials credentials = (Credentials) getIntent().getExtras().get(Credentials.CREDIT_TAG);
+        mCredentials = credentials;
         TextView username = header.findViewById(R.id.textView_nav_header_username);
         Log.e("test", credentials.getEmail());
         Log.e("test", credentials.getFirstName());
@@ -87,7 +102,6 @@ public class HomeActivity extends AppCompatActivity
         TextView email = header.findViewById(R.id.textView_nav_header_email);
         email.setText(credentials.getEmail());
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefEditor = mPreferences.edit();
         //Long oldTimestamp = Long.valueOf(0);
         Long oldTimestamp = mPreferences.getLong("timestamp", 0);
@@ -273,7 +287,7 @@ public class HomeActivity extends AppCompatActivity
             loadFragment(new MessagesFragment());
         } else if (id == R.id.nav_item_settings) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_settings));
-            loadFragment(new SettingsFragment());
+            loadFragmentNoBackStack(new SettingsFragment());
         } else if (id == R.id.nav_item_logout) {
             logout();
         }
@@ -287,6 +301,14 @@ public class HomeActivity extends AppCompatActivity
                 .beginTransaction()
                 .replace(R.id.frame_home_container, frag)
                 .addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
+    }
+
+    private void loadFragmentNoBackStack(Fragment frag) {
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_home_container, frag);
         // Commit the transaction
         transaction.commit();
     }
@@ -309,4 +331,28 @@ public class HomeActivity extends AppCompatActivity
         //End this Activity and remove it from the Activity back stack.
         finish();
     }
+
+    @Override
+    public void clickedChangeTheme() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_home_container, new ChangeThemeFragment());
+        transaction.commit();
+    }
+
+    public void selectTheme(Themes theme) {
+        //SharedPreferences prefs = getSharedPreferences(getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
+        //prefs.edit().putString(Themes.TAG, theme.toString());
+        if(mPreferences != null) {
+            mPreferences.edit().putString(Themes.TAG, theme.toString()).apply();
+        }
+        /**FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_home_container, new HomeFragment());
+        transaction.commit();*/
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra(Credentials.CREDIT_TAG, mCredentials);
+        startActivity(intent);
+        //End this activity and remove it from the Activity back stack.
+        finish();
+    }
+
 }

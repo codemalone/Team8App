@@ -1,6 +1,8 @@
 package tcss450.uw.edu.team8app;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.v4.app.Fragment;
@@ -19,6 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import tcss450.uw.edu.team8app.utils.Themes;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -35,6 +39,12 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+        SharedPreferences prefs = getActivity().getSharedPreferences(getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
+        String themeName = prefs.getString(Themes.TAG, "");
+        if(themeName != null) {
+            getActivity().setTheme(Themes.getTheme(themeName).getId());
+        }
         if (getArguments() != null) {
             try {
                 JSONArray weather = new JSONArray(getArguments().getString("weather"));

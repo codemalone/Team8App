@@ -14,4 +14,13 @@
     <color name="greyple">#99aab5</color>
     <color name="not_quite_black">#23272a</color>
 
+    <color name="banana">#ffe135</color>
+    <color name="pear">#d1e231</color>
+    <color name="orange">#ffa500</color>
+    <color name="blackberry">#43182f</color>
+    <color name="strawberry">#d53032</color>
+    <color name="grape">#6f2da8</color>
+    <color name="peach">#ffdab9</color>
+    <color name="kiwi">#86f151</color>
+    <color name="cherry">#790604</color>
 </resources>

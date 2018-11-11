@@ -26,6 +26,15 @@
     <string name="chat_edit_hint">Write a message</string>
     <string name="action_logout">Logout</string>
 
+    <!-- String used for settings -->
+    <string name="change_username">Change Username</string>
+    <string name="change_password">Change Password</string>
+    <string name="change_theme">Change Theme</string>
+
+    <!-- String used for Theme settings-->
+    <string name="theme_default">Default</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_fruit_salad">Fruit Salad</string>
 
     <string name="notify_check_email">Please go to your email and verify your account.</string>
     <!-- TODO: Remove or change this placeholder text -->
