@@ -8,11 +8,11 @@ import tcss450.uw.edu.team8app.R;
  */
 public enum Themes {
 
-    Default(R.style.AppTheme),
+    Default(R.style.Team8DefaultTheme),
     Dark(R.style.DarkTheme),
     FruitSalad(R.style.FruitSaladTheme);
 
-    public static final String TAG = "themes";
+    public static final String TAG = "Theme";
     private int mId;
 
     private Themes(int id) {
@@ -24,9 +24,9 @@ public enum Themes {
     }
 
     public static Themes getTheme(String theme) {
-        if(theme.equals(Dark.toString())) {
+        if(theme.equalsIgnoreCase(Dark.toString())) {
             return Dark;
-        } else if(theme.equals(FruitSalad)) {
+        } else if(theme.equalsIgnoreCase(FruitSalad.toString()) || theme.equalsIgnoreCase("Fruit Salad")) {
             return FruitSalad;
         } else {
             return Default;

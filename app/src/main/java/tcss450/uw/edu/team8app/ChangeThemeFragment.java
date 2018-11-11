@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import tcss450.uw.edu.team8app.utils.Themes;
 
@@ -29,8 +30,32 @@ public class ChangeThemeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_change_theme, container, false);
+        View view = inflater.inflate(R.layout.fragment_change_theme, container, false);
+        Button button = view.findViewById(R.id.theme_default_button);
+        final String buttonText = button.getText().toString();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.selectTheme(Themes.getTheme(buttonText));
+            }
+        });
+        button = view.findViewById(R.id.theme_dark_button);
+        final String buttonText2 = button.getText().toString();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.selectTheme(Themes.getTheme(buttonText2));
+            }
+        });
+        button = view.findViewById(R.id.theme_fruit_button);
+        final String buttonText3 = button.getText().toString();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.selectTheme(Themes.getTheme(buttonText3));
+            }
+        });
+        return view;
     }
 
     @Override
