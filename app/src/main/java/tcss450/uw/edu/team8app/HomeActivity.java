@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -285,6 +287,9 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_item_messages) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_messages));
             loadFragment(new MessagesFragment());
+        } else if (id == R.id.nav_item_global_chat) {
+            toolbar.setTitle("Global Chat (Test)");
+            loadFragment(new ChatFragment());
         } else if (id == R.id.nav_item_settings) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_settings));
             loadFragmentNoBackStack(new SettingsFragment());
@@ -314,6 +319,64 @@ public class HomeActivity extends AppCompatActivity
     }
 
     public void logout() {
+//        SharedPreferences prefs =
+//                getSharedPreferences(
+//                        getString(R.string.keys_shared_prefs),
+//                        Context.MODE_PRIVATE);
+//        //remove the saved credentials from StoredPrefs
+//        prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
+//        prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
+//
+//        //close the app
+////        finishAndRemoveTask();
+//
+//        //or close this activity and bring back the Login
+//        Intent i = new Intent(this, MainActivity.class);
+//        startActivity(i);
+//        //End this Activity and remove it from the Activity back stack.
+//        finish();
+        new DeleteTokenAsyncTask().execute();
+    }
+
+    // Deleting the InstanceId (Firebase token) must be done asynchronously. Good thing
+    // we have something that allows us to do that.
+    class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            onWaitFragmentInteractionShow();
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            //since we are already doing stuff in the background, go ahead
+            //and remove the credentials from shared prefs here.
+            SharedPreferences prefs =
+                    getSharedPreferences(
+                            getString(R.string.keys_shared_prefs),
+                            Context.MODE_PRIVATE);
+            prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
+            prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
+            try {
+                //this call must be done asynchronously.
+                FirebaseInstanceId.getInstance().deleteInstanceId();
+            } catch (IOException e) {
+                Log.e("FCM", "Delete error!");
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            //close the app
+            //finishAndRemoveTask();
+            //or close this activity and bring back the Login
+            Intent i = new Intent(getApplication(), MainActivity.class);
+            startActivity(i);
+            //End this Activity and remove it from the Activity back stack.
+            finish();
+        }
+    }
         SharedPreferences prefs =
                 getSharedPreferences(
                         getString(R.string.keys_shared_prefs),
@@ -354,5 +417,7 @@ public class HomeActivity extends AppCompatActivity
         //End this activity and remove it from the Activity back stack.
         finish();
     }
+
+}
 
 }

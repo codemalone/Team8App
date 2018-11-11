@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
-    <string name="ep_base_url">tcss450a18-team8-staging.herokuapp.com</string>
+    <string name="ep_base_url">tcss450a18-team8-test.herokuapp.com</string>
     <string name="ep_scheme">https</string>
     <string name="ep_account">account</string>
     <string name="ep_login">login</string>
@@ -10,6 +10,7 @@
     <string name="ep_verification">verification</string>
     <string name="ep_send">send</string>
     <string name="ep_get">get</string>
-    <string name="ep_messaging_base">messaging</string>
+    <string name="ep_chats">chats</string>
+    <string name="ep_messaging_base">message</string>
     <string name="ep_weather">weather</string>
 </resources>
