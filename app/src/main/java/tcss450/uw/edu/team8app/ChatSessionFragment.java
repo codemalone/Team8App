@@ -8,7 +8,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import tcss450.uw.edu.team8app.model.Message;
 import tcss450.uw.edu.team8app.utils.MyFirebaseMessagingService;
@@ -32,9 +36,15 @@ import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
  */
 public class ChatSessionFragment extends Fragment {
 
+    public static final String ARG_MESSAGE_LIST = "messages";
     private static final String TAG = "CHAT_FRAG";
     private static final String CHAT_ID = "1";
     private EditText mMessageInputEditText;
+    private RecyclerView mMessageDisplay;
+    private RecyclerView.LayoutManager mMessageLayoutManager;
+    private MessageListAdapter mMessageListAdapter;
+    private List<Message> mMessages;
+
     private String mEmail;
     private String mSendUrl;
 
@@ -71,6 +81,18 @@ public class ChatSessionFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            mMessages = new ArrayList<Message>(
+                    Arrays.asList((Message[]) getArguments().getSerializable(ARG_MESSAGE_LIST)));
+        } else {
+            mMessages = new ArrayList<Message>();
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (mFirebaseMessageReciever == null) {
@@ -98,17 +120,12 @@ public class ChatSessionFragment extends Fragment {
         View rootLayout = inflater.inflate(R.layout.fragment_chat_session, container, false);
 
         // initialize recycler view
-        if (getArguments() != null) {
-            mMessages = new ArrayList<Message>(
-                    Arrays.asList((Message[]) getArguments().getSerializable(ARG_MESSAGE_LIST)));
-        } else {
-            //mBlogs = BlogGenerator.BLOGS;
-        }
+        mMessageDisplay = (RecyclerView) rootLayout.findViewById(R.id.recycler_view_chat_session);
+        mMessageLayoutManager = new LinearLayoutManager(this.getActivity());
+        mMessageDisplay.setLayoutManager(mMessageLayoutManager);
 
-
-
-        }
-
+        mMessageListAdapter = new MessageListAdapter(mMessages);
+        mMessageDisplay.setAdapter(mMessageListAdapter);
 
         mMessageInputEditText = rootLayout.findViewById(R.id.edit_chat_message_input);
         rootLayout.findViewById(R.id.button_chat_send).setOnClickListener(this::handleSendClick);
@@ -165,6 +182,22 @@ public class ChatSessionFragment extends Fragment {
 
 
     };
+
+
+//    /**
+//     * This interface must be implemented by activities that contain this
+//     * fragment to allow an interaction in this fragment to be communicated
+//     * to the activity and potentially other fragments contained in that
+//     * activity.
+//     * <p/>
+//     * See the Android Training lesson <a href=
+//     * "http://developer.android.com/training/basics/fragments/communicating.html"
+//     * >Communicating with Other Fragments</a> for more information.
+//     */
+//    public interface OnListFragmentInteractionListener {
+//        // TODO: Update argument type and name
+//        void onListFragmentInteraction(Message item);
+//    }
 
 
 
