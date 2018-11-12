@@ -2,11 +2,18 @@ package tcss450.uw.edu.team8app;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import java.util.List;
 
-public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.MyViewHolder> {
-    private String[] mDataset;
+import tcss450.uw.edu.team8app.model.Message;
+import tcss450.uw.edu.team8app.MessageFragment.OnListFragmentInteractionListener;
+
+public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.ViewHolder> {
+    private List<Message> mValues;
+    private final OnListFragmentInteractionListener mListener;
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -21,34 +28,68 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MessageListAdapter(String[] myDataset) {
-        mDataset = myDataset;
+    public MessageListAdapter(List<Message> myDataset, OnListFragmentInteractionListener listener) {
+        mValues = myDataset;
+        mListener = listener;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public MessageListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                              int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-        TextView v = (TextView) LayoutInflater.from(parent.getContext())
+        View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_message, parent, false);
 
-        MyViewHolder vh = new MyViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        holder.mTextView.setText(mDataset[position]);
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        holder.mItem = mValues.get(position);
+        holder.mEmail.setText(mValues.get(position).getEmail());
+        holder.mMessage.setText(mValues.get(position).getMessage());
+        holder.mTimestamp.setText(mValues.get(position).getmTimestamp());
 
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != mListener) {
+                    // Notify the active callbacks interface (the activity, if the
+                    // fragment is attached to one) that an item has been selected.
+                    mListener.onListFragmentInteraction(holder.mItem);
+                }
+            }
+        });
     }
+
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public final View mView;
+        public final TextView mEmail;
+        public final TextView mMessage;
+        public final TextView mTimestamp;
+        public Message mItem;
+
+        public ViewHolder(View view) {
+            super(view);
+            mView = view;
+
+            mEmail = (TextView) view.findViewById(R.id.msg_sender);
+            mMessage = (TextView) view.findViewById(R.id.msg_message);
+            mTimestamp = (TextView) view.findViewById(R.id.msg_timestamp);
+        }
+
+        @Override
+        public String toString() {
+            return super.toString() + " '" + mEmail.getText() + "'";
+        }
+    }
+
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mValues.size();
     }
 }
