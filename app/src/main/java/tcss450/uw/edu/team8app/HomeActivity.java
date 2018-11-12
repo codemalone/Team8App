@@ -28,7 +28,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,7 +35,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -288,10 +286,10 @@ public class HomeActivity extends AppCompatActivity
             loadFragment(new ConnectionsFragment());
         } else if (id == R.id.nav_item_messages) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_messages));
-            loadFragment(new MessagesFragment());
+            loadFragment(new ChatListFragment());
         } else if (id == R.id.nav_item_global_chat) {
             toolbar.setTitle("Global Chat (Test)");
-            loadFragment(new ChatFragment());
+            loadFragment(new ChatSessionFragment());
         } else if (id == R.id.nav_item_settings) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_settings));
             loadFragmentNoBackStack(new SettingsFragment());
