@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +41,7 @@ public class ChatSessionFragment extends Fragment {
     private EditText mMessageInputEditText;
     private RecyclerView mMessageDisplay;
     private RecyclerView.LayoutManager mMessageLayoutManager;
-    private MessageListAdapter mMessageListAdapter;
+    private ChatMessageListAdapter mMessageListAdapter;
     private List<Message> mMessages;
 
     private String mEmail;
@@ -124,7 +123,7 @@ public class ChatSessionFragment extends Fragment {
         mMessageLayoutManager = new LinearLayoutManager(this.getActivity());
         mMessageDisplay.setLayoutManager(mMessageLayoutManager);
 
-        mMessageListAdapter = new MessageListAdapter(mMessages);
+        mMessageListAdapter = new ChatMessageListAdapter(mMessages);
         mMessageDisplay.setAdapter(mMessageListAdapter);
 
         mMessageInputEditText = rootLayout.findViewById(R.id.edit_chat_message_input);
