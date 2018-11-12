@@ -11,3 +11,4 @@
 /captures
 .externalNativeBuild
 *.env
+google-services.json
