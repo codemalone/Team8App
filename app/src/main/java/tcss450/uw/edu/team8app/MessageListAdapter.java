@@ -12,7 +12,7 @@ import tcss450.uw.edu.team8app.MessageFragment.OnListFragmentInteractionListener
 
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.ViewHolder> {
     private List<Message> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    //private final OnListFragmentInteractionListener mListener;
 
 
     // Provide a reference to the views for each data item
@@ -28,9 +28,9 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MessageListAdapter(List<Message> myDataset, OnListFragmentInteractionListener listener) {
+    public MessageListAdapter(List<Message> myDataset) {
         mValues = myDataset;
-        mListener = listener;
+        //mListener = listener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -50,16 +50,16 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         holder.mMessage.setText(mValues.get(position).getMessage());
         holder.mTimestamp.setText(mValues.get(position).getmTimestamp());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
+//        holder.mView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (null != mListener) {
+//                    // Notify the active callbacks interface (the activity, if the
+//                    // fragment is attached to one) that an item has been selected.
+//                    mListener.onListFragmentInteraction(holder.mItem);
+//                }
+//            }
+//        });
     }
 
 

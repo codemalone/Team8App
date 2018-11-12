@@ -403,6 +403,7 @@ public class HomeActivity extends AppCompatActivity
     /** Global chat menu option **/
     private void callAsyncTaskGetMessages(final String chatId) {
         final String TAG = "getAllMessages";
+        onWaitFragmentInteractionShow();
 
         Uri uri = new Uri.Builder()
                 .scheme(getString(R.string.ep_scheme))
@@ -445,7 +446,7 @@ public class HomeActivity extends AppCompatActivity
                 Message[] messagesAsArray = new Message[messages.size()];
                 messagesAsArray = messages.toArray(messagesAsArray);
                 Bundle args = new Bundle();
-                args.putSerializable(MessageFragment.ARG_MESSAGE_LIST, messagesAsArray);
+                args.putSerializable(ChatSessionFragment.ARG_MESSAGE_LIST, messagesAsArray);
                 Fragment frag = new ChatSessionFragment();
                 frag.setArguments(args);
                 onWaitFragmentInteractionHide();

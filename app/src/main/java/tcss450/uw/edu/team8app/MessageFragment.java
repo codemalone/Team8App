@@ -4,16 +4,9 @@ package tcss450.uw.edu.team8app;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import tcss450.uw.edu.team8app.model.Message;
 
@@ -24,10 +17,8 @@ import tcss450.uw.edu.team8app.model.Message;
 public class MessageFragment extends Fragment {
 
     public static final String ARG_MESSAGE_LIST = "messages";
-    private List<Message> mMessages;
 
     private OnListFragmentInteractionListener mListener;
-    private int mColumnCount = 1;
 
 
 
@@ -37,36 +28,10 @@ public class MessageFragment extends Fragment {
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mMessages = new ArrayList<Message>(
-                    Arrays.asList((Message[]) getArguments().getSerializable(ARG_MESSAGE_LIST)));
-        } else {
-            //mBlogs = BlogGenerator.BLOGS;
-        }
-    }
-
-
-
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_message, container, false);
-
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MessageListAdapter(mMessages, mListener));
-        }
-        return view;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_message, container, false);
     }
 
     @Override
