@@ -13,8 +13,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -30,7 +28,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -40,9 +37,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import tcss450.uw.edu.team8app.model.Credentials;
+import tcss450.uw.edu.team8app.model.Message;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.Themes;
 
@@ -285,10 +285,11 @@ public class HomeActivity extends AppCompatActivity
             loadFragment(new ConnectionsFragment());
         } else if (id == R.id.nav_item_messages) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_messages));
-            loadFragment(new MessagesFragment());
+            loadFragment(new ChatListFragment());
         } else if (id == R.id.nav_item_global_chat) {
-            toolbar.setTitle("Global Chat (Test)");
-            loadFragment(new ChatFragment());
+//            toolbar.setTitle("Global Chat (Test)");
+//            loadFragment(new ChatSessionFragment());
+            callAsyncTaskGetMessages("1");
         } else if (id == R.id.nav_item_settings) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_settings));
             loadFragmentNoBackStack(new SettingsFragment());
@@ -392,5 +393,75 @@ public class HomeActivity extends AppCompatActivity
         //End this activity and remove it from the Activity back stack.
         finish();
     }
+
+
+    /** Global chat menu option **/
+    private void callAsyncTaskGetMessages(final String chatId) {
+        final String TAG = "getAllMessages";
+        onWaitFragmentInteractionShow();
+
+        Uri uri = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_chats))
+                .appendPath(getString(R.string.ep_messaging_base))
+                .appendPath(getString(R.string.ep_get_all))
+                .build();
+
+        JSONObject messageJson = new JSONObject();
+        try {
+            messageJson.put("chatId", chatId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new SendPostAsyncTask.Builder(uri.toString(), messageJson)
+                .onPostExecute(this::handleMessagesGetOnPostExecute)
+                .onCancelled(error -> Log.e(TAG, error))
+                .build().execute();
+    }
+
+    private void handleMessagesGetOnPostExecute(final String result) {
+        //toolbar.setTitle("Global Chat (Test)");
+        //loadFragment(new ChatSessionFragment());
+
+        //parse JSON
+        try {
+            JSONObject root = new JSONObject(result);
+            if (root.has("messages")) {
+                JSONArray data = root.getJSONArray("messages");
+                List<Message> messages = new ArrayList<>();
+                for(int i = 0; i < data.length(); i++) {
+                    JSONObject jsonMsg = data.getJSONObject(i);
+                    messages.add(new Message.Builder(jsonMsg.getString("email"),
+                            jsonMsg.getString("message"),
+                            jsonMsg.getString("timestamp"))
+                            .build());
+                }
+                Message[] messagesAsArray = new Message[messages.size()];
+                messagesAsArray = messages.toArray(messagesAsArray);
+                Bundle args = new Bundle();
+                args.putSerializable(ChatSessionFragment.ARG_MESSAGE_LIST, messagesAsArray);
+                Fragment frag = new ChatSessionFragment();
+                frag.setArguments(args);
+                onWaitFragmentInteractionHide();
+                toolbar.setTitle("Global Chat (Test)");
+                loadFragment(frag);
+            } else {
+                Log.e("ERROR!", "No data array");
+                //notify user
+                onWaitFragmentInteractionHide();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            //notify user
+            onWaitFragmentInteractionHide();
+        }
+    }
+
+
+
+
 
 }
