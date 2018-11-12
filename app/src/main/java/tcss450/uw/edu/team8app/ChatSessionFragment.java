@@ -26,7 +26,7 @@ import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatFragment extends Fragment {
+public class ChatSessionFragment extends Fragment {
 
     private static final String TAG = "CHAT_FRAG";
     private static final String CHAT_ID = "1";
@@ -38,7 +38,7 @@ public class ChatFragment extends Fragment {
 
     private FirebaseMessageReciever mFirebaseMessageReciever;
 
-    public ChatFragment() {
+    public ChatSessionFragment() {
         // Required empty public constructor
     }
 
@@ -109,7 +109,7 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootLayout = inflater.inflate(R.layout.fragment_chat, container, false);
+        View rootLayout = inflater.inflate(R.layout.fragment_chat_session, container, false);
         mMessageOutputTextView = rootLayout.findViewById(R.id.text_chat_message_display);
         mMessageInputEditText = rootLayout.findViewById(R.id.edit_chat_message_input);
         rootLayout.findViewById(R.id.button_chat_send).setOnClickListener(this::handleSendClick);
