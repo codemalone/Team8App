@@ -8,9 +8,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import tcss450.uw.edu.team8app.model.Message;
-import tcss450.uw.edu.team8app.MessageFragment.OnListFragmentInteractionListener;
 
-public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.ViewHolder> {
+public class ChatMessageListAdapter extends RecyclerView.Adapter<ChatMessageListAdapter.ViewHolder> {
     private List<Message> mValues;
     //private final OnListFragmentInteractionListener mListener;
 
@@ -28,7 +27,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MessageListAdapter(List<Message> myDataset) {
+    public ChatMessageListAdapter(List<Message> myDataset) {
         mValues = myDataset;
         //mListener = listener;
     }

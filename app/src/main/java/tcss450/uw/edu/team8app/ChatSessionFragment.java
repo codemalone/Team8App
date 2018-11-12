@@ -17,13 +17,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import tcss450.uw.edu.team8app.model.Message;
@@ -42,7 +42,7 @@ public class ChatSessionFragment extends Fragment {
     private EditText mMessageInputEditText;
     private RecyclerView mMessageDisplay;
     private RecyclerView.LayoutManager mMessageLayoutManager;
-    private MessageListAdapter mMessageListAdapter;
+    private ChatMessageListAdapter mMessageListAdapter;
     private List<Message> mMessages;
 
     private String mEmail;
@@ -124,7 +124,7 @@ public class ChatSessionFragment extends Fragment {
         mMessageLayoutManager = new LinearLayoutManager(this.getActivity());
         mMessageDisplay.setLayoutManager(mMessageLayoutManager);
 
-        mMessageListAdapter = new MessageListAdapter(mMessages);
+        mMessageListAdapter = new ChatMessageListAdapter(mMessages);
         mMessageDisplay.setAdapter(mMessageListAdapter);
 
         mMessageInputEditText = rootLayout.findViewById(R.id.edit_chat_message_input);
@@ -210,28 +210,33 @@ public class ChatSessionFragment extends Fragment {
     private class FirebaseMessageReciever extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            Log.i("FCM Chat Frag", "start onRecieve");
-//            if(intent.hasExtra("DATA")) {
-//                String data = intent.getStringExtra("DATA");
-//                JSONObject jObj = null;
-//                try {
-//                    jObj = new JSONObject(data);
-//                    if(jObj.has("message") && jObj.has("sender")) {
-//                        Log.i("inside data", intent.toString());
-//
-//                        String sender = jObj.getString("sender");
-//                        String msg = jObj.getString("message");
-//                        mMessageOutputTextView.append(sender + ":" + msg);
-//                        mMessageOutputTextView.append(System.lineSeparator());
-//                        mMessageOutputTextView.append(System.lineSeparator());
-//                        Log.i("FCM Chat Frag", sender + " " + msg);
-//                    }
-//                } catch (JSONException e) {
-//                    Log.e("JSON PARSE", e.toString());
-//                }
-//            } else {
-//                Log.i("no data", intent.toString());
-//            }
+            //Log.i("FCM Chat Frag", "start onRecieve:" + intent.toString());
+            if(intent.hasExtra("DATA")) {
+                String data = intent.getStringExtra("DATA");
+                Log.i("msg received", data);
+                JSONObject jObj = null;
+                try {
+                    jObj = new JSONObject(data);
+                    Log.i("data", data.toString());
+                    if(jObj.has("message") && jObj.has("sender")) {
+
+                        String sender = jObj.getString("sender");
+                        String body = jObj.getString("message");
+                        String timestamp = new Date().toString();
+
+                        Message msg = new Message.Builder(sender, body, timestamp).build();
+
+                        mMessages.add(0, msg);
+                        mMessageListAdapter.notifyItemInserted(0);
+                        mMessageDisplay.scrollToPosition(0);
+                        Log.i("notified", msg.toString());
+                    }
+                } catch (JSONException e) {
+                    Log.e("JSON PARSE", e.toString());
+                }
+            } else {
+                Log.i("no data", intent.toString());
+            }
         }
     }
 
