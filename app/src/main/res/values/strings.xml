@@ -26,6 +26,13 @@
     <string name="chat_edit_hint">Write a message</string>
     <string name="action_logout">Logout</string>
 
+    <string name="connections_search_hint">Enter a name, username, or email</string>
+    <string name="connections_search_prompt">Find a user:</string>
+    <string name="connections_return_button">Return</string>
+    <string name="connections_invite_button">Send Invite</string>
+    <string name="connections_accept_button">Accept</string>
+    <string name="connections_decline_button">Decline</string>
+
     <!-- String used for settings -->
     <string name="change_username">Change Username</string>
     <string name="change_password">Change Password</string>

@@ -280,7 +280,6 @@ public class HomeActivity extends AppCompatActivity
                 loadFragment(new HomeFragment());
             }
         } else if (id == R.id.nav_item_connections) {
-            toolbar.setTitle(getResources().getString(R.string.nav_item_connections));
             loadFragment(new ConnectionsFragment());
         } else if (id == R.id.nav_item_messages) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_messages));
