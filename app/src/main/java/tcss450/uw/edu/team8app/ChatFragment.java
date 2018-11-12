@@ -1,7 +1,10 @@
 package tcss450.uw.edu.team8app;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tcss450.uw.edu.team8app.utils.MyFirebaseMessagingService;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 
 
@@ -30,7 +34,9 @@ public class ChatFragment extends Fragment {
     private EditText mMessageInputEditText;
     private String mEmail;
     private String mSendUrl;
+    private String mGetAllMsgUrl;
 
+    private FirebaseMessageReciever mFirebaseMessageReciever;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -52,10 +58,51 @@ public class ChatFragment extends Fragment {
         mSendUrl = new Uri.Builder()
                 .scheme(getString(R.string.ep_scheme))
                 .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_chats))
                 .appendPath(getString(R.string.ep_messaging_base))
                 .appendPath(getString(R.string.ep_send))
                 .build()
                 .toString();
+
+        mGetAllMsgUrl = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_chats))
+                .appendPath(getString(R.string.ep_messaging_base))
+                .appendPath(getString(R.string.ep_get_all))
+                .build()
+                .toString();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mFirebaseMessageReciever == null) {
+            mFirebaseMessageReciever = new FirebaseMessageReciever();
+        }
+        IntentFilter iFilter = new IntentFilter(MyFirebaseMessagingService.RECEIVED_NEW_MESSAGE);
+        getActivity().registerReceiver(mFirebaseMessageReciever, iFilter);
+
+        //request all messages
+        JSONObject messageJson = new JSONObject();
+        try {
+            messageJson.put("chatId", CHAT_ID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(mGetAllMsgUrl, messageJson)
+                .onPostExecute(this::endOfGetAllMsgTask)
+                .onCancelled(error -> Log.e(TAG, error))
+                .build().execute();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mFirebaseMessageReciever != null){
+            getActivity().unregisterReceiver(mFirebaseMessageReciever);
+        }
     }
 
 
@@ -88,6 +135,7 @@ public class ChatFragment extends Fragment {
         try {
             //This is the result from the web service
             JSONObject res = new JSONObject(result);
+            Log.i("chat response: ", res.toString());
             if(res.has("success") && res.getBoolean("success")) {
                 //The web service got our message. Time to clear out the input EditText
                 mMessageInputEditText.setText("");
@@ -96,6 +144,62 @@ public class ChatFragment extends Fragment {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void endOfGetAllMsgTask(final String result) {
+        Log.i("called getAllPostExec", "blah");
+
+        try {
+            JSONObject res = new JSONObject(result);
+            Log.v("getAll", res.toString());
+
+
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+    };
+
+
+
+
+    /**
+     * A BroadcastReceiver setup to listen for messages sent from
+     MyFirebaseMessagingService
+     * that Android allows to run all the time.
+     */
+    private class FirebaseMessageReciever extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("FCM Chat Frag", "start onRecieve");
+            if(intent.hasExtra("DATA")) {
+                String data = intent.getStringExtra("DATA");
+                JSONObject jObj = null;
+                try {
+                    jObj = new JSONObject(data);
+                    if(jObj.has("message") && jObj.has("sender")) {
+                        Log.i("inside data", intent.toString());
+
+                        String sender = jObj.getString("sender");
+                        String msg = jObj.getString("message");
+                        mMessageOutputTextView.append(sender + ":" + msg);
+                        mMessageOutputTextView.append(System.lineSeparator());
+                        mMessageOutputTextView.append(System.lineSeparator());
+                        Log.i("FCM Chat Frag", sender + " " + msg);
+                    }
+                } catch (JSONException e) {
+                    Log.e("JSON PARSE", e.toString());
+                }
+            } else {
+                Log.i("no data", intent.toString());
+            }
         }
     }
 

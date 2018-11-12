@@ -15,6 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +36,8 @@ public class LoginFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private Credentials mCredentials;
+    private String mFirebaseToken;
+
 
     public LoginFragment() {
         // Required empty public constructor
@@ -65,7 +70,7 @@ public class LoginFragment extends Fragment {
                     useEmail = false;
                 }
 
-                doLogin(email, password, useEmail);
+                getFirebaseToken(email, password, useEmail);
             }
         }
     }
@@ -152,8 +157,36 @@ public class LoginFragment extends Fragment {
         }
 
         if(!error) {
-            doLogin(email, password, useEmail);
+            getFirebaseToken(email, password, useEmail);
         }
+    }
+
+    /** Firebase **/
+    private void getFirebaseToken(final String email, final String password, final boolean useEmail) {
+        mListener.onWaitFragmentInteractionShow();
+
+        Log.i("FCM: ", "called getFirebaseToken");
+
+        //add this app on this device to listen for the topic all
+        FirebaseMessaging.getInstance().subscribeToTopic("all");
+
+        //the call to getInstanceId happens asynchronously. task is an onCompleteListener
+        //similar to a promise in JS.
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w("FCM: ", "getInstanceId failed", task.getException());
+                        mListener.onWaitFragmentInteractionHide();
+                        return;
+                    }
+
+                    // Get new Instance ID token
+                    mFirebaseToken = task.getResult().getToken();
+                    Log.d("FCM: ", mFirebaseToken);
+                    //the helper method that initiates login service
+                    doLogin(email, password, useEmail);
+                });
+        //no code here. wait for the Task to complete.
     }
 
     private void doLogin(String email, String password, boolean useEmail) {
@@ -175,6 +208,14 @@ public class LoginFragment extends Fragment {
         Credentials credentials = credentialsBuilder.build();
         Uri uri = uriBuilder.build();
         JSONObject msg = credentials.asJSONObject();
+
+        // add firebase token
+        try {
+            msg.put("token", mFirebaseToken);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         mCredentials = credentials;
 
         new SendPostAsyncTask.Builder(uri.toString(), msg)
@@ -196,9 +237,7 @@ public class LoginFragment extends Fragment {
     /**
      * Handle the setup of the UI before the HTTP call to the website.
      */
-    private void handleLoginOnPre() {
-        mListener.onWaitFragmentInteractionShow();
-    }
+    private void handleLoginOnPre() { }
 
     /**
      * Handle onPostExecute of the AsynceTask. The result from our webservice is
