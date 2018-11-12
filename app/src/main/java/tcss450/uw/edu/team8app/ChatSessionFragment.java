@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import tcss450.uw.edu.team8app.model.Message;
@@ -209,28 +210,33 @@ public class ChatSessionFragment extends Fragment {
     private class FirebaseMessageReciever extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            Log.i("FCM Chat Frag", "start onRecieve");
-//            if(intent.hasExtra("DATA")) {
-//                String data = intent.getStringExtra("DATA");
-//                JSONObject jObj = null;
-//                try {
-//                    jObj = new JSONObject(data);
-//                    if(jObj.has("message") && jObj.has("sender")) {
-//                        Log.i("inside data", intent.toString());
-//
-//                        String sender = jObj.getString("sender");
-//                        String msg = jObj.getString("message");
-//                        mMessageOutputTextView.append(sender + ":" + msg);
-//                        mMessageOutputTextView.append(System.lineSeparator());
-//                        mMessageOutputTextView.append(System.lineSeparator());
-//                        Log.i("FCM Chat Frag", sender + " " + msg);
-//                    }
-//                } catch (JSONException e) {
-//                    Log.e("JSON PARSE", e.toString());
-//                }
-//            } else {
-//                Log.i("no data", intent.toString());
-//            }
+            //Log.i("FCM Chat Frag", "start onRecieve:" + intent.toString());
+            if(intent.hasExtra("DATA")) {
+                String data = intent.getStringExtra("DATA");
+                Log.i("msg received", data);
+                JSONObject jObj = null;
+                try {
+                    jObj = new JSONObject(data);
+                    Log.i("data", data.toString());
+                    if(jObj.has("message") && jObj.has("sender")) {
+
+                        String sender = jObj.getString("sender");
+                        String body = jObj.getString("message");
+                        String timestamp = new Date().toString();
+
+                        Message msg = new Message.Builder(sender, body, timestamp).build();
+
+                        mMessages.add(0, msg);
+                        mMessageListAdapter.notifyItemInserted(0);
+                        mMessageDisplay.scrollToPosition(0);
+                        Log.i("notified", msg.toString());
+                    }
+                } catch (JSONException e) {
+                    Log.e("JSON PARSE", e.toString());
+                }
+            } else {
+                Log.i("no data", intent.toString());
+            }
         }
     }
 
