@@ -4,6 +4,7 @@ package tcss450.uw.edu.team8app;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,6 +42,7 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
 
     TextView mSearchInput;
     ConnectionsRecyclerViewAdapter mAdapter;
+    View view;
 
     public ConnectionsAddFragment() {
         // Required empty public constructor
@@ -47,28 +52,12 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Add a connection");
-        View view = inflater.inflate(R.layout.fragment_connections_add, container, false);
+        view = inflater.inflate(R.layout.fragment_connections_add, container, false);
         Button button = view.findViewById(R.id.button_connections_add_return);
         button.setOnClickListener(this::returnToConnections);
         ImageButton imageButton = view.findViewById(R.id.imageButton_connections_add_search);
-        imageButton.setOnClickListener(this::addConnection);
+        imageButton.setOnClickListener(this::searchUsers);
         mSearchInput = view.findViewById(R.id.editText_connections_add_search_bar);
-
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView_connections_add_search_results);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        ArrayList<Connection> testArray = new ArrayList<Connection>();
-        for (int i =0; i < 10; i++) {
-            int test = (int) Math.round(Math.random());
-            if (test == 1) {
-                testArray.add(new Connection("firstname" + i, "lastname" + i, "username" + i, "email" + i, (int) Math.round(Math.random()), (int)(Math.random() * 3)));
-            } else {
-                testArray.add(new Connection("firstname" + i, "lastname" + i, "username" + i, "email" + i, (int) Math.round(Math.random()), (int)(Math.random() * 3)));
-            }
-        }
-
-        mAdapter = new ConnectionsRecyclerViewAdapter(testArray);
-        recyclerView.setAdapter(mAdapter);
 
         return view;
     }
@@ -81,27 +70,28 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
         transaction.commit();
     }
 
-    private void addConnection(final View button) {
-        Uri.Builder uriBuilder = new Uri.Builder()
-                .scheme(getString(R.string.ep_scheme))
-                .encodedAuthority(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_connections))
-                .appendPath(getString(R.string.ep_connections_add));
-        Uri uri = uriBuilder.build();
+    private void searchUsers(final View button) {
+        if (!mSearchInput.getText().toString().isEmpty()) {
+            Uri.Builder uriBuilder = new Uri.Builder()
+                    .scheme(getString(R.string.ep_scheme))
+                    .encodedAuthority(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_connections))
+                    .appendPath(getString(R.string.ep_connections_search));
+            Uri uri = uriBuilder.build();
+            JSONObject msg = new JSONObject();
+            try {
+                msg.put("token", FirebaseInstanceId.getInstance().getToken());
+                msg.put("string", mSearchInput.getText());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-        JSONObject msg = new JSONObject();
-        try {
-            msg.put("token", "123456");
-            msg.put("email", mSearchInput.getText());
-        } catch (JSONException e) {
-            e.printStackTrace();
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    .onPreExecute(this::handleSearchOnPre)
+                    .onPostExecute(this::handleSearchOnPost)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build().execute();
         }
-
-        new SendPostAsyncTask.Builder(uri.toString(), msg)
-                .onPreExecute(this::handleAddOnPre)
-                .onPostExecute(this::handleAddOnPost)
-                .onCancelled(this::handleErrorsInTask)
-                .build().execute();
     }
 
     private void handleErrorsInTask(String result) {
@@ -109,12 +99,46 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
         onWaitFragmentInteractionHide();
     }
 
-    private void handleAddOnPre() {
+    private void handleSearchOnPre() {
         onWaitFragmentInteractionShow();
     }
 
-    private void handleAddOnPost(String result) {
-
+    private void handleSearchOnPost(String result) {
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView_connections_add_search_results);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        try {
+            JSONObject json = new JSONObject(result);
+            JSONArray data = json.getJSONArray("data");
+            int myID = json.getInt("id");
+            Log.e("TEST", "" + data);
+            ArrayList<Connection> connectionsList = new ArrayList<Connection>();
+            for (int i = 0; i < data.length(); i++) {
+                JSONObject currentMember = data.getJSONObject(i);
+                int verified = 0;
+                int sender = 0;
+                if (!currentMember.isNull("verified")){
+                    verified = currentMember.getInt("verified");
+                    if (currentMember.getInt("memberid_a") == myID) {
+                        sender = 1;
+                    } else if (currentMember.getInt("memberid_b") == myID) {
+                        sender = 2;
+                    }
+                }
+                connectionsList.add(new Connection(currentMember.getString("firstname"), currentMember.getString("lastname"), currentMember.getString("username"), currentMember.getString("email"), verified, sender));
+            }
+            mAdapter = new ConnectionsRecyclerViewAdapter(connectionsList);
+            recyclerView.setAdapter(mAdapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        for (int i =0; i < 10; i++) {
+//            int test = (int) Math.round(Math.random());
+//            if (test == 1) {
+//                testArray.add(new Connection("firstname" + i, "lastname" + i, "username" + i, "email" + i, (int) Math.round(Math.random()), (int)(Math.random() * 3)));
+//            } else {
+//                testArray.add(new Connection("firstname" + i, "lastname" + i, "username" + i, "email" + i, (int) Math.round(Math.random()), (int)(Math.random() * 3)));
+//            }
+//        }
     }
 
     @Override
