@@ -1,14 +1,11 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.connections;
 
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -27,10 +23,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
+import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 

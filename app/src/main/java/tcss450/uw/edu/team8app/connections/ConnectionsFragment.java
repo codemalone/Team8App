@@ -1,4 +1,4 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.connections;
 
 
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.Objects;
+
+import tcss450.uw.edu.team8app.R;
 
 
 /**

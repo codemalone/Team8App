@@ -1,4 +1,4 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.chat;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.List;
 
+import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Message;
 
 public class ChatMessageListAdapter extends RecyclerView.Adapter<ChatMessageListAdapter.ViewHolder> {

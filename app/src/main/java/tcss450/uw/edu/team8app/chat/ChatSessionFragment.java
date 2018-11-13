@@ -1,4 +1,4 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.chat;
 
 
 import android.content.BroadcastReceiver;
@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Message;
 import tcss450.uw.edu.team8app.utils.MyFirebaseMessagingService;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;

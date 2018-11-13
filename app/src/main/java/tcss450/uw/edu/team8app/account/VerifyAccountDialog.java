@@ -1,4 +1,4 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.account;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
 
+import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.utils.GetAsyncTask;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 

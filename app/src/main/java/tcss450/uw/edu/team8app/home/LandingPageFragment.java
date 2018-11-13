@@ -1,4 +1,4 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.home;
 
 
 import android.content.Context;
@@ -21,16 +21,17 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.utils.Themes;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment {
+public class LandingPageFragment extends Fragment {
 
     private TextView weatherLocation, weatherCurrentTemp, weatherCurrentMisc;
 
-    public HomeFragment() {
+    public LandingPageFragment() {
         // Required empty public constructor
     }
 

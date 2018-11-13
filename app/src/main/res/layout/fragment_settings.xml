@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
-    tools:context=".SettingsFragment">
+    tools:context=".settings.SettingsFragment">
 
     <Button
         android:id="@+id/setting_username_button"

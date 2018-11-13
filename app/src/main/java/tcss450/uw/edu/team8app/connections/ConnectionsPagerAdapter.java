@@ -1,4 +1,4 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.connections;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Connection;
 
 public class ConnectionsPagerAdapter extends PagerAdapter {

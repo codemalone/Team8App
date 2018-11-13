@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryAlpha"
     android:clickable="true"
-    tools:context=".WaitFragment">
+    tools:context=".utils.WaitFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

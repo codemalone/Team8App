@@ -1,4 +1,4 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.connections;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Connection;
 
 public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder>{

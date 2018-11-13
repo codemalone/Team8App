@@ -1,4 +1,4 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.chat;
 
 
 import android.os.Bundle;
@@ -7,14 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import tcss450.uw.edu.team8app.R;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatListFragment extends Fragment {
+public class ChatTitleFragment extends Fragment {
 
 
-    public ChatListFragment() {
+    public ChatTitleFragment() {
         // Required empty public constructor
     }
 
@@ -23,8 +25,7 @@ public class ChatListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        return inflater.inflate(R.layout.fragment_chat_list, container, false);
+        return inflater.inflate(R.layout.fragment_chat_title, container, false);
     }
 
 }

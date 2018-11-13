@@ -1,9 +1,11 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.chat;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import tcss450.uw.edu.team8app.R;
 
 public class ChatTitleListAdapter extends RecyclerView.Adapter<ChatTitleListAdapter.MyViewHolder> {
     private String[] mDataset;

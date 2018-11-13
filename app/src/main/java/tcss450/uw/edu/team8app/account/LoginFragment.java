@@ -1,4 +1,4 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.account;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,6 +21,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.ValidationUtils;

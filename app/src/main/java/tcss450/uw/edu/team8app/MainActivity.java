@@ -5,9 +5,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
+import tcss450.uw.edu.team8app.account.LoginFragment;
+import tcss450.uw.edu.team8app.account.RegisterFragment;
+import tcss450.uw.edu.team8app.account.VerifyAccountDialog;
+import tcss450.uw.edu.team8app.account.password.PasswordResetRequestCodeFragment;
+import tcss450.uw.edu.team8app.account.password.PasswordResetRequestEmailFragment;
+import tcss450.uw.edu.team8app.account.password.PasswordResetFragment;
 import tcss450.uw.edu.team8app.model.Credentials;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 /**
  * The entry activity for the application.
@@ -18,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     RegisterFragment.OnFragmentInteractionListener,
     PasswordResetRequestEmailFragment.OnInitiateResetListener,
     PasswordResetRequestCodeFragment.OnCodeCheckListener,
-    ResetPasswordFragment.OnResetPasswordListener {
+    PasswordResetFragment.OnResetPasswordListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         args.putString("email", email);
         args.putString("code", code);
 
-        Fragment next = new ResetPasswordFragment();
+        Fragment next = new PasswordResetFragment();
         next.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()

@@ -1,4 +1,4 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.account.password;
 
 
 import android.content.Context;
@@ -15,6 +15,9 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
+import tcss450.uw.edu.team8app.account.LoginFragment;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 
 

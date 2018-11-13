@@ -1,25 +1,28 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.settings;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.utils.Themes;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link VerificationFragment.OnFragmentInteractionListener} interface
+ * {@link ChangeThemeFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class VerificationFragment extends Fragment {
+public class ChangeThemeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public VerificationFragment() {
+    public ChangeThemeFragment() {
         // Required empty public constructor
     }
 
@@ -27,8 +30,32 @@ public class VerificationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_verification, container, false);
+        View view = inflater.inflate(R.layout.fragment_change_theme, container, false);
+        Button button = view.findViewById(R.id.theme_default_button);
+        final String buttonText = button.getText().toString();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.selectTheme(Themes.getTheme(buttonText));
+            }
+        });
+        button = view.findViewById(R.id.theme_dark_button);
+        final String buttonText2 = button.getText().toString();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.selectTheme(Themes.getTheme(buttonText2));
+            }
+        });
+        button = view.findViewById(R.id.theme_fruit_button);
+        final String buttonText3 = button.getText().toString();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.selectTheme(Themes.getTheme(buttonText3));
+            }
+        });
+        return view;
     }
 
     @Override
@@ -46,9 +73,6 @@ public class VerificationFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        //int myTheme = R.style.DarkTheme;
-        //getActivity().setTheme(myTheme);
-        //saveTheme(myTheme);
     }
 
     /**
@@ -62,6 +86,7 @@ public class VerificationFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onConfirmedMessage();
+        void clickedChangeTheme();
+        void selectTheme(Themes theme);
     }
 }

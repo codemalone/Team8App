@@ -30,9 +30,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
@@ -44,10 +41,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import tcss450.uw.edu.team8app.chat.ChatListFragment;
+import tcss450.uw.edu.team8app.chat.ChatSessionFragment;
+import tcss450.uw.edu.team8app.home.LandingPageFragment;
+import tcss450.uw.edu.team8app.settings.SettingsFragment;
+import tcss450.uw.edu.team8app.connections.ConnectionsFragment;
 import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.model.Message;
+import tcss450.uw.edu.team8app.settings.ChangeThemeFragment;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.Themes;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
@@ -131,7 +135,7 @@ public class HomeActivity extends AppCompatActivity
             //}
         } else {
             toolbar.setTitle(getResources().getString(R.string.nav_item_home));
-            loadFragment(new HomeFragment());
+            loadFragment(new LandingPageFragment());
         }
 
     }
@@ -212,7 +216,7 @@ public class HomeActivity extends AppCompatActivity
         mPrefEditor.apply();
         Bundle args = new Bundle();
         args.putString("weather", result);
-        Fragment frag = new HomeFragment();
+        Fragment frag = new LandingPageFragment();
         frag.setArguments(args);
         onWaitFragmentInteractionHide();
         loadFragment(frag);
@@ -255,7 +259,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the HomeFragment/Up button, so long
+        // automatically handle clicks on the LandingPageFragment/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
@@ -284,7 +288,7 @@ public class HomeActivity extends AppCompatActivity
 //                sendMyLocation();
             } else {
                 toolbar.setTitle(getResources().getString(R.string.nav_item_home));
-                loadFragment(new HomeFragment());
+                loadFragment(new LandingPageFragment());
             }
         } else if (id == R.id.nav_item_connections) {
             loadFragment(new ConnectionsFragment());
@@ -390,7 +394,7 @@ public class HomeActivity extends AppCompatActivity
             mPreferences.edit().putString(Themes.TAG, theme.toString()).apply();
         }
         /**FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_home_container, new HomeFragment());
+                .replace(R.id.frame_home_container, new LandingPageFragment());
         transaction.commit();*/
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra(Credentials.CREDIT_TAG, mCredentials);

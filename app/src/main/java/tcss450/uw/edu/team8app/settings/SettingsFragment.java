@@ -1,4 +1,5 @@
-package tcss450.uw.edu.team8app;
+package tcss450.uw.edu.team8app.settings;
+
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,20 +7,34 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
-public class WaitFragment extends Fragment {
+import tcss450.uw.edu.team8app.R;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class SettingsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public WaitFragment() {
+    public SettingsFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_wait, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        Button button = view.findViewById(R.id.setting_username_button);
+        //button.setOnClickListener(null); Add listeners here
+        button = view.findViewById(R.id.setting_password_button);
+        //button.setOnClickListener(null); Add listeners here
+        button = view.findViewById(R.id.setting_theme_button);
+        button.setOnClickListener(this::openTheme);
+        return view;
     }
 
     @Override
@@ -40,17 +55,18 @@ public class WaitFragment extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Opens the theme fragment.
+     *
+     * @param view The view.
      */
+    private void openTheme(View view) {
+        if(mListener != null) {
+            mListener.clickedChangeTheme();
+        }
+    }
+
     public interface OnFragmentInteractionListener {
-        void onWaitFragmentInteractionShow();
-        void onWaitFragmentInteractionHide();
+        void clickedChangeTheme();
+        //TODO: Add methods for changing settings
     }
 }
