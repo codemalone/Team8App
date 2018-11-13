@@ -25,6 +25,8 @@
     <string name="welcome_message">Welcome!</string>
     <string name="chat_edit_hint">Write a message</string>
     <string name="action_logout">Logout</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="submit">Submit</string>
 
     <string name="connections_search_hint">Enter a name, username, or email</string>
     <string name="connections_search_prompt">Find a user:</string>

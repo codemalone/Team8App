@@ -85,6 +85,10 @@ public class LoginFragment extends Fragment {
         button.setOnClickListener(this::attemptLogin);
         button = view.findViewById(R.id.login_register_button);
         button.setOnClickListener(this::registerButton);
+
+        TextView text = view.findViewById(R.id.login_resetpassword_text);
+        text.setOnClickListener(this::resetPassword);
+
         return view;
     }
 
@@ -113,6 +117,12 @@ public class LoginFragment extends Fragment {
         //Store the credentials in SharedPrefs
         prefs.edit().putString(getString(R.string.keys_prefs_email), credentials.getEmail()).apply();
         prefs.edit().putString(getString(R.string.keys_prefs_password), credentials.getPassword()).apply();
+    }
+
+    private void resetPassword(View view) {
+        if(mListener != null) {
+            mListener.onResetPasswordClicked();
+        }
     }
 
     private void registerButton(View view) {
@@ -300,6 +310,7 @@ public class LoginFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
         void onRegisterClicked();
+        void onResetPasswordClicked();
         void onLoginSuccess(Credentials credentials);
         void tellUserToVerify(Credentials credentials);
     }

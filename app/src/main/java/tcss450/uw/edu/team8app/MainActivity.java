@@ -1,6 +1,7 @@
 package tcss450.uw.edu.team8app;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,6 +38,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         //should we add a backstack to the login page?
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, new RegisterFragment());
+        transaction.commit();
+    }
+
+    @Override
+    public void onResetPasswordClicked() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, new PasswordResetRequestEmailFragment());
         transaction.commit();
     }
 
