@@ -1,6 +1,5 @@
 package tcss450.uw.edu.team8app;
 
-
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,12 +19,16 @@ import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link OnCodeCheckListener} interface
+ * to handle interaction events.
  */
-public class PasswordResetRequestEmailFragment extends Fragment {
+public class PasswordResetRequestCodeFragment extends Fragment {
 
-    private OnInitiateResetListener mListener;
+    private OnCodeCheckListener mListener;
+    private String mEmail;
 
-    public PasswordResetRequestEmailFragment() {
+    public PasswordResetRequestCodeFragment() {
         // Required empty public constructor
     }
 
@@ -33,9 +36,14 @@ public class PasswordResetRequestEmailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_password_reset_request_email, container, false);
+        View view = inflater.inflate(R.layout.fragment_password_reset_request_code, container, false);
 
-        Button button = view.findViewById(R.id.requestemail_submit_button);
+        Bundle args = getArguments();
+        if (args != null) {
+            mEmail = args.getString("email");
+        }
+
+        Button button = view.findViewById(R.id.requestcode_code_edit);
         button.setOnClickListener(this::submit);
 
         return view;
@@ -44,8 +52,8 @@ public class PasswordResetRequestEmailFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof LoginFragment.OnFragmentInteractionListener) {
-            mListener = (OnInitiateResetListener) context;
+        if (context instanceof OnCodeCheckListener) {
+            mListener = (OnCodeCheckListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -60,19 +68,20 @@ public class PasswordResetRequestEmailFragment extends Fragment {
 
     private void submit(View view) {
         mListener.onWaitFragmentInteractionShow();
-        EditText emailEditText = getActivity().findViewById(R.id.requestemail_email_edit);
+        EditText codeEditText = getActivity().findViewById(R.id.requestcode_code_edit);
         //build the web service URL
         Uri uri = new Uri.Builder()
                 .scheme(getString(R.string.ep_scheme))
                 .encodedAuthority(getString(R.string.ep_base_url))
                 .appendPath(getString(R.string.ep_account))
                 .appendPath(getString(R.string.ep_recover))
-                .appendPath(getString(R.string.ep_initiate))
+                .appendPath(getString(R.string.ep_check))
                 .build();
         JSONObject msg = new JSONObject();
 
         try {
-            msg.put("email", emailEditText.getText().toString());
+            msg.put("email", mEmail);
+            msg.put("code", codeEditText.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -110,12 +119,13 @@ public class PasswordResetRequestEmailFragment extends Fragment {
             boolean success = resultsJSON.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
             if (success) {
-                mListener.onEmailSubmitSuccess(((EditText) getView().findViewById(R.id.requestemail_email_edit))
-                        .getText().toString());
+                mListener.onCodeSubmitSuccess(mEmail,
+                        ((EditText) getView().findViewById(R.id.requestcode_code_edit))
+                                .getText().toString());
             } else {
                 //Login was unsuccessful. Don’t switch fragments and inform the user
-                ((EditText) getView().findViewById(R.id.requestemail_email_edit))
-                        .setError("Email not found");
+                ((EditText) getView().findViewById(R.id.requestcode_code_edit))
+                        .setError("Code not found");
             }
         } catch (JSONException e) {
             //It appears that the web service didn’t return a JSON formatted String
@@ -124,13 +134,22 @@ public class PasswordResetRequestEmailFragment extends Fragment {
                     + System.lineSeparator()
                     + e.getMessage());
             mListener.onWaitFragmentInteractionHide();
-            ((EditText) getView().findViewById(R.id.requestemail_email_edit))
-                    .setError("Unable to send password reset request");
+            ((EditText) getView().findViewById(R.id.requestcode_code_edit))
+                    .setError("Unable to send code check request");
         }
     }
 
-    public interface OnInitiateResetListener extends WaitFragment.OnFragmentInteractionListener {
-        void onEmailSubmitSuccess(String email);
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnCodeCheckListener extends WaitFragment.OnFragmentInteractionListener {
+        void onCodeSubmitSuccess(String email, String code);
     }
-
 }

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import tcss450.uw.edu.team8app.model.Credentials;
 
@@ -14,7 +15,9 @@ import tcss450.uw.edu.team8app.model.Credentials;
  * @author Jim Phan akari0@uw.edu
  */
 public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener,
-    RegisterFragment.OnFragmentInteractionListener {
+    RegisterFragment.OnFragmentInteractionListener,
+    PasswordResetRequestEmailFragment.OnInitiateResetListener,
+    PasswordResetRequestCodeFragment.OnCodeCheckListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,5 +93,32 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         dialog.setEmail(credentials.getEmail());
         dialog.setUsername(credentials.getUsername());
         dialog.show(getSupportFragmentManager(), VerifyAccountDialog.DIALOG_TAG);
+    }
+
+    @Override
+    public void onEmailSubmitSuccess(String email) {
+        Bundle args = new Bundle();
+        args.putString("email", email);
+
+        Fragment next = new PasswordResetRequestCodeFragment();
+        next.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, next);
+        transaction.commit();
+    }
+
+    @Override
+    public void onCodeSubmitSuccess(String email, String code) {
+        Bundle args = new Bundle();
+        args.putString("email", email);
+        args.putString("code", code);
+
+        Fragment next = null;
+        next.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, next);
+        transaction.commit();
     }
 }

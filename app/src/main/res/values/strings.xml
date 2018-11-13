@@ -21,6 +21,7 @@
     <string name="hint_username">Enter a username (Optional)</string>
     <string name="hint_first_name">Enter your first name</string>
     <string name="hint_last_name">Enter your last name</string>
+    <string name="hint_reset_code">Enter Reset Code</string>
     <string name="register_message">Please register for an account</string>
     <string name="welcome_message">Welcome!</string>
     <string name="chat_edit_hint">Write a message</string>
