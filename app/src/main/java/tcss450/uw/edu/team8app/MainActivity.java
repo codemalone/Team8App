@@ -17,7 +17,8 @@ import tcss450.uw.edu.team8app.model.Credentials;
 public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener,
     RegisterFragment.OnFragmentInteractionListener,
     PasswordResetRequestEmailFragment.OnInitiateResetListener,
-    PasswordResetRequestCodeFragment.OnCodeCheckListener {
+    PasswordResetRequestCodeFragment.OnCodeCheckListener,
+    ResetPasswordFragment.OnResetPasswordListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +115,19 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         args.putString("email", email);
         args.putString("code", code);
 
-        Fragment next = null;
+        Fragment next = new ResetPasswordFragment();
         next.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, next);
         transaction.commit();
+    }
+
+    @Override
+    public void onPasswordResetSuccess() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        //End this activity and remove it from the Activity back stack.
+        finish();
     }
 }

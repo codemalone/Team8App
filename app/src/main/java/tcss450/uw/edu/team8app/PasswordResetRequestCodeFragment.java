@@ -43,7 +43,7 @@ public class PasswordResetRequestCodeFragment extends Fragment {
             mEmail = args.getString("email");
         }
 
-        Button button = view.findViewById(R.id.requestcode_code_edit);
+        Button button = view.findViewById(R.id.requestcode_submit_button);
         button.setOnClickListener(this::submit);
 
         return view;
@@ -139,16 +139,6 @@ public class PasswordResetRequestCodeFragment extends Fragment {
         }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnCodeCheckListener extends WaitFragment.OnFragmentInteractionListener {
         void onCodeSubmitSuccess(String email, String code);
     }
