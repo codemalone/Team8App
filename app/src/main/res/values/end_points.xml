@@ -21,4 +21,5 @@
     <string name="ep_check">check</string>
     <string name="ep_password">password</string>
     <string name="ep_reset">reset</string>
+    <string name="ep_connections_search">search</string>
 </resources>
