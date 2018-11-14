@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
-    <string name="ep_base_url">tcss450a18-team8-staging.herokuapp.com</string>
+    <string name="ep_base_url">tcss450a18-team8-test.herokuapp.com</string>
     <string name="ep_scheme">https</string>
     <string name="ep_account">account</string>
     <string name="ep_login">login</string>
@@ -15,11 +15,15 @@
     <string name="ep_get_all">getAll</string>
     <string name="ep_weather">weather</string>
     <string name="ep_connections">connections</string>
-    <string name="ep_connections_add">add</string>
+    <string name="ep_add">add</string>
     <string name="ep_recover">recover</string>
     <string name="ep_initiate">initiate</string>
     <string name="ep_check">check</string>
     <string name="ep_password">password</string>
     <string name="ep_reset">reset</string>
-    <string name="ep_connections_search">search</string>
+    <string name="ep_search">search</string>
+    <string name="ep_active">active</string>
+    <string name="ep_pending">pending</string>
+    <string name="ep_received">received</string>
+    <string name="ep_remove">remove</string>
 </resources>
