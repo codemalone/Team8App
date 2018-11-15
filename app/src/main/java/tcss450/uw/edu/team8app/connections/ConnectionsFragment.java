@@ -5,15 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.Objects;
 
@@ -24,8 +28,9 @@ import tcss450.uw.edu.team8app.R;
  * A simple {@link Fragment} subclass.
  */
 public class ConnectionsFragment extends Fragment {
-    ViewPager mViewPager;
-    ConnectionsPagerAdapter mPagerAdapter;
+    static final int ITEMS = 10;
+    MyAdapter mAdapter;
+    ViewPager mPager;
 
     public ConnectionsFragment() {
         // Required empty public constructor
@@ -36,14 +41,71 @@ public class ConnectionsFragment extends Fragment {
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Connections");
         View v = inflater.inflate(R.layout.fragment_connections, container, false);
 
-        mViewPager = v.findViewById(R.id.viewPager_connections);
-        mPagerAdapter = new ConnectionsPagerAdapter(getActivity());
-        TabLayout tabLayout = v.findViewById(R.id.tabLayout_connections);
-        mViewPager.setAdapter(mPagerAdapter);
-        tabLayout.setupWithViewPager(mViewPager);
+        mAdapter = new MyAdapter(getActivity().getSupportFragmentManager());
+        mPager = (ViewPager) v.findViewById(R.id.pager);
+        mPager.setAdapter(mAdapter);
 
         return v;
     }
+
+    public static class MyAdapter extends FragmentStatePagerAdapter {
+        public MyAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        @Override
+        public int getCount() {
+            return ITEMS;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return ConnectionsPagerFragment.init(position);
+//                    Log.e("TEEEEEEEEEEEESTTETSTE", "");
+//                    ConnectionsPagerFragment frag = new ConnectionsPagerFragment();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putInt("position", 0);
+//                    frag.setArguments(bundle);
+//                    return frag;
+                case 1:
+                    return ConnectionsPagerFragment.init(position);
+                default:
+                    return ConnectionsPagerFragment.init(position);
+            }
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            // Generate title based on item position
+            switch (position) {
+                case 0:
+                    return "Active";
+                case 1:
+                    //return mContext.getString(R.string.category_places);
+                    return "Pending";
+                case 2:
+                    return "Received";
+                default:
+                    return null;
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

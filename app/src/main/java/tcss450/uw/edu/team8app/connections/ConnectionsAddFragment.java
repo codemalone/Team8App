@@ -72,7 +72,7 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
                     .scheme(getString(R.string.ep_scheme))
                     .encodedAuthority(getString(R.string.ep_base_url))
                     .appendPath(getString(R.string.ep_connections))
-                    .appendPath(getString(R.string.ep_connections_search));
+                    .appendPath(getString(R.string.ep_search));
             Uri uri = uriBuilder.build();
             JSONObject msg = new JSONObject();
             try {
@@ -81,7 +81,6 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             new SendPostAsyncTask.Builder(uri.toString(), msg)
                     .onPreExecute(this::handleSearchOnPre)
                     .onPostExecute(this::handleSearchOnPost)
@@ -116,25 +115,17 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
                     verified = currentMember.getInt("verified");
                     if (currentMember.getInt("memberid_a") == myID) {
                         sender = 1;
-                    } else if (currentMember.getInt("memberid_b") == myID) {
+                    } else {
                         sender = 2;
                     }
                 }
                 connectionsList.add(new Connection(currentMember.getString("firstname"), currentMember.getString("lastname"), currentMember.getString("username"), currentMember.getString("email"), verified, sender));
             }
-            mAdapter = new ConnectionsRecyclerViewAdapter(connectionsList);
+            mAdapter = new ConnectionsRecyclerViewAdapter(connectionsList, getActivity());
             recyclerView.setAdapter(mAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        for (int i =0; i < 10; i++) {
-//            int test = (int) Math.round(Math.random());
-//            if (test == 1) {
-//                testArray.add(new Connection("firstname" + i, "lastname" + i, "username" + i, "email" + i, (int) Math.round(Math.random()), (int)(Math.random() * 3)));
-//            } else {
-//                testArray.add(new Connection("firstname" + i, "lastname" + i, "username" + i, "email" + i, (int) Math.round(Math.random()), (int)(Math.random() * 3)));
-//            }
-//        }
     }
 
     @Override
