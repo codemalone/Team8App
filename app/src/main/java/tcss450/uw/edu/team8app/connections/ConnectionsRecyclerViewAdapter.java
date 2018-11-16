@@ -23,14 +23,16 @@ import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.WaitFragment;
 
-public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder> implements WaitFragment.OnFragmentInteractionListener{
+public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Connection> mData;
+    private List<Connection> mData;
     private Context mContext;
+    private final OnConnectionInteractionListener mListener;
 
-    public ConnectionsRecyclerViewAdapter(List<Connection> data, Context context) {
-        this.mData = data;
-        this.mContext = context;
+    public ConnectionsRecyclerViewAdapter(List<Connection> data, Context context, OnConnectionInteractionListener listener) {
+        mData = data;
+        mContext = context;
+        mListener = listener;
     }
 
     @Override
@@ -60,15 +62,16 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
                 holder.mDeleteButton.setVisibility(View.INVISIBLE);
             }
         }
-        holder.mButton.setOnClickListener(view -> primaryButtonOnClick(view, mData.get(position).getEmail(), position));
-        holder.mDeleteButton.setOnClickListener(view -> deleteButtonOnClick(view, mData.get(position).getEmail(), position));
+        holder.mButton.setOnClickListener(view -> primaryButtonOnClick(view, mData.get(position).getEmail(), position, holder, holder.mItem));
+        holder.mDeleteButton.setOnClickListener(view -> deleteButtonOnClick(view, mData.get(position).getEmail(), position,  holder, holder.mItem));
     }
 
-    private void deleteButtonOnClick(View view, String email, int position) {
+    private void deleteButtonOnClick(View view, String email, int position, ViewHolder holder, Connection mItem) {
         buttonHelper(mContext.getString(R.string.ep_remove), email, position);
+        mListener.OnConnectionInteraction(holder.mItem);
     }
 
-    private void primaryButtonOnClick(View view, String email, int position) {
+    private void primaryButtonOnClick(View view, String email, int position, ViewHolder holder, Connection mItem) {
         Button button = (Button) view;
         if (button.getText().toString().equals("Send Message")) {
             // TODO
@@ -79,6 +82,7 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
         } else {
             buttonHelper(mContext.getString(R.string.ep_add), email, position);
         }
+        mListener.OnConnectionInteraction(holder.mItem);
     }
 
     private void buttonHelper(String endpoint, String email, int position) {
@@ -96,41 +100,19 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
             e.printStackTrace();
         }
         new SendPostAsyncTask.Builder(uri.toString(), msg)
-                .onPreExecute(this::handleButtonOnPre)
-                .onPostExecute(view -> handleButtonOnPost(position))
+                //.onPreExecute(this::handleButtonOnPre)
+                //.onPostExecute(view -> handleButtonOnPost(position))
                 .onCancelled(this::handleErrorsInTask)
                 .build().execute();
     }
 
-    private void handleButtonOnPost(int position) {
-        //notifyItemChanged(position);
-        //Log.e("ASYNC_TASK_ERROR", "TESSSSSSSSSSSSSSSSSSST");
-        //notifyItemChanged(position);
-        //notifyDataSetChanged();
-    }
-
     private void handleErrorsInTask(String result) {
         Log.e("ASYNC_TASK_ERROR", result);
-        onWaitFragmentInteractionHide();
-    }
-
-    private void handleButtonOnPre() {
-        onWaitFragmentInteractionShow();
     }
 
     @Override
     public int getItemCount() {
         return mData.size();
-    }
-
-    @Override
-    public void onWaitFragmentInteractionShow() {
-
-    }
-
-    @Override
-    public void onWaitFragmentInteractionHide() {
-
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

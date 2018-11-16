@@ -55,7 +55,7 @@ public class ConnectionsFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return ITEMS;
+            return 3;
         }
 
         @Override
@@ -63,12 +63,6 @@ public class ConnectionsFragment extends Fragment {
             switch (position) {
                 case 0:
                     return ConnectionsPagerFragment.init(position);
-//                    Log.e("TEEEEEEEEEEEESTTETSTE", "");
-//                    ConnectionsPagerFragment frag = new ConnectionsPagerFragment();
-//                    Bundle bundle = new Bundle();
-//                    bundle.putInt("position", 0);
-//                    frag.setArguments(bundle);
-//                    return frag;
                 case 1:
                     return ConnectionsPagerFragment.init(position);
                 default:
@@ -92,20 +86,6 @@ public class ConnectionsFragment extends Fragment {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

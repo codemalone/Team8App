@@ -1,6 +1,7 @@
 package tcss450.uw.edu.team8app.connections;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -34,11 +35,12 @@ import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnFragmentInteractionListener {
+public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnFragmentInteractionListener, OnConnectionInteractionListener {
 
     TextView mSearchInput;
     ConnectionsRecyclerViewAdapter mAdapter;
     View view;
+    private OnConnectionInteractionListener mListener;
 
     public ConnectionsAddFragment() {
         // Required empty public constructor
@@ -121,21 +123,47 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
                 }
                 connectionsList.add(new Connection(currentMember.getString("firstname"), currentMember.getString("lastname"), currentMember.getString("username"), currentMember.getString("email"), verified, sender));
             }
-            mAdapter = new ConnectionsRecyclerViewAdapter(connectionsList, getActivity());
+            mAdapter = new ConnectionsRecyclerViewAdapter(connectionsList, getActivity(), mListener);
             recyclerView.setAdapter(mAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        onWaitFragmentInteractionHide();
     }
 
     @Override
     public void onWaitFragmentInteractionShow() {
-
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_home_container, new WaitFragment(), "WAIT")
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
     public void onWaitFragmentInteractionHide() {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getActivity().getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (OnConnectionInteractionListener) this;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void OnConnectionInteraction(Connection item) {
+        searchUsers(view.findViewById(R.id.button_connections_add_return));
+        mAdapter.notifyDataSetChanged();
     }
 
 }

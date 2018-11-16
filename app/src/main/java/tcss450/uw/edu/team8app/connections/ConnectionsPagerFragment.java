@@ -1,6 +1,7 @@
 package tcss450.uw.edu.team8app.connections;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -28,9 +30,10 @@ import tcss450.uw.edu.team8app.utils.WaitFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ConnectionsPagerFragment extends Fragment implements WaitFragment.OnFragmentInteractionListener {
+public class ConnectionsPagerFragment extends Fragment implements WaitFragment.OnFragmentInteractionListener, OnConnectionInteractionListener {
     private ArrayList<Connection> mConnections;
     ConnectionsRecyclerViewAdapter mAdapter;
+    private OnConnectionInteractionListener mListener;
     View view;
 
     public static ConnectionsPagerFragment init(int position) {
@@ -52,6 +55,16 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
         view = inflater.inflate(R.layout.fragment_connections_pager, container,
                 false);
 
+        getConnectionsList();
+        return view;
+    }
+
+    private void handleErrorsInTask(String result) {
+        Log.e("ASYNC_TASK_ERROR", result);
+        onWaitFragmentInteractionHide();
+    }
+
+    private void getConnectionsList() {
         mConnections = new ArrayList<>();
         Uri.Builder uriBuilder = new Uri.Builder()
                 .scheme(getString(R.string.ep_scheme))
@@ -60,32 +73,25 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
                 .appendPath(getString(R.string.ep_get));
         if (getArguments() != null) {
             if (getArguments().getInt("position") == 0) {
-                Log.e("TEEEEEEEEEEEESTTETSTE", "HHHHHHHHHHHHHHHHHHHHHHHHHH");
                 uriBuilder.appendPath(getString(R.string.ep_active));
             } else if (getArguments().getInt("position") == 1) {
                 uriBuilder.appendPath(getString(R.string.ep_pending));
             } else if (getArguments().getInt("position") == 2) {
                 uriBuilder.appendPath(getString(R.string.ep_received));
             }
-        Uri uri = uriBuilder.build();
-        JSONObject msg = new JSONObject();
-        try {
-            msg.put("token", FirebaseInstanceId.getInstance().getToken());
-        } catch (JSONException e) {
-            e.printStackTrace();
+            Uri uri = uriBuilder.build();
+            JSONObject msg = new JSONObject();
+            try {
+                msg.put("token", FirebaseInstanceId.getInstance().getToken());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    .onPreExecute(this::handleGetOnPre)
+                    .onPostExecute(this::handleGetOnPost)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build().execute();
         }
-        new SendPostAsyncTask.Builder(uri.toString(), msg)
-                .onPreExecute(this::handleGetOnPre)
-                .onPostExecute(this::handleGetOnPost)
-                .onCancelled(this::handleErrorsInTask)
-                .build().execute();
-        }
-        return view;
-    }
-
-    private void handleErrorsInTask(String result) {
-        Log.e("ASYNC_TASK_ERROR", result);
-        onWaitFragmentInteractionHide();
     }
 
     private void handleGetOnPre() {
@@ -114,20 +120,46 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
                 }
                 mConnections.add(new Connection(currentMember.getString("firstname"), currentMember.getString("lastname"), currentMember.getString("username"), currentMember.getString("email"), verified, sender));
             }
-            mAdapter = new ConnectionsRecyclerViewAdapter(mConnections, getContext());
+            mAdapter = new ConnectionsRecyclerViewAdapter(mConnections, getContext(), mListener);
             recyclerView.setAdapter(mAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        onWaitFragmentInteractionHide();
     }
 
     @Override
     public void onWaitFragmentInteractionShow() {
-
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_home_container, new WaitFragment(), "WAIT")
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
     public void onWaitFragmentInteractionHide() {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getActivity().getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (OnConnectionInteractionListener) this;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void OnConnectionInteraction(Connection item) {
+        getConnectionsList();
+        mAdapter.notifyDataSetChanged();
     }
 }

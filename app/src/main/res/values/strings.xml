@@ -35,6 +35,7 @@
     <string name="connections_invite_button">Send Invite</string>
     <string name="connections_accept_button">Accept</string>
     <string name="connections_decline_button">Decline</string>
+    <string name="connections_refresh_button">Refresh</string>
 
     <!-- String used for settings -->
     <string name="change_username">Change Username</string>
