@@ -5,8 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -24,71 +21,42 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import tcss450.uw.edu.team8app.R;
-import tcss450.uw.edu.team8app.utils.WaitFragment;
 import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
-
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnFragmentInteractionListener, OnConnectionInteractionListener {
-
-    TextView mSearchInput;
+public class ConnectionsPagerFragment extends Fragment implements WaitFragment.OnFragmentInteractionListener, OnConnectionInteractionListener {
+    private ArrayList<Connection> mConnections;
     ConnectionsRecyclerViewAdapter mAdapter;
-    View view;
     private OnConnectionInteractionListener mListener;
+    View view;
 
-    public ConnectionsAddFragment() {
-        // Required empty public constructor
+    public static ConnectionsPagerFragment init(int position) {
+        ConnectionsPagerFragment frag = new ConnectionsPagerFragment();
+        Bundle args = new Bundle();
+        args.putInt("position", position);
+        frag.setArguments(args);
+        return frag;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Add a connection");
-        view = inflater.inflate(R.layout.fragment_connections_add, container, false);
-        Button button = view.findViewById(R.id.button_connections_add_return);
-        button.setOnClickListener(this::returnToConnections);
-        ImageButton imageButton = view.findViewById(R.id.imageButton_connections_add_search);
-        imageButton.setOnClickListener(this::searchUsers);
-        mSearchInput = view.findViewById(R.id.editText_connections_add_search_bar);
+        view = inflater.inflate(R.layout.fragment_connections_pager, container,
+                false);
 
+        getConnectionsList();
         return view;
-    }
-
-    private void returnToConnections(final View button) {
-        FragmentTransaction transaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.frame_home_container, new ConnectionsFragment())
-                .addToBackStack(null);
-        transaction.commit();
-    }
-
-    private void searchUsers(final View button) {
-        if (!mSearchInput.getText().toString().isEmpty()) {
-            Uri.Builder uriBuilder = new Uri.Builder()
-                    .scheme(getString(R.string.ep_scheme))
-                    .encodedAuthority(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_connections))
-                    .appendPath(getString(R.string.ep_search));
-            Uri uri = uriBuilder.build();
-            JSONObject msg = new JSONObject();
-            try {
-                msg.put("token", FirebaseInstanceId.getInstance().getToken());
-                msg.put("string", mSearchInput.getText());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    .onPreExecute(this::handleSearchOnPre)
-                    .onPostExecute(this::handleSearchOnPost)
-                    .onCancelled(this::handleErrorsInTask)
-                    .build().execute();
-        }
     }
 
     private void handleErrorsInTask(String result) {
@@ -96,19 +64,48 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
         onWaitFragmentInteractionHide();
     }
 
-    private void handleSearchOnPre() {
+    private void getConnectionsList() {
+        mConnections = new ArrayList<>();
+        Uri.Builder uriBuilder = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_connections))
+                .appendPath(getString(R.string.ep_get));
+        if (getArguments() != null) {
+            if (getArguments().getInt("position") == 0) {
+                uriBuilder.appendPath(getString(R.string.ep_active));
+            } else if (getArguments().getInt("position") == 1) {
+                uriBuilder.appendPath(getString(R.string.ep_pending));
+            } else if (getArguments().getInt("position") == 2) {
+                uriBuilder.appendPath(getString(R.string.ep_received));
+            }
+            Uri uri = uriBuilder.build();
+            JSONObject msg = new JSONObject();
+            try {
+                msg.put("token", FirebaseInstanceId.getInstance().getToken());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    .onPreExecute(this::handleGetOnPre)
+                    .onPostExecute(this::handleGetOnPost)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build().execute();
+        }
+    }
+
+    private void handleGetOnPre() {
         onWaitFragmentInteractionShow();
     }
 
-    private void handleSearchOnPost(String result) {
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView_connections_add_search_results);
+    private void handleGetOnPost(String result) {
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView_connections_pager);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         try {
             JSONObject json = new JSONObject(result);
             JSONArray data = json.getJSONArray("data");
             int myID = json.getInt("id");
-            Log.e("TEST", "" + data);
-            ArrayList<Connection> connectionsList = new ArrayList<Connection>();
+            //Log.e("TEST", "" + data);
             for (int i = 0; i < data.length(); i++) {
                 JSONObject currentMember = data.getJSONObject(i);
                 int verified = 0;
@@ -121,9 +118,9 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
                         sender = 2;
                     }
                 }
-                connectionsList.add(new Connection(currentMember.getString("firstname"), currentMember.getString("lastname"), currentMember.getString("username"), currentMember.getString("email"), verified, sender));
+                mConnections.add(new Connection(currentMember.getString("firstname"), currentMember.getString("lastname"), currentMember.getString("username"), currentMember.getString("email"), verified, sender));
             }
-            mAdapter = new ConnectionsRecyclerViewAdapter(connectionsList, getActivity(), mListener);
+            mAdapter = new ConnectionsRecyclerViewAdapter(mConnections, getContext(), mListener);
             recyclerView.setAdapter(mAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -162,8 +159,7 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
 
     @Override
     public void OnConnectionInteraction(Connection item) {
-        searchUsers(view.findViewById(R.id.button_connections_add_return));
+        getConnectionsList();
         mAdapter.notifyDataSetChanged();
     }
-
 }
