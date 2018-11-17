@@ -58,9 +58,33 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
         ImageButton imageButton = view.findViewById(R.id.imageButton_connections_add_search);
         imageButton.setOnClickListener(this::searchUsers);
         mSearchInput = view.findViewById(R.id.editText_connections_add_search_bar);
+        //LoadPreferences();
 
         return view;
     }
+
+    //    @Override
+//    public void onPause() {
+//        Log.e("ASYNC_TASK_ERROR", "2112412142412");
+//        SavePreferences();
+//        super.onPause();
+//    }
+//
+//    private void SavePreferences(){
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString("searchInput", mSearchInput.getText().toString());
+//        editor.commit();
+//    }
+//
+//    private void LoadPreferences(){
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+//        String searchInput = sharedPreferences.getString("state", null);
+//        if (searchInput != null) {
+//            mSearchInput.setText(searchInput);
+//            searchUsers(mSearchButton);
+//        }
+//    }
 
     private void returnToConnections(final View button) {
         FragmentTransaction transaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager()
