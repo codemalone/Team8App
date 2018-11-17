@@ -21,6 +21,7 @@ import java.util.List;
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
+import tcss450.uw.edu.team8app.connections.ConnectionsFragment.OnListFragmentInteractionListener;
 import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder> {
@@ -28,11 +29,14 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
     private List<Connection> mData;
     private Context mContext;
     private final OnConnectionInteractionListener mListener;
+    private OnListFragmentInteractionListener mListListener;
 
-    public ConnectionsRecyclerViewAdapter(List<Connection> data, Context context, OnConnectionInteractionListener listener) {
+    public ConnectionsRecyclerViewAdapter(List<Connection> data, Context context, OnConnectionInteractionListener listener,
+                                          OnListFragmentInteractionListener listListener) {
         mData = data;
         mContext = context;
         mListener = listener;
+        mListListener = listListener;
     }
 
     @Override
@@ -51,7 +55,7 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
         holder.mVerifiedView.setText("" + mData.get(position).getVerified());
         holder.mSenderView.setText("" + mData.get(position).getSender());
         if (mData.get(position).getVerified() == 1) {
-            holder.mButton.setText("Send Message");
+            holder.mButton.setText("Start Chat");
         } else {
             if (mData.get(position).getSender() == 1) {
                 holder.mButton.setText("Cancel Invite");
@@ -73,16 +77,19 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
 
     private void primaryButtonOnClick(View view, String email, int position, ViewHolder holder, Connection mItem) {
         Button button = (Button) view;
-        if (button.getText().toString().equals("Send Message")) {
-            // TODO
-        } else if (button.getText().toString().equals("Cancel Invite")) {
-            buttonHelper(mContext.getString(R.string.ep_remove), email, position);
-        } else if (button.getText().toString().equals("Accept Invite")) {
-            buttonHelper(mContext.getString(R.string.ep_add), email, position);
+        if (button.getText().toString().equals("Start Chat")) {
+            mListListener.onStartChatInteraction(holder.mItem);
         } else {
-            buttonHelper(mContext.getString(R.string.ep_add), email, position);
+            if (button.getText().toString().equals("Cancel Invite")) {
+                buttonHelper(mContext.getString(R.string.ep_remove), email, position);
+            } else if (button.getText().toString().equals("Accept Invite")) {
+                buttonHelper(mContext.getString(R.string.ep_add), email, position);
+            } else {
+                buttonHelper(mContext.getString(R.string.ep_add), email, position);
+            }
+            mListener.OnConnectionInteraction(holder.mItem);
         }
-        mListener.OnConnectionInteraction(holder.mItem);
+        //mListener.OnConnectionInteraction(holder.mItem);
     }
 
     private void buttonHelper(String endpoint, String email, int position) {
@@ -114,6 +121,7 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
     public int getItemCount() {
         return mData.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;

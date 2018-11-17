@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,13 +40,14 @@ import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 public class ChatSessionFragment extends Fragment {
 
     public static final String ARG_MESSAGE_LIST = "messages";
-    private static final String TAG = "CHAT_FRAG";
+    public static final String TAG = "CHAT_FRAG";
     private static final String CHAT_ID = "1";
     private EditText mMessageInputEditText;
     private RecyclerView mMessageDisplay;
     private RecyclerView.LayoutManager mMessageLayoutManager;
     private ChatMessageListAdapter mMessageListAdapter;
     private List<Message> mMessages;
+    private String mChatId;
 
     private String mEmail;
     private String mSendUrl;
@@ -88,6 +91,7 @@ public class ChatSessionFragment extends Fragment {
         if (getArguments() != null) {
             mMessages = new ArrayList<Message>(
                     Arrays.asList((Message[]) getArguments().getSerializable(ARG_MESSAGE_LIST)));
+            mChatId = (String) getArguments().getSerializable(TAG);
         } else {
             mMessages = new ArrayList<Message>();
         }
@@ -137,9 +141,10 @@ public class ChatSessionFragment extends Fragment {
         String msg = mMessageInputEditText.getText().toString();
         JSONObject messageJson = new JSONObject();
         try {
-            messageJson.put("email", mEmail);
+            //messageJson.put("email", mEmail);
             messageJson.put("message", msg);
-            messageJson.put("chatId", CHAT_ID);
+            messageJson.put("chatId", mChatId);
+            messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }

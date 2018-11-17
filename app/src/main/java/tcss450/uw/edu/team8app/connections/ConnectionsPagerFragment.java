@@ -26,6 +26,7 @@ import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.WaitFragment;
+import tcss450.uw.edu.team8app.connections.ConnectionsFragment.OnListFragmentInteractionListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +35,7 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
     private ArrayList<Connection> mConnections;
     ConnectionsRecyclerViewAdapter mAdapter;
     private OnConnectionInteractionListener mListener;
+    private OnListFragmentInteractionListener mListListener;
     View view;
 
     public static ConnectionsPagerFragment init(int position) {
@@ -120,7 +122,7 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
                 }
                 mConnections.add(new Connection(currentMember.getString("firstname"), currentMember.getString("lastname"), currentMember.getString("username"), currentMember.getString("email"), verified, sender));
             }
-            mAdapter = new ConnectionsRecyclerViewAdapter(mConnections, getContext(), mListener);
+            mAdapter = new ConnectionsRecyclerViewAdapter(mConnections, getContext(), mListener, mListListener);
             recyclerView.setAdapter(mAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -149,12 +151,19 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (OnConnectionInteractionListener) this;
+        if(context instanceof OnListFragmentInteractionListener) {
+            mListListener = (OnListFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mListListener = null;
     }
 
     @Override

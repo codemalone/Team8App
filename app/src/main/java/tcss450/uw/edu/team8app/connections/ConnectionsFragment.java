@@ -22,6 +22,7 @@ import android.widget.Button;
 import java.util.Objects;
 
 import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.model.Connection;
 
 
 /**
@@ -31,6 +32,7 @@ public class ConnectionsFragment extends Fragment {
     static final int ITEMS = 10;
     MyAdapter mAdapter;
     ViewPager mPager;
+    private OnListFragmentInteractionListener mListener;
 
     public ConnectionsFragment() {
         // Required empty public constructor
@@ -119,4 +121,7 @@ public class ConnectionsFragment extends Fragment {
         transaction.commit();
     }
 
+    public interface OnListFragmentInteractionListener {
+        void onStartChatInteraction(Connection connection);
+    }
 }

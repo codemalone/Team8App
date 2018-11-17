@@ -30,17 +30,19 @@ import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.utils.WaitFragment;
 import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
-
+import tcss450.uw.edu.team8app.connections.ConnectionsFragment.OnListFragmentInteractionListener;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnFragmentInteractionListener, OnConnectionInteractionListener {
+public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnFragmentInteractionListener,
+        OnConnectionInteractionListener {
 
     TextView mSearchInput;
     ConnectionsRecyclerViewAdapter mAdapter;
     View view;
     private OnConnectionInteractionListener mListener;
+    private OnListFragmentInteractionListener mListListener;
 
     public ConnectionsAddFragment() {
         // Required empty public constructor
@@ -123,7 +125,7 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
                 }
                 connectionsList.add(new Connection(currentMember.getString("firstname"), currentMember.getString("lastname"), currentMember.getString("username"), currentMember.getString("email"), verified, sender));
             }
-            mAdapter = new ConnectionsRecyclerViewAdapter(connectionsList, getActivity(), mListener);
+            mAdapter = new ConnectionsRecyclerViewAdapter(connectionsList, getActivity(), mListener, mListListener);
             recyclerView.setAdapter(mAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -152,6 +154,12 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (OnConnectionInteractionListener) this;
+        if(context instanceof OnListFragmentInteractionListener) {
+            mListListener = (OnListFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
     }
 
     @Override

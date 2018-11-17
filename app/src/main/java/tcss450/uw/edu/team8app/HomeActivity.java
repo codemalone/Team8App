@@ -43,7 +43,9 @@ import java.util.Locale;
 
 import tcss450.uw.edu.team8app.chat.ChatListFragment;
 import tcss450.uw.edu.team8app.chat.ChatSessionFragment;
+import tcss450.uw.edu.team8app.connections.OnConnectionInteractionListener;
 import tcss450.uw.edu.team8app.home.LandingPageFragment;
+import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.settings.SettingsFragment;
 import tcss450.uw.edu.team8app.connections.ConnectionsFragment;
 import tcss450.uw.edu.team8app.model.Credentials;
@@ -57,7 +59,8 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, WaitFragment.OnFragmentInteractionListener,
-        SettingsFragment.OnFragmentInteractionListener, ChangeThemeFragment.OnFragmentInteractionListener {
+        SettingsFragment.OnFragmentInteractionListener, ChangeThemeFragment.OnFragmentInteractionListener,
+        ConnectionsFragment.OnListFragmentInteractionListener {
 
     Toolbar toolbar;
     private Location mLocation;
@@ -329,6 +332,80 @@ public class HomeActivity extends AppCompatActivity
 
     public void logout() {
         new DeleteTokenAsyncTask().execute();
+    }
+
+//callAsyncTaskGetConnectionMessages(item.getEmail());
+    private void callAsyncTaskGetConnectionMessages(final String email) {
+        onWaitFragmentInteractionShow();
+
+        Uri uri = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_chats))
+                .appendPath(getString(R.string.ep_add))
+                .build();
+
+        JSONObject messageJson = new JSONObject();
+        try {
+            messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
+            messageJson.put("theirEmail", email);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), messageJson)
+                .onPostExecute(this::handleConnectionMessagesGetOnPostExecute)
+                .onCancelled(error -> Log.e("ERROR!", error))
+                .build().execute();
+    }
+
+    private void handleConnectionMessagesGetOnPostExecute(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+            JSONObject data = null;
+            if(root.getBoolean("success")) {
+                List<Message> messages = new ArrayList<>();
+                if(root.has("data")) {
+                    data = root.getJSONObject("data");
+                    if(data.has("messages")) {
+                        JSONArray dataMessages = data.getJSONArray("messages");
+                        for(int index = 0; index < dataMessages.length(); index++) {
+                            JSONObject jsonMsg = dataMessages.getJSONObject(index);
+                            messages.add(new Message.Builder(jsonMsg.getString("email"),
+                                    jsonMsg.getString("message"),
+                                    jsonMsg.getString("timestamp"))
+                                    .build());
+                        }
+                    }
+                }
+                Message[] messagesAsArray = new Message[messages.size()];
+                messagesAsArray = messages.toArray(messagesAsArray);
+                Bundle args = new Bundle();
+                args.putSerializable(ChatSessionFragment.ARG_MESSAGE_LIST, messagesAsArray);
+                if(data != null && data.has("chatId")) {
+                    args.putSerializable(ChatSessionFragment.TAG, data.getString("chatId"));
+                } else {
+                    throw new JSONException("chatId has no value.");
+                }
+                Fragment frag = new ChatSessionFragment();
+                frag.setArguments(args);
+                onWaitFragmentInteractionHide();
+                loadFragment(frag);
+                //toolbar.setTitle();
+            } else {
+                Log.e("ERROR!", "Connections did not succeed in post");
+                onWaitFragmentInteractionHide();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            onWaitFragmentInteractionHide();
+        }
+    }
+
+    @Override
+    public void onStartChatInteraction(Connection connection) {
+        //TODO: Implement the system
+        callAsyncTaskGetConnectionMessages(connection.getEmail());
     }
 
     // Deleting the InstanceId (Firebase token) must be done asynchronously. Good thing

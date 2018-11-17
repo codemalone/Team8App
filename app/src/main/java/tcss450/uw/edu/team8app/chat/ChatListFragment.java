@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.connections.OnConnectionInteractionListener;
 
 
 /**
@@ -15,6 +16,7 @@ import tcss450.uw.edu.team8app.R;
  */
 public class ChatListFragment extends Fragment {
 
+    private OnConnectionInteractionListener mListener;
 
     public ChatListFragment() {
         // Required empty public constructor
