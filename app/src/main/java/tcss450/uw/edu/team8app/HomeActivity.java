@@ -244,11 +244,17 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        Fragment connectionsFrag = getSupportFragmentManager().findFragmentByTag("connections");
+        if(connectionsFrag != null) {
+            //loadFragmentWithTag(new ConnectionsFragment(), "connections");
+            loadFragmentWithTag(new ConnectionsFragment(), "connections");
         } else {
-            super.onBackPressed();
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -294,7 +300,7 @@ public class HomeActivity extends AppCompatActivity
                 loadFragment(new LandingPageFragment());
             }
         } else if (id == R.id.nav_item_connections) {
-            loadFragment(new ConnectionsFragment());
+            loadFragmentWithTag(new ConnectionsFragment(), "connections");
         } else if (id == R.id.nav_item_messages) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_messages));
             loadFragment(new ChatListFragment());
@@ -313,6 +319,15 @@ public class HomeActivity extends AppCompatActivity
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_home_container, frag)
+                .addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
+    }
+
+    private void loadFragmentWithTag(Fragment frag, String tag) {
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_home_container, frag, tag)
                 .addToBackStack(null);
         // Commit the transaction
         transaction.commit();
