@@ -298,10 +298,6 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_item_messages) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_messages));
             loadFragment(new ChatListFragment());
-        } else if (id == R.id.nav_item_global_chat) {
-//            toolbar.setTitle("Global Chat (Test)");
-//            loadFragment(new ChatSessionFragment());
-            callAsyncTaskGetMessages("1");
         } else if (id == R.id.nav_item_settings) {
             toolbar.setTitle(getResources().getString(R.string.nav_item_settings));
             loadFragmentNoBackStack(new SettingsFragment());

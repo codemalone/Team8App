@@ -19,10 +19,6 @@
             android:id="@+id/nav_item_messages"
             android:icon="@android:drawable/ic_menu_sort_by_size"
             android:title="@string/nav_item_messages" />
-        <item
-            android:id="@+id/nav_item_global_chat"
-            android:icon="@android:drawable/sym_action_chat"
-            android:title="Global Chat (Test)" />
     </group>
 
     <group

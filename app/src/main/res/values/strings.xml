@@ -47,7 +47,7 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_fruit_salad">Fruit Salad</string>
 
-    <string name="notify_check_email">Please go to your email and verify your account.</string>
+    <string name="notify_check_email">Please check your email for a link to verify your address.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
