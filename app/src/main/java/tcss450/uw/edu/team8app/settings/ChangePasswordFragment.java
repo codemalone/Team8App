@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Credentials;
+import tcss450.uw.edu.team8app.utils.ValidationUtils;
 import tcss450.uw.edu.team8app.utils.WaitFragment;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 
@@ -53,7 +55,7 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             mCredentials = (Credentials) getArguments().getSerializable(Credentials.CREDIT_TAG);
         }
     }
@@ -76,23 +78,36 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     private void submitChangePassword(View view) {
-        if(mListener != null) {
+        if (mListener != null) {
+            String oldPassword = mOldPassword.getText().toString();
+            String newPassword = mNewPassword.getText().toString();
+            String confirmPassword = mConfirmPassword.getText().toString();
+
             boolean error = false;
 
-            if(mOldPassword.getText().toString().isEmpty()) {
+            if (TextUtils.isEmpty(oldPassword)) {
                 error = true;
                 mOldPassword.setError("Field cannot be empty");
-            } else if(mNewPassword.getText().toString().isEmpty()) {
+            }
+
+            if (TextUtils.isEmpty(newPassword)) {
                 error = true;
                 mNewPassword.setError("Field cannot be empty");
-            } else if(mConfirmPassword.getText().toString().isEmpty()) {
+            } else if (!ValidationUtils.PASSWORD.matcher(newPassword).matches()) {
+                error = true;
+                mNewPassword.setError("Field must consist of alphanumeric, period, hyphen, "
+                        + "underscore, and apostrophe characters only");
+            }
+
+            if (TextUtils.isEmpty(confirmPassword)) {
                 error = true;
                 mConfirmPassword.setError("Field cannot be empty");
-            } else if(!mNewPassword.getText().toString().equals(mConfirmPassword.getText().toString())){
+            } else if (!confirmPassword.equals(newPassword)) {
                 error = true;
                 mNewPassword.setError("Passwords do not match");
             }
-            if(!error) {
+
+            if (!error) {
                 Uri uri = new Uri.Builder()
                         .scheme(getString(R.string.ep_scheme))
                         .encodedAuthority(getString(R.string.ep_base_url))
@@ -128,8 +143,8 @@ public class ChangePasswordFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(result);
             boolean success = jsonObject.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
-            if(success) {
-                mListener.changePasswordSuccess();
+            if (success) {
+                mListener.changePasswordSuccess(mNewPassword.getText().toString());
             } else {
                 mOldPassword.setError("Password was incorrect");
             }
@@ -146,7 +161,9 @@ public class ChangePasswordFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void onWaitFragmentInteractionShow();
+
         void onWaitFragmentInteractionHide();
-        void changePasswordSuccess();
+
+        void changePasswordSuccess(String newPassword);
     }
 }

@@ -76,8 +76,8 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if(mPreferences != null) {
-            if(mPreferences.getString(Themes.TAG, "") != null) {
+        if (mPreferences != null) {
+            if (mPreferences.getString(Themes.TAG, "") != null) {
                 String theme = mPreferences.getString(Themes.TAG, "");
 
                 this.setTheme(Themes.getTheme(theme).getId());
@@ -125,7 +125,7 @@ public class HomeActivity extends AppCompatActivity
         mPrefEditor.putLong("timestamp", newTimestamp);
         mPrefEditor.apply();
 //        if (newTimestamp - oldTimestamp > 3600000) {
-            mUpdateWeather = true;
+        mUpdateWeather = true;
 //        }
 
         if (checkPermission()) {
@@ -185,7 +185,7 @@ public class HomeActivity extends AppCompatActivity
         try {
             msg.put("latitude", mLocation.getLatitude());
             msg.put("longitude", mLocation.getLongitude());
-            msg.put("zipcode",geocoder.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1).get(0).getPostalCode());
+            msg.put("zipcode", geocoder.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1).get(0).getPostalCode());
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
@@ -199,13 +199,13 @@ public class HomeActivity extends AppCompatActivity
                 .build().execute();
     }
 
-    public void askPermission(){
+    public void askPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                ){//Can add more as per requirement
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ) {//Can add more as per requirement
 
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     123);
         }
     }
@@ -254,16 +254,23 @@ public class HomeActivity extends AppCompatActivity
     }
 
     @Override
-    public void changePasswordSuccess() {
+    public void changePasswordSuccess(String newPassword) {
+        SharedPreferences prefs = getSharedPreferences(
+                getString(R.string.keys_shared_prefs),
+                Context.MODE_PRIVATE);
+        //Store the credentials in SharedPrefs
+        prefs.edit().putString(getString(R.string.keys_prefs_password), newPassword).apply();
+
+        toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+
         if (checkPermission()) {
-            toolbar.setTitle(getResources().getString(R.string.nav_item_home));
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             getLastLocation();
         } else {
-            toolbar.setTitle(getResources().getString(R.string.nav_item_home));
             loadFragment(new LandingPageFragment());
         }
+
         DialogFragment fragment = new DisplayMessageDialog();
         Bundle args = new Bundle();
         args.putSerializable(DisplayMessageDialog.TAG, getString(R.string.change_password_success));
@@ -274,7 +281,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         Fragment connectionsFrag = getSupportFragmentManager().findFragmentByTag("connections");
-        if(connectionsFrag != null) {
+        if (connectionsFrag != null) {
             //loadFragmentWithTag(new ConnectionsFragment(), "connections");
             loadFragmentWithTag(new ConnectionsFragment(), "connections");
         } else {
@@ -374,7 +381,7 @@ public class HomeActivity extends AppCompatActivity
         new DeleteTokenAsyncTask().execute();
     }
 
-//callAsyncTaskGetConnectionMessages(item.getEmail());
+    //callAsyncTaskGetConnectionMessages(item.getEmail());
     private void callAsyncTaskGetConnectionMessages(final String email) {
         onWaitFragmentInteractionShow();
 
@@ -402,13 +409,13 @@ public class HomeActivity extends AppCompatActivity
         try {
             JSONObject root = new JSONObject(result);
             JSONObject data = null;
-            if(root.getBoolean("success")) {
+            if (root.getBoolean("success")) {
                 List<Message> messages = new ArrayList<>();
-                if(root.has("data")) {
+                if (root.has("data")) {
                     data = root.getJSONObject("data");
-                    if(data.has("messages")) {
+                    if (data.has("messages")) {
                         JSONArray dataMessages = data.getJSONArray("messages");
-                        for(int index = 0; index < dataMessages.length(); index++) {
+                        for (int index = 0; index < dataMessages.length(); index++) {
                             JSONObject jsonMsg = dataMessages.getJSONObject(index);
                             messages.add(new Message.Builder(jsonMsg.getString("email"),
                                     jsonMsg.getString("message"),
@@ -421,7 +428,7 @@ public class HomeActivity extends AppCompatActivity
                 messagesAsArray = messages.toArray(messagesAsArray);
                 Bundle args = new Bundle();
                 args.putSerializable(ChatSessionFragment.ARG_MESSAGE_LIST, messagesAsArray);
-                if(data != null && data.has("chatId")) {
+                if (data != null && data.has("chatId")) {
                     args.putSerializable(ChatSessionFragment.TAG, data.getString("chatId"));
                 } else {
                     throw new JSONException("chatId has no value.");
@@ -455,6 +462,7 @@ public class HomeActivity extends AppCompatActivity
             super.onPreExecute();
             onWaitFragmentInteractionShow();
         }
+
         @Override
         protected Void doInBackground(Void... voids) {
             //since we are already doing stuff in the background, go ahead
@@ -474,6 +482,7 @@ public class HomeActivity extends AppCompatActivity
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
@@ -506,12 +515,12 @@ public class HomeActivity extends AppCompatActivity
     public void selectTheme(Themes theme) {
         //SharedPreferences prefs = getSharedPreferences(getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
         //prefs.edit().putString(Themes.TAG, theme.toString());
-        if(mPreferences != null) {
+        if (mPreferences != null) {
             mPreferences.edit().putString(Themes.TAG, theme.toString()).apply();
         }
         /**FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_home_container, new LandingPageFragment());
-        transaction.commit();*/
+         .replace(R.id.frame_home_container, new LandingPageFragment());
+         transaction.commit();*/
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra(Credentials.CREDIT_TAG, mCredentials);
         startActivity(intent);
@@ -520,7 +529,9 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-    /** Global chat menu option **/
+    /**
+     * Global chat menu option
+     **/
     private void callAsyncTaskGetMessages(final String chatId) {
         final String TAG = "getAllMessages";
         onWaitFragmentInteractionShow();
@@ -556,7 +567,7 @@ public class HomeActivity extends AppCompatActivity
             if (root.has("messages")) {
                 JSONArray data = root.getJSONArray("messages");
                 List<Message> messages = new ArrayList<>();
-                for(int i = 0; i < data.length(); i++) {
+                for (int i = 0; i < data.length(); i++) {
                     JSONObject jsonMsg = data.getJSONObject(i);
                     messages.add(new Message.Builder(jsonMsg.getString("email"),
                             jsonMsg.getString("message"),
@@ -584,9 +595,6 @@ public class HomeActivity extends AppCompatActivity
             onWaitFragmentInteractionHide();
         }
     }
-
-
-
 
 
 }
