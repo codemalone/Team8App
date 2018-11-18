@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -263,7 +264,11 @@ public class HomeActivity extends AppCompatActivity
             toolbar.setTitle(getResources().getString(R.string.nav_item_home));
             loadFragment(new LandingPageFragment());
         }
-        //TODO: Might need to do something here
+        DialogFragment fragment = new DisplayMessageDialog();
+        Bundle args = new Bundle();
+        args.putSerializable(DisplayMessageDialog.TAG, getString(R.string.change_password_success));
+        fragment.setArguments(args);
+        fragment.show(getSupportFragmentManager(), DisplayMessageDialog.TAG);
     }
 
     @Override

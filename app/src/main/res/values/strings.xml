@@ -51,6 +51,7 @@
     <string name="change_password_old">Enter your old password</string>
     <string name="change_password_new">Enter your new password</string>
     <string name="change_password_confirm">Confirm your new password</string>
+    <string name="change_password_success">Your password has been changed</string>
 
     <string name="notify_check_email">Please check your email for a link to verify your address.</string>
     <!-- TODO: Remove or change this placeholder text -->
