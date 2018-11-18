@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.model.Credentials;
 
 
 /**
@@ -18,6 +19,7 @@ import tcss450.uw.edu.team8app.R;
 public class SettingsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private Credentials mCredentials;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -31,10 +33,18 @@ public class SettingsFragment extends Fragment {
         Button button = view.findViewById(R.id.setting_username_button);
         //button.setOnClickListener(null); Add listeners here
         button = view.findViewById(R.id.setting_password_button);
-        //button.setOnClickListener(null); Add listeners here
+        button.setOnClickListener(this::openPassword);
         button = view.findViewById(R.id.setting_theme_button);
         button.setOnClickListener(this::openTheme);
         return view;
+    }
+
+    @Override
+    public void onCreate(Bundle saveInstanceState) {
+        super.onCreate(saveInstanceState);
+        if(getArguments() != null) {
+            mCredentials = (Credentials) getArguments().getSerializable(Credentials.CREDIT_TAG);
+        }
     }
 
     @Override
@@ -65,8 +75,14 @@ public class SettingsFragment extends Fragment {
         }
     }
 
+    private void openPassword(View view) {
+        if(mListener != null) {
+            mListener.clickedChangePassword();
+        }
+    }
+
     public interface OnFragmentInteractionListener {
         void clickedChangeTheme();
-        //TODO: Add methods for changing settings
+        void clickedChangePassword();
     }
 }

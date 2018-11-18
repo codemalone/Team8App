@@ -20,9 +20,9 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Team8DefaultTheme" parent="AppTheme.NoActionBar" >
-        <item name="colorPrimary">@color/uw_purple</item>
+        <item name="colorPrimary">@color/uw_gold</item>
         <item name="android:colorBackground">@color/white</item>
-        <item name="colorPrimaryDark">@color/not_quite_black</item>
+        <item name="colorPrimaryDark">@color/uw_purple</item>
         <item name="colorAccent">@color/uw_metallic_gold</item>
     </style>
 
@@ -36,16 +36,18 @@
         <item name="android:textColorPrimaryInverse">@color/white</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:colorButtonNormal">@color/uw_purple</item>
+        <item name="android:textColorHint">@color/white</item>
     </style>
 
     <style name="FruitSaladTheme" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="colorPrimary">@color/strawberry</item>
-        <item name="colorPrimaryDark">@color/cherry</item>
-        <item name="colorAccent">@color/grape</item>
+        <item name="colorPrimaryDark">@color/banana</item>
+        <item name="colorAccent">@color/cherry</item>
         <item name="android:colorBackground">@color/kiwi</item>
         <item name="android:textColor">@color/blackberry</item>
         <item name="android:colorButtonNormal">@color/orange</item>
         <item name="android:textColorPrimary">@color/blackberry</item>
+        <item name="android:textColorHint">@color/blackberry</item>
     </style>
 
 </resources>

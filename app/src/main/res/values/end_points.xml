@@ -26,4 +26,5 @@
     <string name="ep_pending">pending</string>
     <string name="ep_received">received</string>
     <string name="ep_remove">remove</string>
+    <string name="ep_change">change</string>
 </resources>

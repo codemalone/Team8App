@@ -46,6 +46,7 @@ import tcss450.uw.edu.team8app.chat.ChatSessionFragment;
 import tcss450.uw.edu.team8app.connections.OnConnectionInteractionListener;
 import tcss450.uw.edu.team8app.home.LandingPageFragment;
 import tcss450.uw.edu.team8app.model.Connection;
+import tcss450.uw.edu.team8app.settings.ChangePasswordFragment;
 import tcss450.uw.edu.team8app.settings.SettingsFragment;
 import tcss450.uw.edu.team8app.connections.ConnectionsFragment;
 import tcss450.uw.edu.team8app.model.Credentials;
@@ -60,7 +61,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, WaitFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener, ChangeThemeFragment.OnFragmentInteractionListener,
-        ConnectionsFragment.OnListFragmentInteractionListener {
+        ConnectionsFragment.OnListFragmentInteractionListener, ChangePasswordFragment.OnFragmentInteractionListener {
 
     Toolbar toolbar;
     private Location mLocation;
@@ -80,7 +81,7 @@ public class HomeActivity extends AppCompatActivity
 
                 this.setTheme(Themes.getTheme(theme).getId());
             } else {
-                mPreferences.edit().putString(Themes.TAG, Themes.Default.toString());
+                mPreferences.edit().putString(Themes.TAG, Themes.Default.toString()).apply();
             }
         }
         //this.setTheme(Themes.getTheme("FruitSalad").getId());
@@ -243,6 +244,29 @@ public class HomeActivity extends AppCompatActivity
     }
 
     @Override
+    public void clickedChangePassword() {
+        Fragment fragment = new ChangePasswordFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(Credentials.CREDIT_TAG, mCredentials);
+        fragment.setArguments(args);
+        loadFragment(fragment);
+    }
+
+    @Override
+    public void changePasswordSuccess() {
+        if (checkPermission()) {
+            toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            getLastLocation();
+        } else {
+            toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+            loadFragment(new LandingPageFragment());
+        }
+        //TODO: Might need to do something here
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -400,7 +424,6 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onStartChatInteraction(Connection connection) {
-        //TODO: Implement the system
         callAsyncTaskGetConnectionMessages(connection.getEmail());
     }
 
