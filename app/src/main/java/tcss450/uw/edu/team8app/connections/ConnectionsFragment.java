@@ -45,8 +45,10 @@ public class ConnectionsFragment extends Fragment {
         mPager = (ViewPager) v.findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
 
-        if (getArguments().getBoolean("from_connection_notification")) {
-            mPager.setCurrentItem(2);
+        if (getArguments() != null) {
+            if (getArguments().getBoolean("from_connection_notification")) {
+                mPager.setCurrentItem(2);
+            }
         }
 
         return v;
