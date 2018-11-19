@@ -59,6 +59,7 @@
                 android:layout_marginBottom="5dp"
                 android:background="@android:drawable/editbox_background"
                 android:text="@string/connections_invite_button"
+                android:textColor="?android:attr/textColorSecondary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imageButton_recyclerView_connection_delete"
                 app:layout_constraintTop_toTopOf="parent" />
