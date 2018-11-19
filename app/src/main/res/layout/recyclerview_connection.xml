@@ -17,18 +17,6 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView_recyclerView_connection_sender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView_recyclerView_connection_email"
-                app:layout_constraintTop_toBottomOf="@+id/textView_recyclerView_connection_verified" />
-
-            <TextView
                 android:id="@+id/textView_recyclerView_connection_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,6 +24,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:text="TextView"
+                android:textColor="@color/banana"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_recyclerView_connection_firstName" />
@@ -47,29 +36,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="TextView"
+                android:textColor="@color/banana"
                 app:layout_constraintStart_toEndOf="@+id/textView_recyclerView_connection_firstName"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView_recyclerView_connection_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView_recyclerView_connection_username"
-                app:layout_constraintTop_toBottomOf="@+id/textView_recyclerView_connection_lastName" />
-
-            <TextView
-                android:id="@+id/textView_recyclerView_connection_verified"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="TextView"
-                app:layout_constraintStart_toEndOf="@+id/textView_recyclerView_connection_lastName"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -79,6 +47,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="TextView"
+                android:textColor="@color/banana"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -86,14 +55,12 @@
                 android:id="@+id/button_recyclerView_connection"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:layout_marginStart="230dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="5dp"
                 android:background="@android:drawable/editbox_background"
                 android:text="@string/connections_invite_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imageButton_recyclerView_connection_delete"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
@@ -101,6 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="1dp"
                 android:background="@color/colorPrimaryAlpha"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -16,14 +16,20 @@ package tcss450.uw.edu.team8app.utils;
  * limitations under the License.
  */
 
-
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONObject;
+
+import tcss450.uw.edu.team8app.MainActivity;
+import tcss450.uw.edu.team8app.R;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -55,10 +61,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // sends notification
         // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
         // [END_EXCLUDE]
+        super.onMessageReceived(remoteMessage);
 
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-
-        // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
@@ -70,18 +74,45 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             sendBroadcast(i);
         }
 
-        // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            if (remoteMessage.getData().get("type").equals("newcontact")) {
+                Intent intent = new Intent(getApplication(), MainActivity.class);
+                intent.putExtra("from_connection_notification", true);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                        PendingIntent.FLAG_ONE_SHOT);
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher_8ball)
+                        .setContentTitle(remoteMessage.getNotification().getTitle())
+                        .setContentText(remoteMessage.getNotification().getBody())
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent);
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.notify(0, builder.build());
+                getApplicationContext().sendBroadcast(intent);
+            } else if (remoteMessage.getData().get("type").equals("contacrt")){
+//                Intent intent = new Intent(getApplication(), MainActivity.class);
+//                intent.putExtra("from_connection_notification", true);
+//                Log.e("SENDER", remoteMessage.getData().get("sender"));
+//                intent.putExtra("from_message_notification", remoteMessage.getData().get("sender"));
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+//                        PendingIntent.FLAG_ONE_SHOT);
+//                NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+//                        .setSmallIcon(R.mipmap.ic_launcher_8ball)
+//                        .setContentTitle(remoteMessage.getNotification().getTitle())
+//                        .setContentText(remoteMessage.getNotification().getBody())
+//                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+//                        .setAutoCancel(true)
+//                        .setContentIntent(pendingIntent);
+//                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//                notificationManager.notify(0, builder.build());
+//                getApplicationContext().sendBroadcast(intent);
+            }
+
         }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
-    // [END receive_message]
-
-
-    // [START on_new_token]
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of

@@ -1,10 +1,15 @@
 package tcss450.uw.edu.team8app;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import tcss450.uw.edu.team8app.account.LoginFragment;
 import tcss450.uw.edu.team8app.account.RegisterFragment;
@@ -38,9 +43,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
                         .commit();
             }
         }
-
-//        Intent myIntent = new Intent(this, HomeActivity.class);
-//        startActivity(myIntent);
     }
 
     @Override
@@ -62,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     public void onLoginSuccess(Credentials credentials) {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra(Credentials.CREDIT_TAG, credentials);
+        if (getIntent().getBooleanExtra("from_connection_notification", false)) {
+            intent.putExtra("from_connection_notification", true);
+        }
         startActivity(intent);
         //End this activity and remove it from the Activity back stack.
         finish();
