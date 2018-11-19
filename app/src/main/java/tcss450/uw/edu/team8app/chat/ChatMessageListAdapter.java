@@ -1,5 +1,6 @@
 package tcss450.uw.edu.team8app.chat;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ public class ChatMessageListAdapter extends RecyclerView.Adapter<ChatMessageList
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mEmail.setText(mValues.get(position).getEmail());
+        holder.mEmail.setTypeface(null, Typeface.BOLD);
         holder.mMessage.setText(mValues.get(position).getMessage());
         holder.mTimestamp.setText(mValues.get(position).getmTimestamp());
 

@@ -64,6 +64,7 @@ public class HomeActivity extends AppCompatActivity
         SettingsFragment.OnFragmentInteractionListener, ChangeThemeFragment.OnFragmentInteractionListener,
         ConnectionsFragment.OnListFragmentInteractionListener, ChangePasswordFragment.OnFragmentInteractionListener {
 
+    static boolean active = false;
     Toolbar toolbar;
     private Location mLocation;
     private SharedPreferences mPreferences;
@@ -107,9 +108,6 @@ public class HomeActivity extends AppCompatActivity
         Credentials credentials = (Credentials) getIntent().getExtras().get(Credentials.CREDIT_TAG);
         mCredentials = credentials;
         TextView username = header.findViewById(R.id.textView_nav_header_username);
-        Log.e("test", credentials.getEmail());
-        Log.e("test", credentials.getFirstName());
-        Log.e("test", credentials.getUsername());
         if (!credentials.getUsername().isEmpty()) {
             username.setText(credentials.getUsername());
         } else {
@@ -128,21 +126,39 @@ public class HomeActivity extends AppCompatActivity
         mUpdateWeather = true;
 //        }
 
-        if (checkPermission()) {
-            toolbar.setTitle(getResources().getString(R.string.nav_item_home));
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            //if (mUpdateWeather) {
-            getLastLocation();
-//            sendMyLocation();
-            //} else {
-            //   handleHomeOnPostExecute(mPreferences.getString("weatherData", null));
-            //}
+        if (getIntent().getBooleanExtra("from_connection_notification", false)) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("from_connection_notification", true);
+            ConnectionsFragment frag = new ConnectionsFragment();
+            frag.setArguments(bundle);
+            loadFragmentWithTag(frag, "connections");
         } else {
-            toolbar.setTitle(getResources().getString(R.string.nav_item_home));
-            loadFragment(new LandingPageFragment());
+            if (checkPermission()) {
+                toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                //if (mUpdateWeather) {
+                getLastLocation();
+//            sendMyLocation();
+                //} else {
+                //   handleHomeOnPostExecute(mPreferences.getString("weatherData", null));
+                //}
+            } else {
+                toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+                loadFragment(new LandingPageFragment());
+            }
         }
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    public static boolean isActive() {
+        return active;
     }
 
     public void onLocationChanged(Location location) {
@@ -281,7 +297,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         Fragment connectionsFrag = getSupportFragmentManager().findFragmentByTag("connections");
-        if (connectionsFrag != null) {
+        if(connectionsFrag != null) {
             //loadFragmentWithTag(new ConnectionsFragment(), "connections");
             loadFragmentWithTag(new ConnectionsFragment(), "connections");
         } else {
@@ -326,22 +342,18 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_item_home) {
             if (checkPermission()) {
-                toolbar.setTitle(getResources().getString(R.string.nav_item_home));
                 LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 getLastLocation();
 //                sendMyLocation();
             } else {
-                toolbar.setTitle(getResources().getString(R.string.nav_item_home));
                 loadFragment(new LandingPageFragment());
             }
         } else if (id == R.id.nav_item_connections) {
             loadFragmentWithTag(new ConnectionsFragment(), "connections");
         } else if (id == R.id.nav_item_messages) {
-            toolbar.setTitle(getResources().getString(R.string.nav_item_messages));
             loadFragment(new ChatListFragment());
         } else if (id == R.id.nav_item_settings) {
-            toolbar.setTitle(getResources().getString(R.string.nav_item_settings));
             loadFragmentNoBackStack(new SettingsFragment());
         } else if (id == R.id.nav_item_logout) {
             logout();
@@ -417,7 +429,7 @@ public class HomeActivity extends AppCompatActivity
                         JSONArray dataMessages = data.getJSONArray("messages");
                         for (int index = 0; index < dataMessages.length(); index++) {
                             JSONObject jsonMsg = dataMessages.getJSONObject(index);
-                            messages.add(new Message.Builder(jsonMsg.getString("email"),
+                            messages.add(new Message.Builder(jsonMsg.getString("username"),
                                     jsonMsg.getString("message"),
                                     jsonMsg.getString("timestamp"))
                                     .build());
@@ -552,7 +564,7 @@ public class HomeActivity extends AppCompatActivity
         }
 
         new SendPostAsyncTask.Builder(uri.toString(), messageJson)
-                .onPostExecute(this::handleMessagesGetOnPostExecute)
+                .onPostExecute(this::handleConnectionMessagesGetOnPostExecute)
                 .onCancelled(error -> Log.e(TAG, error))
                 .build().execute();
     }

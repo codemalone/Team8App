@@ -51,9 +51,6 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
         holder.mFirstView.setText(mData.get(position).getFirstName());
         holder.mLastView.setText(mData.get(position).getLastName());
         holder.mUsernameView.setText(mData.get(position).getUsername());
-        holder.mEmailView.setText(mData.get(position).getEmail());
-        holder.mVerifiedView.setText("" + mData.get(position).getVerified());
-        holder.mSenderView.setText("" + mData.get(position).getSender());
         if (mData.get(position).getVerified() == 1) {
             holder.mButton.setText("Start Chat");
         } else {
@@ -128,9 +125,6 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
         final TextView mFirstView;
         final TextView mLastView;
         final TextView mUsernameView;
-        final TextView mEmailView;
-        final TextView mVerifiedView;
-        final TextView mSenderView;
         final Button mButton;
         final ImageButton mDeleteButton;
         Connection mItem;
@@ -141,9 +135,6 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
             mFirstView = view.findViewById(R.id.textView_recyclerView_connection_firstName);
             mLastView = view.findViewById(R.id.textView_recyclerView_connection_lastName);
             mUsernameView = view.findViewById(R.id.textView_recyclerView_connection_username);
-            mEmailView = view.findViewById(R.id.textView_recyclerView_connection_email);
-            mVerifiedView = view.findViewById(R.id.textView_recyclerView_connection_verified);
-            mSenderView = view.findViewById(R.id.textView_recyclerView_connection_sender);
             mButton = view.findViewById(R.id.button_recyclerView_connection);
             mDeleteButton = view.findViewById(R.id.imageButton_recyclerView_connection_delete);
         }
