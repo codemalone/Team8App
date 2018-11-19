@@ -393,7 +393,7 @@ public class HomeActivity extends AppCompatActivity
                         JSONArray dataMessages = data.getJSONArray("messages");
                         for(int index = 0; index < dataMessages.length(); index++) {
                             JSONObject jsonMsg = dataMessages.getJSONObject(index);
-                            messages.add(new Message.Builder(jsonMsg.getString("email"),
+                            messages.add(new Message.Builder(jsonMsg.getString("username"),
                                     jsonMsg.getString("message"),
                                     jsonMsg.getString("timestamp"))
                                     .build());
@@ -525,7 +525,7 @@ public class HomeActivity extends AppCompatActivity
         }
 
         new SendPostAsyncTask.Builder(uri.toString(), messageJson)
-                .onPostExecute(this::handleMessagesGetOnPostExecute)
+                .onPostExecute(this::handleConnectionMessagesGetOnPostExecute)
                 .onCancelled(error -> Log.e(TAG, error))
                 .build().execute();
     }
