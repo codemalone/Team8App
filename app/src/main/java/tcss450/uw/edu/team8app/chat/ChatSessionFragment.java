@@ -130,6 +130,7 @@ public class ChatSessionFragment extends Fragment {
         // initialize recycler view
         mMessageDisplay = (RecyclerView) rootLayout.findViewById(R.id.recycler_view_chat_session);
         mMessageLayoutManager = new LinearLayoutManager(this.getActivity());
+        ((LinearLayoutManager) mMessageLayoutManager).setReverseLayout(true);
         mMessageDisplay.setLayoutManager(mMessageLayoutManager);
 
         mMessageListAdapter = new ChatMessageListAdapter(mMessages);

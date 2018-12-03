@@ -39,7 +39,7 @@ public class MyConversationRecyclerViewAdapter extends RecyclerView.Adapter<MyCo
         holder.mItem = mValues.get(position);
 
         holder.mUsersView.setText(mValues.get(position).parsedUsers(20));
-        holder.mNumbersView.setText("Users: " + mValues.get(position).getUsers().size());
+        //holder.mNumbersView.setText("Other Users: " + mValues.get(position).getUsers().size());
         holder.mLastMessageView.setText(mValues.get(position).getLastMessage());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +61,7 @@ public class MyConversationRecyclerViewAdapter extends RecyclerView.Adapter<MyCo
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mUsersView;
-        public final TextView mNumbersView;
+        //public final TextView mNumbersView;
         public final TextView mLastMessageView;
         public Conversation mItem;
 
@@ -69,7 +69,7 @@ public class MyConversationRecyclerViewAdapter extends RecyclerView.Adapter<MyCo
             super(view);
             mView = view;
             mUsersView = view.findViewById(R.id.conversation_user_names);
-            mNumbersView = view.findViewById(R.id.conversation_user_number);
+            //mNumbersView = view.findViewById(R.id.conversation_user_number);
             mLastMessageView = view.findViewById(R.id.conversation_last_message);
         }
 
