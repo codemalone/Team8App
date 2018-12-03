@@ -1,19 +1,15 @@
 package tcss450.uw.edu.team8app.home;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.DrawableRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,21 +19,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +37,6 @@ import java.util.Set;
 
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
-import tcss450.uw.edu.team8app.utils.Themes;
 import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 /**
@@ -124,6 +113,8 @@ public class LandingPageFragment extends Fragment {
                 savedZips = mPreferences.getStringSet("ZIPCODES", null);
                 if (savedZips != null) {
                     savedZips = new HashSet<String>(savedZips);
+                } else {
+                    savedZips = new HashSet<>();
                 }
                 mDropdown = v.findViewById(R.id.spinner_zipcodes);
                 mDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
