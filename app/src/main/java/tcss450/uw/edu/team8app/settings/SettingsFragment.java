@@ -35,7 +35,7 @@ public class SettingsFragment extends Fragment {
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Settings");
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         Button button = view.findViewById(R.id.setting_username_button);
-        //button.setOnClickListener(null); Add listeners here
+        button.setOnClickListener(this::openUsername);
         button = view.findViewById(R.id.setting_password_button);
         button.setOnClickListener(this::openPassword);
         button = view.findViewById(R.id.setting_theme_button);
@@ -79,14 +79,46 @@ public class SettingsFragment extends Fragment {
         }
     }
 
+    /**
+     * Opens the change password fragment.
+     *
+     * @param view The view.
+     */
     private void openPassword(View view) {
         if(mListener != null) {
             mListener.clickedChangePassword();
         }
     }
 
+    /**
+     * Opens the change username fragment.
+     *
+     * @param view The view.
+     */
+    private void openUsername(View view) {
+        if(mListener != null) {
+            mListener.clickedChangeUsername();
+        }
+    }
+
+    /**
+     * This fragment listener handles the interaction for the settings fragment.
+     */
     public interface OnFragmentInteractionListener {
+
+        /**
+         * Opens the Change theme fragment.
+         */
         void clickedChangeTheme();
+
+        /**
+         * Opens the change password fragment.
+         */
         void clickedChangePassword();
+
+        /**
+         * Opens the change username fragment.
+         */
+        void clickedChangeUsername();
     }
 }

@@ -48,6 +48,7 @@ import tcss450.uw.edu.team8app.connections.OnConnectionInteractionListener;
 import tcss450.uw.edu.team8app.home.LandingPageFragment;
 import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.settings.ChangePasswordFragment;
+import tcss450.uw.edu.team8app.settings.ChangeUserFragment;
 import tcss450.uw.edu.team8app.settings.SettingsFragment;
 import tcss450.uw.edu.team8app.connections.ConnectionsFragment;
 import tcss450.uw.edu.team8app.model.Credentials;
@@ -62,7 +63,8 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, WaitFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener, ChangeThemeFragment.OnFragmentInteractionListener,
-        ConnectionsFragment.OnListFragmentInteractionListener, ChangePasswordFragment.OnFragmentInteractionListener {
+        ConnectionsFragment.OnListFragmentInteractionListener, ChangePasswordFragment.OnFragmentInteractionListener,
+        ChangeUserFragment.OnFragmentInteractionListener {
 
     static boolean active = false;
     Toolbar toolbar;
@@ -261,11 +263,37 @@ public class HomeActivity extends AppCompatActivity
     }
 
     @Override
+    public void onSuccessChangeUsername(String newUsername) {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.keys_shared_prefs),
+                Context.MODE_PRIVATE);
+        prefs.edit().putString(getString(R.string.keys_prefs_username), newUsername).apply();
+        if (checkPermission()) {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            getLastLocation();
+        } else {
+            loadFragment(new LandingPageFragment());
+        }
+
+        DialogFragment fragment = new DisplayMessageDialog();
+        Bundle args = new Bundle();
+        args.putSerializable(DisplayMessageDialog.TAG, getString(R.string.change_username_success));
+        fragment.setArguments(args);
+        fragment.show(getSupportFragmentManager(), DisplayMessageDialog.TAG);
+    }
+
+    @Override
     public void clickedChangePassword() {
         Fragment fragment = new ChangePasswordFragment();
         Bundle args = new Bundle();
         args.putSerializable(Credentials.CREDIT_TAG, mCredentials);
         fragment.setArguments(args);
+        loadFragment(fragment);
+    }
+
+    @Override
+    public void clickedChangeUsername() {
+        Fragment fragment = new ChangeUserFragment();
         loadFragment(fragment);
     }
 
