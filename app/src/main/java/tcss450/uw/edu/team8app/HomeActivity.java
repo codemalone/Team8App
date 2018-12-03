@@ -483,8 +483,36 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onConversationInteraction(Conversation item) {
-        //TODO: Add interaction to go to a connection conversation.
+        Uri uri = new Uri.Builder()
+            .scheme(getString(R.string.ep_scheme))
+            .encodedAuthority(getString(R.string.ep_base_url))
+            .appendPath(getString(R.string.ep_chats))
+            .appendPath(getString(R.string.ep_messaging_base)).appendPath(getString(R.string.ep_get_all))
+            .build();
+        JSONObject messageJson = new JSONObject();
+        try {
+            messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
+            messageJson.put("chatId", item.getChatID());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), messageJson)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleConnectionMessagesGetOnPostExecute)
+                .onCancelled(error -> Log.e("ERROR!", error))
+                .build().execute();
     }
+
+    /**private void handleIdChatGetOnPostExecute(final String result) {
+        try {
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            onWaitFragmentInteractionHide();
+        }
+    }*/
 
     private void handleMessageListGetOnPostExecute(final String result) {
         try {
@@ -522,6 +550,7 @@ public class HomeActivity extends AppCompatActivity
         } catch(JSONException e) {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
+            onWaitFragmentInteractionHide();
         }
     }
 

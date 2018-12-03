@@ -53,6 +53,11 @@
     <string name="change_password_confirm">Confirm your new password</string>
     <string name="change_password_success">Your password has been changed</string>
 
+    <!-- String used for Change Username-->
+    <string name="change_username_hint">Enter a new username</string>
+    <string name="change_username_error">The username is either taken or invalid.</string>
+    <string name="change_username_success">The username change was successful!</string>
+
     <string name="notify_check_email">Please check your email for a link to verify your address.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
