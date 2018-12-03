@@ -55,18 +55,40 @@ public class Conversation {
 
     public String parsedUsers(int characters) {
         String users = "";
-        for(String user : mUsers) {
-            users += user + ",";
+        int index = 0;
+
+        // if only one other then add their name
+        if (mUsers.size() == 1) {
+            users += mUsers.get(0);
+        } else {
+            while (users.length() < 30 && index < mUsers.size()) {
+                users += mUsers.get(index++) + ", ";
+            }
+
+            // remove last comma and add "& you"
+            users = users.substring(0, users.length() - 2);
         }
-        char[] parse = users.toCharArray();
-        String parsedString = "";
-        for(int i = 0; i < characters && i < parse.length; i++) {
-            parsedString += parse[i];
+
+
+        // if end of list add "& you" otherwise add count
+        if (mUsers.size() > 1) {
+            if (index == mUsers.size()) {
+                users += " & you";
+            } else {
+                int remaining = mUsers.size() - index;
+                users += " & " + remaining + " more";
+            }
         }
-        if(characters < parse.length) {
-            parsedString += "...";
-        }
-        return parsedString;
+//
+//        char[] parse = users.toCharArray();
+//        String parsedString = "";
+//        for(int i = 0; i < characters && i < parse.length; i++) {
+//            parsedString += parse[i];
+//        }
+//        if(characters < parse.length) {
+//            parsedString += "...";
+//        }
+        return users;
     }
 
     /**
