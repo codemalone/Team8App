@@ -116,33 +116,19 @@ public class HomeActivity extends AppCompatActivity
         TextView email = header.findViewById(R.id.textView_nav_header_email);
         email.setText(credentials.getEmail());
 
-        mPrefEditor = mPreferences.edit();
-        //Long oldTimestamp = Long.valueOf(0);
-        Long oldTimestamp = mPreferences.getLong("timestamp", 0);
-        Long newTimestamp = System.currentTimeMillis();
-        mPrefEditor.putLong("timestamp", newTimestamp);
-        mPrefEditor.apply();
-//        if (newTimestamp - oldTimestamp > 3600000) {
-        mUpdateWeather = true;
-//        }
-
         if (getIntent().getBooleanExtra("from_connection_notification", false)) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("from_connection_notification", true);
             ConnectionsFragment frag = new ConnectionsFragment();
             frag.setArguments(bundle);
-            loadFragmentWithTag(frag, "connections");
+            loadFragment(frag);
         } else {
             if (checkPermission()) {
                 toolbar.setTitle(getResources().getString(R.string.nav_item_home));
                 LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                //if (mUpdateWeather) {
                 getLastLocation();
 //            sendMyLocation();
-                //} else {
-                //   handleHomeOnPostExecute(mPreferences.getString("weatherData", null));
-                //}
             } else {
                 toolbar.setTitle(getResources().getString(R.string.nav_item_home));
                 loadFragment(new LandingPageFragment());
@@ -235,8 +221,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void handleHomeOnPostExecute(final String result) {
-        mPrefEditor.putString("weatherJSON", result);
-        mPrefEditor.apply();
         Bundle args = new Bundle();
         args.putString("weather", result);
         Fragment frag = new LandingPageFragment();
@@ -298,17 +282,11 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        Fragment connectionsFrag = getSupportFragmentManager().findFragmentByTag("connections");
-        if(connectionsFrag != null) {
-            //loadFragmentWithTag(new ConnectionsFragment(), "connections");
-            loadFragmentWithTag(new ConnectionsFragment(), "connections");
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
         } else {
-            DrawerLayout drawer = findViewById(R.id.drawer_layout);
-            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                drawer.closeDrawer(GravityCompat.START);
-            } else {
-                super.onBackPressed();
-            }
+            super.onBackPressed();
         }
     }
 
@@ -352,7 +330,7 @@ public class HomeActivity extends AppCompatActivity
                 loadFragment(new LandingPageFragment());
             }
         } else if (id == R.id.nav_item_connections) {
-            loadFragmentWithTag(new ConnectionsFragment(), "connections");
+            loadFragment(new ConnectionsFragment());
         } else if (id == R.id.nav_item_messages) {
             loadFragment(new ChatListFragment());
         } else if (id == R.id.nav_item_settings) {
@@ -369,15 +347,6 @@ public class HomeActivity extends AppCompatActivity
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_home_container, frag)
-                .addToBackStack(null);
-        // Commit the transaction
-        transaction.commit();
-    }
-
-    private void loadFragmentWithTag(Fragment frag, String tag) {
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.frame_home_container, frag, tag)
                 .addToBackStack(null);
         // Commit the transaction
         transaction.commit();

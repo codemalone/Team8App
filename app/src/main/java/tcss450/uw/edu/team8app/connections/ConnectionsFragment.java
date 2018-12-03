@@ -29,6 +29,7 @@ import tcss450.uw.edu.team8app.model.Connection;
 public class ConnectionsFragment extends Fragment {
     private MyAdapter mAdapter;
     private ViewPager mPager;
+    private View v;
 
     public ConnectionsFragment() {
         // Required empty public constructor
@@ -37,12 +38,9 @@ public class ConnectionsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Connections");
-        View v = inflater.inflate(R.layout.fragment_connections, container, false);
+        v = inflater.inflate(R.layout.fragment_connections, container, false);
 
-        mAdapter = new MyAdapter(getActivity().getSupportFragmentManager());
-        mPager = v.findViewById(R.id.pager);
-        mPager.setAdapter(mAdapter);
-        mPager.setCurrentItem(1);
+        onResume();
         if (getArguments() != null) {
             if (getArguments().getBoolean("from_connection_notification")) {
                 mPager.setCurrentItem(2);
@@ -50,6 +48,15 @@ public class ConnectionsFragment extends Fragment {
         }
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter = new MyAdapter(getActivity().getSupportFragmentManager());
+        mPager = v.findViewById(R.id.pager);
+        mPager.setAdapter(mAdapter);
+        mPager.setCurrentItem(1);
     }
 
     public static class MyAdapter extends FragmentStatePagerAdapter {

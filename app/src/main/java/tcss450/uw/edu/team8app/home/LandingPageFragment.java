@@ -120,12 +120,12 @@ public class LandingPageFragment extends Fragment {
 
                 mGeocoder = new Geocoder(getActivity(), Locale.getDefault());
 
-                mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                mDropdown = v.findViewById(R.id.spinner_zipcodes);
+                mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
                 savedZips = mPreferences.getStringSet("ZIPCODES", null);
-                if (savedZips == null) {
-                    savedZips = new HashSet<String>();
+                if (savedZips != null) {
+                    savedZips = new HashSet<String>(savedZips);
                 }
+                mDropdown = v.findViewById(R.id.spinner_zipcodes);
                 mDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -181,7 +181,10 @@ public class LandingPageFragment extends Fragment {
                                 e.printStackTrace();
                             }
                         }
-                        mPreferences.edit().putStringSet("ZIPCODES", savedZips).apply();
+                        SharedPreferences.Editor editor = mPreferences.edit();
+                        editor.putStringSet("ZIPCODES", savedZips);
+                        editor.apply();
+                        editor.commit();
                     }
 
                     @Override
@@ -241,16 +244,12 @@ public class LandingPageFragment extends Fragment {
 
     private void refreshDropDownList() {
         ArrayList<String> zipcodes = new ArrayList<String>();
-        savedZips = mPreferences.getStringSet("ZIPCODES", null);
-        if (savedZips == null) {
-            savedZips = new HashSet<String>();
-        }
         try {
             zipcodes.add(weather.getJSONObject(2).getString("zip"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (savedZips != null && !savedZips.isEmpty()) {
+        if (!savedZips.isEmpty()) {
             Iterator zipIterator = savedZips.iterator();
             while (zipIterator.hasNext()) {
                 String temp = zipIterator.next().toString();
@@ -268,5 +267,9 @@ public class LandingPageFragment extends Fragment {
         }
         mAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item_zipcode, zipcodes.toArray(new String[0]));
         mDropdown.setAdapter(mAdapter);
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putStringSet("ZIPCODES", savedZips);
+        editor.apply();
+        editor.commit();
     }
 }
