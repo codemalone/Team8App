@@ -24,6 +24,12 @@ public class MyConversationRecyclerViewAdapter extends RecyclerView.Adapter<MyCo
 
     public MyConversationRecyclerViewAdapter(List<Conversation> items, OnListFragmentInteractionListener listener) {
         mValues = items;
+
+        for (int i = 0; i < mValues.size(); i++) {
+            if (mValues.get(i).getUsers().isEmpty())
+                mValues.remove(i);
+        }
+
         mListener = listener;
     }
 

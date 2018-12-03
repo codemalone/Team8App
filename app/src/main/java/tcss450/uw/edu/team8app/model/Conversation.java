@@ -60,12 +60,13 @@ public class Conversation {
         // if only one other then add their name
         if (mUsers.size() == 1) {
             users += mUsers.get(0);
-        } else {
+        } else if (mUsers.size() > 0) {
             while (users.length() < 30 && index < mUsers.size()) {
                 users += mUsers.get(index++) + ", ";
             }
 
             // remove last comma and add "& you"
+
             users = users.substring(0, users.length() - 2);
         }
 
