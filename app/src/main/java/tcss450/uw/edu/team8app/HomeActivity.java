@@ -183,6 +183,8 @@ public class HomeActivity extends AppCompatActivity
                 .addOnFailureListener(e -> {
                     Log.d("MapDemoActivity", "Error trying to get last GPS location");
                     e.printStackTrace();
+                    toolbar.setTitle(getResources().getString(R.string.nav_item_home));
+                    loadFragment(new LandingPageFragment());
                 });
     }
 
