@@ -27,10 +27,9 @@ import tcss450.uw.edu.team8app.model.Connection;
  * A simple {@link Fragment} subclass.
  */
 public class ConnectionsFragment extends Fragment {
-    static final int ITEMS = 10;
-    MyAdapter mAdapter;
-    ViewPager mPager;
-    private OnListFragmentInteractionListener mListener;
+    private MyAdapter mAdapter;
+    private ViewPager mPager;
+    private View v;
 
     public ConnectionsFragment() {
         // Required empty public constructor
@@ -39,12 +38,9 @@ public class ConnectionsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Connections");
-        View v = inflater.inflate(R.layout.fragment_connections, container, false);
+        v = inflater.inflate(R.layout.fragment_connections, container, false);
 
-        mAdapter = new MyAdapter(getActivity().getSupportFragmentManager());
-        mPager = (ViewPager) v.findViewById(R.id.pager);
-        mPager.setAdapter(mAdapter);
-
+        onResume();
         if (getArguments() != null) {
             if (getArguments().getBoolean("from_connection_notification")) {
                 mPager.setCurrentItem(2);
@@ -52,6 +48,15 @@ public class ConnectionsFragment extends Fragment {
         }
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter = new MyAdapter(getActivity().getSupportFragmentManager());
+        mPager = v.findViewById(R.id.pager);
+        mPager.setAdapter(mAdapter);
+        mPager.setCurrentItem(1);
     }
 
     public static class MyAdapter extends FragmentStatePagerAdapter {
@@ -78,13 +83,11 @@ public class ConnectionsFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            // Generate title based on item position
             switch (position) {
                 case 0:
-                    return "Active";
-                case 1:
-                    //return mContext.getString(R.string.category_places);
                     return "Pending";
+                case 1:
+                    return "Active";
                 case 2:
                     return "Received";
                 default:
@@ -109,7 +112,6 @@ public class ConnectionsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_connections_add:
-                //Toast.makeText(getActivity(), "Calls Icon Click", Toast.LENGTH_SHORT).show();
                 loadFragment(new ConnectionsAddFragment());
                 return true;
             default:

@@ -75,9 +75,9 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
                 .appendPath(getString(R.string.ep_get));
         if (getArguments() != null) {
             if (getArguments().getInt("position") == 0) {
-                uriBuilder.appendPath(getString(R.string.ep_active));
-            } else if (getArguments().getInt("position") == 1) {
                 uriBuilder.appendPath(getString(R.string.ep_pending));
+            } else if (getArguments().getInt("position") == 1) {
+                uriBuilder.appendPath(getString(R.string.ep_active));
             } else if (getArguments().getInt("position") == 2) {
                 uriBuilder.appendPath(getString(R.string.ep_received));
             }

@@ -2,279 +2,424 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".home.LandingPageFragment">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="0dp"
-        android:layout_height="426dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/weather_border"
+        android:padding="6dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textView_weather_daily_temp10"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_temp9"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon10" />
-
-        <TextView
-            android:id="@+id/textView_weather_daily_temp9"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_temp8"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon9" />
-
-        <TextView
-            android:id="@+id/textView_weather_daily_temp8"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_temp7"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon8" />
-
-        <TextView
-            android:id="@+id/textView_weather_daily_temp7"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_temp6"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon7" />
-
-        <TextView
-            android:id="@+id/textView_weather_daily_temp6"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_temp5"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon6" />
-
-        <TextView
-            android:id="@+id/textView_weather_daily_temp5"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_temp4"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon5" />
-
-        <TextView
-            android:id="@+id/textView_weather_daily_temp1"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:textSize="10sp"
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView_weather_daily"
+            android:layout_width="0dp"
+            android:layout_height="78dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon1" />
+            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly">
 
-        <TextView
-            android:id="@+id/textView_weather_daily_temp2"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_temp1"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon2" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                tools:layout_editor_absoluteX="4dp"
+                tools:layout_editor_absoluteY="128dp">
 
-        <TextView
-            android:id="@+id/textView_weather_daily_temp3"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_temp2"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon3" />
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView_weather_daily_temp4"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_temp3"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon4" />
+                    <TextView
+                        android:id="@+id/textView_weather_daily_temp1"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon1" />
 
-        <ImageView
-            android:id="@+id/imageView_weather_daily_icon9"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView_weather_daily_icon8"
-            app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
+                    <ImageView
+                        android:id="@+id/imageView_weather_daily_icon1"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
 
-        <ImageView
-            android:id="@+id/imageView_weather_daily_icon10"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView_weather_daily_icon9"
-            app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
+                    <TextView
+                        android:id="@+id/textView_weather_daily_day1"
+                        android:layout_width="0dp"
+                        android:layout_height="16dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/imageView_weather_daily_icon8"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView_weather_daily_icon7"
-            app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imageView_weather_daily_icon7"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView_weather_daily_icon6"
-            app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
+                    <TextView
+                        android:id="@+id/textView_weather_daily_temp2"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon2" />
 
-        <ImageView
-            android:id="@+id/imageView_weather_daily_icon6"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView_weather_daily_icon5"
-            app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
+                    <ImageView
+                        android:id="@+id/imageView_weather_daily_icon2"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day2" />
 
-        <ImageView
-            android:id="@+id/imageView_weather_daily_icon5"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView_weather_daily_icon4"
-            app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
+                    <TextView
+                        android:id="@+id/textView_weather_daily_day2"
+                        android:layout_width="0dp"
+                        android:layout_height="16dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/imageView_weather_daily_icon4"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView_weather_daily_icon3"
-            app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imageView_weather_daily_icon3"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView_weather_daily_icon2"
-            app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
+                    <TextView
+                        android:id="@+id/textView_weather_daily_temp3"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon3" />
 
-        <ImageView
-            android:id="@+id/imageView_weather_daily_icon2"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView_weather_daily_icon1"
-            app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
+                    <ImageView
+                        android:id="@+id/imageView_weather_daily_icon3"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day3" />
 
-        <TextView
-            android:id="@+id/textView_weather_daily_day10"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_day9"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly" />
+                    <TextView
+                        android:id="@+id/textView_weather_daily_day3"
+                        android:layout_width="0dp"
+                        android:layout_height="16dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/textView_weather_daily_day8"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_day7"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly" />
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView_weather_daily_day9"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_day8"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly" />
+                    <TextView
+                        android:id="@+id/textView_weather_daily_temp4"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon4" />
 
-        <TextView
-            android:id="@+id/textView_weather_daily_day7"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_day6"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly" />
+                    <ImageView
+                        android:id="@+id/imageView_weather_daily_icon4"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day4" />
 
-        <TextView
-            android:id="@+id/textView_weather_daily_day6"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_day5"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly" />
+                    <TextView
+                        android:id="@+id/textView_weather_daily_day4"
+                        android:layout_width="0dp"
+                        android:layout_height="16dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/textView_weather_daily_day5"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_day4"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly" />
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView_weather_daily_day4"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_day3"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly" />
+                    <TextView
+                        android:id="@+id/textView_weather_daily_temp5"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon5" />
 
-        <TextView
-            android:id="@+id/textView_weather_daily_day3"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_day2"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly" />
+                    <ImageView
+                        android:id="@+id/imageView_weather_daily_icon5"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day5" />
 
-        <TextView
-            android:id="@+id/textView_weather_daily_day1"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly" />
+                    <TextView
+                        android:id="@+id/textView_weather_daily_day5"
+                        android:layout_width="0dp"
+                        android:layout_height="16dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/textView_weather_daily_day2"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/textView_weather_daily_day1"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView_weather_hourly" />
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView_weather_daily_temp6"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon6" />
+
+                    <ImageView
+                        android:id="@+id/imageView_weather_daily_icon6"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day6" />
+
+                    <TextView
+                        android:id="@+id/textView_weather_daily_day6"
+                        android:layout_width="0dp"
+                        android:layout_height="16dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView_weather_daily_temp7"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon7" />
+
+                    <ImageView
+                        android:id="@+id/imageView_weather_daily_icon7"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day7" />
+
+                    <TextView
+                        android:id="@+id/textView_weather_daily_day7"
+                        android:layout_width="0dp"
+                        android:layout_height="16dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView_weather_daily_temp8"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon8" />
+
+                    <ImageView
+                        android:id="@+id/imageView_weather_daily_icon8"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day8" />
+
+                    <TextView
+                        android:id="@+id/textView_weather_daily_day8"
+                        android:layout_width="0dp"
+                        android:layout_height="16dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView_weather_daily_temp9"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon9" />
+
+                    <ImageView
+                        android:id="@+id/imageView_weather_daily_icon9"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day9" />
+
+                    <TextView
+                        android:id="@+id/textView_weather_daily_day9"
+                        android:layout_width="0dp"
+                        android:layout_height="16dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView_weather_daily_temp10"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="11sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView_weather_daily_icon10" />
+
+                    <ImageView
+                        android:id="@+id/imageView_weather_daily_icon10"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day10" />
+
+                    <TextView
+                        android:id="@+id/textView_weather_daily_day10"
+                        android:layout_width="0dp"
+                        android:layout_height="16dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
 
         <TextView
             android:id="@+id/textView_weather_location"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="5dp"
             android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/spinner_zipcodes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textView_weather_current_temp"
-            android:layout_width="133dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:padding="8dp"
+            android:layout_width="120dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center_horizontal"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView_weather_current_icon"
             app:layout_constraintStart_toEndOf="@+id/imageView_weather_current_icon"
@@ -282,9 +427,8 @@
 
         <ImageView
             android:id="@+id/imageView_weather_current_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_weather_location" />
@@ -293,7 +437,6 @@
             android:id="@+id/textView_weather_current_misc"
             android:layout_width="140dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="8dp"
@@ -304,9 +447,8 @@
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView_weather_hourly"
-            android:layout_width="360dp"
+            android:layout_width="0dp"
             android:layout_height="47dp"
-            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView_weather_current_icon">
@@ -441,13 +583,25 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-        <ImageView
-            android:id="@+id/imageView_weather_daily_icon1"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="4dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_weather_daily_day1" />
+        <Spinner
+            android:id="@+id/spinner_zipcodes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/imageButton_maps"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imageButton_maps"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/weather_border"
+            android:src="@drawable/location_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
