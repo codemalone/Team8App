@@ -543,6 +543,7 @@ public class HomeActivity extends AppCompatActivity
                     Fragment frag = new ConversationFragment();
                     frag.setArguments(bundle);
                     onWaitFragmentInteractionHide();
+                    getSupportActionBar().setTitle("Messages");
                     loadFragment(frag);
                 }
             }
