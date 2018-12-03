@@ -259,10 +259,12 @@ public class LandingPageFragment extends Fragment {
                 }
             }
         }
-        if (!zipcodes.get(0).equals("") && savedZips.contains(zipcodes.get(0))) {
-            zipcodes.add("(DEL)");
-        } else if (!zipcodes.get(0).equals("")) {
-            zipcodes.add("(SAVE)");
+        if (zipcodes.size() > 0) {
+            if (!zipcodes.get(0).equals("") && savedZips.contains(zipcodes.get(0))) {
+                zipcodes.add("(DEL)");
+            } else if (!zipcodes.get(0).equals("")) {
+                zipcodes.add("(SAVE)");
+            }
         }
         mAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item_zipcode, zipcodes.toArray(new String[0]));
         mDropdown.setAdapter(mAdapter);
