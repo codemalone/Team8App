@@ -79,57 +79,41 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (remoteMessage.getNotification() != null) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            NotificationCompat.Builder builder;
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             if (remoteMessage.getData().get("type").equals(getString(R.string.fcm_type_new_contact_request))) {
                 intent.putExtra("from_connection_notification", true);
-
-                PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                        0,
-                        intent,
-                        PendingIntent.FLAG_ONE_SHOT);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    String channelId = getString(R.string.default_notification_channel_id);
-                    NotificationChannel channel = new NotificationChannel(channelId,
-                            "Default Channel",
-                            NotificationManager.IMPORTANCE_DEFAULT);
-                    notificationManager.createNotificationChannel(channel);
-
-                    builder = new NotificationCompat.Builder(this, channelId);
-                } else {
-                    builder = new NotificationCompat.Builder(this);
-                    builder.setContentIntent(pendingIntent);
-                }
-
-                builder.setAutoCancel(true)
-                        .setDefaults(Notification.DEFAULT_ALL)
-                        .setWhen(System.currentTimeMillis())
-                        .setSmallIcon(R.mipmap.ic_launcher_8ball)
-                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                        .setContentTitle(remoteMessage.getNotification().getTitle())
-                        .setContentText(remoteMessage.getNotification().getBody());
-
-                notificationManager.notify(1, builder.build());
-
-//                Intent intent = new Intent(getApplication(), MainActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-//                        PendingIntent.FLAG_ONE_SHOT);
-//                NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-//                        .setSmallIcon(R.mipmap.ic_launcher_8ball)
-//                        .setContentTitle(remoteMessage.getNotification().getTitle())
-//                        .setContentText(remoteMessage.getNotification().getBody())
-//                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-//                        .setAutoCancel(true)
-//                        .setContentIntent(pendingIntent);
-//                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//                notificationManager.notify(0, builder.build());
-//                getApplicationContext().sendBroadcast(intent);
             }
 
+            PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_ONE_SHOT);
+            NotificationCompat.Builder builder;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                String channelId = getString(R.string.default_notification_channel_id);
+                NotificationChannel channel = new NotificationChannel(channelId,
+                        "Default Channel",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                notificationManager.createNotificationChannel(channel);
+
+                builder = new NotificationCompat.Builder(this, channelId);
+            } else {
+                builder = new NotificationCompat.Builder(this);
+                builder.setContentIntent(pendingIntent);
+            }
+
+            builder.setAutoCancel(true)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setWhen(System.currentTimeMillis())
+                    .setSmallIcon(R.mipmap.ic_launcher_8ball)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setContentTitle(remoteMessage.getNotification().getTitle())
+                    .setContentText(remoteMessage.getNotification().getBody());
+
+            notificationManager.notify(1, builder.build());
         }
     }
 
