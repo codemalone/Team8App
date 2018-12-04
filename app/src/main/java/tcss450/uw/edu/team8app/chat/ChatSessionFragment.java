@@ -10,11 +10,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -31,9 +35,11 @@ import java.util.List;
 import java.util.Objects;
 
 import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.home.LandingPageFragment;
 import tcss450.uw.edu.team8app.model.Message;
 import tcss450.uw.edu.team8app.utils.MyFirebaseMessagingService;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 
 /**
@@ -98,6 +104,7 @@ public class ChatSessionFragment extends Fragment {
         } else {
             mMessages = new ArrayList<Message>();
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -157,6 +164,89 @@ public class ChatSessionFragment extends Fragment {
                 .onCancelled(error -> Log.e(TAG, error))
                 .build().execute();
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.manage_chat, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.manage_add_user:
+                //TODO: Add Jake's code for adding users to conversation here.
+                return true;
+            case R.id.manage_leave:
+                leaveConversation();
+                loadFragment(new LandingPageFragment());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void leaveConversation() {
+        Uri uri = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_users))
+                .appendPath(getString(R.string.ep_remove))
+                .build();
+        JSONObject msgObject = new JSONObject();
+        try {
+            msgObject.put("token", FirebaseInstanceId.getInstance().getToken());
+            msgObject.put("chatId", mChatId);
+        } catch (JSONException e) {
+            Log.e("ERROR!", e.getMessage());
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), msgObject)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleLeaveConversationPost)
+                .onCancelled(error -> Log.e("ERROR!", error))
+                .build()
+                .execute();
+    }
+
+    public void handleLeaveConversationPost(String result) {
+        try {
+            onWaitFragmentInteractionHide();
+            JSONObject root = new JSONObject(result);
+            if(root.has("success")) {
+                if(root.getBoolean("success")) {
+
+                }
+            }
+        } catch (JSONException e) {
+            Log.e("ERROR!", e.getMessage());
+            e.printStackTrace();
+            onWaitFragmentInteractionHide();
+        }
+    }
+
+    public void onWaitFragmentInteractionShow() {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_home_container, new WaitFragment(), "WAIT")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void onWaitFragmentInteractionHide() {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getActivity().getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
+    }
+
+    private void loadFragment(Fragment frag) {
+        FragmentTransaction transaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_home_container, frag);
+        transaction.commit();
+    }
+
     private void endOfSendMsgTask(final String result) {
         try {
             //This is the result from the web service
