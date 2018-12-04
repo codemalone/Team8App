@@ -1,26 +1,36 @@
 package tcss450.uw.edu.team8app.chat;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,10 +40,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import tcss450.uw.edu.team8app.DisplayMessageDialog;
 import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.home.LandingPageFragment;
 import tcss450.uw.edu.team8app.model.Message;
 import tcss450.uw.edu.team8app.utils.MyFirebaseMessagingService;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 
 /**
@@ -50,6 +63,8 @@ public class ChatSessionFragment extends Fragment {
     private ChatMessageListAdapter mMessageListAdapter;
     private List<Message> mMessages;
     private String mChatId;
+    private JSONArray mPossible;
+    private String mAddedUsername;
 
     private String mEmail;
     private String mSendUrl;
@@ -83,8 +98,134 @@ public class ChatSessionFragment extends Fragment {
                 .build()
                 .toString();
 
+        generatePossible();
+        openAddDialog();
+    }
 
+    private void generatePossible() {
+        Uri.Builder uriBuilder = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_chats))
+                .appendPath(getString(R.string.ep_users))
+                .appendPath(getString(R.string.ep_possible));
+        Uri uri = uriBuilder.build();
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("token", FirebaseInstanceId.getInstance().getToken());
+            msg.put("chatId", mChatId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), msg)
+                //.onPreExecute(this::handleSearchOnPre)
+                .onPostExecute(this::handleGetPossibleOnPost)
+                //.onCancelled(this::handleErrorsInTask)
+                .build().execute();
+    }
 
+    private void handleGetPossibleOnPost(String result) {
+        try {
+            JSONObject json = new JSONObject(result);
+            mPossible = json.getJSONArray("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openAddDialog() {
+        if (mPossible != null) {
+            //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            //builderSingle.setIcon(R.drawable.ic_launcher);
+            //builder.setTitle("Add a user:");
+            Dialog dialog;
+
+            final ArrayList<String> items = new ArrayList<String>();
+            for (int i = 0; i < mPossible.length(); i++) {
+                try {
+                    items.add(mPossible.getJSONObject(i).getString("username"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            //String[] asArray = (String[]) items.toArray();
+            String[] asArray = items.toArray(new String[items.size()]);
+            final ArrayList itemsSelected = new ArrayList();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Add user(s):");
+            builder.setMultiChoiceItems(asArray, null,
+                    new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int selectedItemId,
+                                            boolean isSelected) {
+                            if (isSelected) {
+                                itemsSelected.add(selectedItemId);
+                            } else if (itemsSelected.contains(selectedItemId)) {
+                                itemsSelected.remove(Integer.valueOf(selectedItemId));
+                            }
+                        }
+                    })
+                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            for (int i = 0; i < itemsSelected.size(); i++) {
+                                addUserToChat((Integer) itemsSelected.get(i));
+                            }
+                            // chats/add (token, theirEmail, chatId)
+                            AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
+                            //Log.e()
+                            if (itemsSelected.size() == 1) {
+                                builderInner.setMessage("1 user has been added to the chat.");
+                            } else {
+                                builderInner.setMessage(itemsSelected.size() + " users have been added to the chat.");
+                            }
+                            builderInner.setTitle("Success");
+                            builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builderInner.show();
+                            generatePossible();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+            dialog = builder.create();
+            dialog.show();
+        }
+    }
+
+    private void addUserToChat(int index) {
+        try {
+            mAddedUsername = mPossible.getJSONObject(index).getString("username");
+            String theirEmail = mPossible.getJSONObject(index).getString("email");
+            Uri.Builder uriBuilder = new Uri.Builder()
+                    .scheme(getString(R.string.ep_scheme))
+                    .encodedAuthority(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_chats))
+                    .appendPath(getString(R.string.ep_add));
+            Uri uri = uriBuilder.build();
+            JSONObject msg = new JSONObject();
+            try {
+                msg.put("token", FirebaseInstanceId.getInstance().getToken());
+                msg.put("theirEmail", theirEmail);
+                msg.put("chatId", mChatId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    //.onPreExecute(this::handleSearchOnPre)
+                    //.onPostExecute(this::handleAddUserOnPost)
+                    //.onCancelled(this::handleErrorsInTask)
+                    .build().execute();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -98,6 +239,7 @@ public class ChatSessionFragment extends Fragment {
         } else {
             mMessages = new ArrayList<Message>();
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -108,9 +250,6 @@ public class ChatSessionFragment extends Fragment {
         }
         IntentFilter iFilter = new IntentFilter(MyFirebaseMessagingService.RECEIVED_NEW_MESSAGE);
         getActivity().registerReceiver(mFirebaseMessageReciever, iFilter);
-
-
-
     }
 
     @Override
@@ -142,6 +281,7 @@ public class ChatSessionFragment extends Fragment {
     }
 
     private void handleSendClick(final View theButton) {
+        openAddDialog();
         String msg = mMessageInputEditText.getText().toString();
         JSONObject messageJson = new JSONObject();
         try {
@@ -157,6 +297,89 @@ public class ChatSessionFragment extends Fragment {
                 .onCancelled(error -> Log.e(TAG, error))
                 .build().execute();
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.manage_chat, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.manage_add_user:
+                //TODO: Add Jake's code for adding users to conversation here.
+                return true;
+            case R.id.manage_leave:
+                leaveConversation();
+                loadFragment(new LandingPageFragment());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void leaveConversation() {
+        Uri uri = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_users))
+                .appendPath(getString(R.string.ep_remove))
+                .build();
+        JSONObject msgObject = new JSONObject();
+        try {
+            msgObject.put("token", FirebaseInstanceId.getInstance().getToken());
+            msgObject.put("chatId", mChatId);
+        } catch (JSONException e) {
+            Log.e("ERROR!", e.getMessage());
+            e.printStackTrace();
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), msgObject)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleLeaveConversationPost)
+                .onCancelled(error -> Log.e("ERROR!", error))
+                .build()
+                .execute();
+    }
+
+    public void handleLeaveConversationPost(String result) {
+        try {
+            onWaitFragmentInteractionHide();
+            JSONObject root = new JSONObject(result);
+            if(root.has("success")) {
+                if(root.getBoolean("success")) {
+
+                }
+            }
+        } catch (JSONException e) {
+            Log.e("ERROR!", e.getMessage());
+            e.printStackTrace();
+            onWaitFragmentInteractionHide();
+        }
+    }
+
+    public void onWaitFragmentInteractionShow() {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_home_container, new WaitFragment(), "WAIT")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void onWaitFragmentInteractionHide() {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getActivity().getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
+    }
+
+    private void loadFragment(Fragment frag) {
+        FragmentTransaction transaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_home_container, frag);
+        transaction.commit();
+    }
+
     private void endOfSendMsgTask(final String result) {
         try {
             //This is the result from the web service
