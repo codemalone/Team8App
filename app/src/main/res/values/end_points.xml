@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
-    <string name="ep_base_url">192.168.0.103:5000</string>
-    <string name="ep_scheme">http</string>
-    <!--<string name="ep_base_url">tcss450a18-team8-test.herokuapp.com</string>-->
-    <!--<string name="ep_scheme">https</string>-->
+    <string name="ep_base_url">tcss450a18-team8-test.herokuapp.com</string>
+    <string name="ep_scheme">https</string>
     <string name="ep_account">account</string>
     <string name="ep_login">login</string>
     <string name="ep_email">email</string>
