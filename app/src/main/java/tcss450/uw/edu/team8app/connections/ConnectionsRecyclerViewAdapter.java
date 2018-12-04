@@ -1,7 +1,9 @@
 package tcss450.uw.edu.team8app.connections;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,6 +83,8 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
                 buttonHelper(mContext.getString(R.string.ep_remove), email, position);
             } else if (button.getText().toString().equals("Accept Invite")) {
                 buttonHelper(mContext.getString(R.string.ep_add), email, position);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
+                prefs.edit().putBoolean("inviteAccepted", true).apply();
             } else {
                 buttonHelper(mContext.getString(R.string.ep_add), email, position);
             }

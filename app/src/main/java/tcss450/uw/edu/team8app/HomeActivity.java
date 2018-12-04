@@ -240,6 +240,8 @@ public class HomeActivity extends AppCompatActivity
     private void handleHomeOnPostExecute(final String result) {
         Bundle args = new Bundle();
         args.putString("weather", result);
+        args.putDouble("lat", mLocation.getLatitude());
+        args.putDouble("lng", mLocation.getLongitude());
         Fragment frag = new LandingPageFragment();
         frag.setArguments(args);
         onWaitFragmentInteractionHide();

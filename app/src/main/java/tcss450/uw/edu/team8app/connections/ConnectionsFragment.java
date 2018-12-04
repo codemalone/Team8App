@@ -1,7 +1,9 @@
 package tcss450.uw.edu.team8app.connections;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -56,6 +58,28 @@ public class ConnectionsFragment extends Fragment {
         mAdapter = new MyAdapter(getChildFragmentManager());
         mPager = v.findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
+        mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+                Log.e("INVITEACCEPTED", "" + prefs.getBoolean("inviteAccepted", false));
+                if (prefs.getBoolean("inviteAccepted", false)) {
+                    mAdapter.notifyDataSetChanged();
+                    prefs.edit().putBoolean("inviteAccepted", false).apply();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
         mPager.setCurrentItem(1);
     }
 
@@ -67,6 +91,11 @@ public class ConnectionsFragment extends Fragment {
         @Override
         public int getCount() {
             return 3;
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
 
         @Override

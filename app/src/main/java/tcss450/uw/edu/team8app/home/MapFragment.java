@@ -47,6 +47,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
     private MarkerOptions mMarkerOptions;
     private Geocoder mGeocoder;
     private TextView mCurrentZip;
+    private double mLat;
+    private double mLng;
 
     public MapFragment() {
         // Required empty public constructor
@@ -56,6 +58,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         onWaitFragmentInteractionShow();
+
+        if (getArguments() != null) {
+            mLat = Double.parseDouble(getArguments().getString("lat"));
+            mLng = Double.parseDouble(getArguments().getString("lng"));
+        }
 
         mGeocoder = new Geocoder(getActivity(), Locale.getDefault());
         mCurrentZip = rootView.findViewById(R.id.editText_map_zipcode);
@@ -155,11 +162,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
             mMarkerOptions = new MarkerOptions().position(latLng).title("" + latLng);
             mMap.addMarker(mMarkerOptions);
         });
-
         Random r = new Random();
         double lat = -90 + 180 * r.nextDouble();
         double lng = -180 + 360 * r.nextDouble();
-        LatLng randomLatLng = new LatLng(lat, lng);
+        LatLng initialLatLng = new LatLng(lat, lng);
+        if (mLat != 0.0 && mLng != 0.0) {
+            initialLatLng = new LatLng(mLat, mLng);
+        }
         try {
             List<Address> addresses = mGeocoder.getFromLocation(lat, lng, 1);
             if (addresses.size() > 0) {
@@ -168,10 +177,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mMarkerOptions = new MarkerOptions().position(randomLatLng).title("" + randomLatLng);
+        mMarkerOptions = new MarkerOptions().position(initialLatLng).title("" + initialLatLng);
         mMap.addMarker(mMarkerOptions);
         // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(randomLatLng).zoom(4).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(initialLatLng).zoom(4).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 

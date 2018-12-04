@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,8 @@ public class LandingPageFragment extends Fragment {
     private ArrayAdapter<String> mAdapter;
     private JSONArray weather;
     private Spinner mDropdown;
+    private double lat;
+    private double lng;
 
     public LandingPageFragment() {
         // Required empty public constructor
@@ -64,13 +67,14 @@ public class LandingPageFragment extends Fragment {
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Home");
         if (getArguments() != null) {
             try {
+                lat = getArguments().getDouble("lat");
+                lng = getArguments().getDouble("lng");
                 weather = new JSONArray(getArguments().getString("weather"));
                 JSONObject hourlyWeather = weather.getJSONObject(1);
                 JSONObject dailyWeather = weather.getJSONObject(0);
                 JSONArray hourlyWeatherData = hourlyWeather.getJSONArray("data");
                 JSONArray dailyWeatherData = dailyWeather.getJSONArray("data");
                 JSONObject currentWeather = hourlyWeatherData.getJSONObject(0);
-
                 String packageName = getActivity().getPackageName();
                 weatherLocation = v.findViewById(R.id.textView_weather_location);
                 weatherCurrentTemp = v.findViewById(R.id.textView_weather_current_temp);
@@ -219,12 +223,18 @@ public class LandingPageFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             ImageButton mapsButton = v.findViewById(R.id.imageButton_maps);
             mapsButton.setOnClickListener((View view) -> {
+                Bundle bundle = new Bundle();
+                bundle.putString("lat", "" + lat);
+                bundle.putString("lng", "" + lng);
+                MapFragment frag = new MapFragment();
+                frag.setArguments(bundle);
                 Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Map");
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.frame_home_container, new MapFragment())
+                        .replace(R.id.frame_home_container, frag)
                         .addToBackStack(null);
                 // Commit the transaction
                 transaction.commit();
