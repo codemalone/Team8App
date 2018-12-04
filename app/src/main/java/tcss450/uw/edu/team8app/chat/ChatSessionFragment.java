@@ -2,6 +2,7 @@ package tcss450.uw.edu.team8app.chat;
 
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -134,35 +135,75 @@ public class ChatSessionFragment extends Fragment {
 
     private void openAddDialog() {
         if (mPossible != null) {
-            AlertDialog.Builder builderSingle = new AlertDialog.Builder(getActivity());
+            //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             //builderSingle.setIcon(R.drawable.ic_launcher);
-            builderSingle.setTitle("Add a user:");
+            //builder.setTitle("Add a user:");
+            Dialog dialog;
 
-            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
+            final ArrayList<String> items = new ArrayList<String>();
             for (int i = 0; i < mPossible.length(); i++) {
                 try {
-                    arrayAdapter.add(mPossible.getJSONObject(i).getString("username"));
+                    items.add(mPossible.getJSONObject(i).getString("username"));
                 } catch (JSONException e) {
                     e.printStackTrace();
-                };
-            }
-
-            builderSingle.setNegativeButton("cancel", (dialog, which) -> dialog.dismiss());
-
-            builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    addUserToChat(which);
                 }
-            });
-            builderSingle.show();
+            }
+            //String[] asArray = (String[]) items.toArray();
+            String[] asArray = items.toArray(new String[items.size()]);
+            final ArrayList itemsSelected = new ArrayList();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Add user(s):");
+            builder.setMultiChoiceItems(asArray, null,
+                    new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int selectedItemId,
+                                            boolean isSelected) {
+                            if (isSelected) {
+                                itemsSelected.add(selectedItemId);
+                            } else if (itemsSelected.contains(selectedItemId)) {
+                                itemsSelected.remove(Integer.valueOf(selectedItemId));
+                            }
+                        }
+                    })
+                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            for (int i = 0; i < itemsSelected.size(); i++) {
+                                addUserToChat((Integer) itemsSelected.get(i));
+                            }
+                            // chats/add (token, theirEmail, chatId)
+                            AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
+                            //Log.e()
+                            if (itemsSelected.size() == 1) {
+                                builderInner.setMessage("1 user has been added to the chat.");
+                            } else {
+                                builderInner.setMessage(itemsSelected.size() + " users have been added to the chat.");
+                            }
+                            builderInner.setTitle("Success");
+                            builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builderInner.show();
+                            generatePossible();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+            dialog = builder.create();
+            dialog.show();
         }
     }
 
     private void addUserToChat(int index) {
         try {
-            String theirEmail = mPossible.getJSONObject(index).getString("email");
             mAddedUsername = mPossible.getJSONObject(index).getString("username");
+            String theirEmail = mPossible.getJSONObject(index).getString("email");
             Uri.Builder uriBuilder = new Uri.Builder()
                     .scheme(getString(R.string.ep_scheme))
                     .encodedAuthority(getString(R.string.ep_base_url))
@@ -179,27 +220,12 @@ public class ChatSessionFragment extends Fragment {
             }
             new SendPostAsyncTask.Builder(uri.toString(), msg)
                     //.onPreExecute(this::handleSearchOnPre)
-                    .onPostExecute(this::handleAddUserOnPost)
+                    //.onPostExecute(this::handleAddUserOnPost)
                     //.onCancelled(this::handleErrorsInTask)
                     .build().execute();
         } catch (JSONException e) {
             e.printStackTrace();
-        };
-    }
-
-    private void handleAddUserOnPost(String result) {
-        // chats/add (token, theirEmail, chatId)
-        AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
-        //Log.e()
-        builderInner.setMessage(mAddedUsername + " has been added to the chat.");
-        builderInner.setTitle("Success");
-        builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builderInner.show();
+        }
     }
 
     @Override
