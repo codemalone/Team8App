@@ -53,7 +53,7 @@ public class ConnectionsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mAdapter = new MyAdapter(getActivity().getSupportFragmentManager());
+        mAdapter = new MyAdapter(getChildFragmentManager());
         mPager = v.findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
         mPager.setCurrentItem(1);

@@ -1,5 +1,6 @@
 package tcss450.uw.edu.team8app.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  *
  * @author Jim Phan
  */
-public class Conversation {
+public class Conversation implements Serializable {
 
     /**
      * Tag used for conversation related activities.
