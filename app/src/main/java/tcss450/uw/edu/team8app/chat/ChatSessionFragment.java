@@ -107,7 +107,7 @@ public class ChatSessionFragment extends Fragment {
                 .scheme(getString(R.string.ep_scheme))
                 .encodedAuthority(getString(R.string.ep_base_url))
                 .appendPath(getString(R.string.ep_chats))
-                .appendPath(getString(R.string.ep_user))
+                .appendPath(getString(R.string.ep_users))
                 .appendPath(getString(R.string.ep_possible));
         Uri uri = uriBuilder.build();
         JSONObject msg = new JSONObject();
