@@ -24,6 +24,7 @@
         <item name="android:colorBackground">@color/white</item>
         <item name="colorPrimaryDark">@color/uw_purple</item>
         <item name="colorAccent">@color/uw_metallic_gold</item>
+        <item name="mapIconTint">@color/uw_gold</item>
     </style>
 
     <style name="DarkTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -38,6 +39,7 @@
         <item name="android:colorButtonNormal">@color/uw_purple</item>
         <item name="android:textColorHint">@color/white</item>
         <item name="android:drawableTint">@color/white</item>
+        <item name="mapIconTint">@color/white</item>
     </style>
 
     <style name="FruitSaladTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -50,6 +52,7 @@
         <item name="android:textColorPrimary">@color/blackberry</item>
         <item name="android:textColorHint">@color/blackberry</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="mapIconTint">@color/strawberry</item>
     </style>
 
 </resources>
