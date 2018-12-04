@@ -17,6 +17,7 @@ package tcss450.uw.edu.team8app.utils;
  */
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -77,6 +78,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         if (remoteMessage.getNotification() != null) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             NotificationCompat.Builder builder;
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -90,7 +92,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         PendingIntent.FLAG_ONE_SHOT);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    builder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id));
+                    String channelId = getString(R.string.default_notification_channel_id);
+                    NotificationChannel channel = new NotificationChannel(channelId,
+                            "Default Channel",
+                            NotificationManager.IMPORTANCE_DEFAULT);
+                    notificationManager.createNotificationChannel(channel);
+
+                    builder = new NotificationCompat.Builder(this, channelId);
                 } else {
                     builder = new NotificationCompat.Builder(this);
                     builder.setContentIntent(pendingIntent);
@@ -104,7 +112,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setContentTitle(remoteMessage.getNotification().getTitle())
                         .setContentText(remoteMessage.getNotification().getBody());
 
-                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 notificationManager.notify(1, builder.build());
 
 //                Intent intent = new Intent(getApplication(), MainActivity.class);
