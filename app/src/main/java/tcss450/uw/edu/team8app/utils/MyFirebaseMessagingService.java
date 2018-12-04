@@ -83,7 +83,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            if (remoteMessage.getData().get("type").equals("newcontact")) {
+            if (remoteMessage.getData().get("type").equals(getString(R.string.fcm_type_new_contact_request))) {
                 intent.putExtra("from_connection_notification", true);
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(this,
