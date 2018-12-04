@@ -16,10 +16,12 @@ package tcss450.uw.edu.team8app.utils;
  * limitations under the License.
  */
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -75,27 +77,37 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         if (remoteMessage.getNotification() != null) {
+            NotificationCompat.Builder builder;
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
             if (remoteMessage.getData().get("type").equals("newcontact")) {
-                Intent intent = new Intent(getApplication(), MainActivity.class);
                 intent.putExtra("from_connection_notification", true);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                        0,
+                        intent,
                         PendingIntent.FLAG_ONE_SHOT);
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    builder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id));
+                } else {
+                    builder = new NotificationCompat.Builder(this);
+                    builder.setContentIntent(pendingIntent);
+                }
+
+                builder.setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setWhen(System.currentTimeMillis())
                         .setSmallIcon(R.mipmap.ic_launcher_8ball)
-                        .setContentTitle(remoteMessage.getNotification().getTitle())
-                        .setContentText(remoteMessage.getNotification().getBody())
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                        .setAutoCancel(true)
-                        .setContentIntent(pendingIntent);
+                        .setContentTitle(remoteMessage.getNotification().getTitle())
+                        .setContentText(remoteMessage.getNotification().getBody());
+
                 NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                notificationManager.notify(0, builder.build());
-                getApplicationContext().sendBroadcast(intent);
-            } else if (remoteMessage.getData().get("type").equals("contacrt")){
+                notificationManager.notify(1, builder.build());
+
 //                Intent intent = new Intent(getApplication(), MainActivity.class);
-//                intent.putExtra("from_connection_notification", true);
-//                Log.e("SENDER", remoteMessage.getData().get("sender"));
-//                intent.putExtra("from_message_notification", remoteMessage.getData().get("sender"));
 //                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
 //                        PendingIntent.FLAG_ONE_SHOT);
@@ -133,7 +145,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     /**
      * Persist token to third-party servers.
-     *
+     * <p>
      * Modify this method to associate the user's FCM InstanceID token with any server-side account
      * maintained by your application.
      *

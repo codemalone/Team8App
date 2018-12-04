@@ -56,6 +56,7 @@ import tcss450.uw.edu.team8app.connections.ConnectionsFragment;
 import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.model.Message;
 import tcss450.uw.edu.team8app.settings.ChangeThemeFragment;
+import tcss450.uw.edu.team8app.utils.GcmKeepAlive;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.Themes;
 import tcss450.uw.edu.team8app.utils.WaitFragment;
@@ -81,6 +82,10 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        GcmKeepAlive gka = new GcmKeepAlive(this);
+        gka.broadcastIntents();
+
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (mPreferences != null) {
             if (mPreferences.getString(Themes.TAG, "") != null) {
@@ -146,6 +151,13 @@ public class HomeActivity extends AppCompatActivity
     public void onStart() {
         super.onStart();
         active = true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        GcmKeepAlive gka = new GcmKeepAlive(this);
+        gka.broadcastIntents();
     }
 
     public static boolean isActive() {
