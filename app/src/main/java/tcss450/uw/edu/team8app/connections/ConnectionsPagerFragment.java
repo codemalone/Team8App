@@ -1,10 +1,12 @@
 package tcss450.uw.edu.team8app.connections;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Connection;
@@ -36,6 +39,7 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
     ConnectionsRecyclerViewAdapter mAdapter;
     private OnConnectionInteractionListener mListener;
     private OnListFragmentInteractionListener mListListener;
+    protected FragmentActivity mActivity;
     View view;
 
     public static ConnectionsPagerFragment init(int position) {
@@ -97,7 +101,9 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
     }
 
     private void handleGetOnPre() {
-        onWaitFragmentInteractionShow();
+        if (mActivity != null) {
+            onWaitFragmentInteractionShow();
+        }
     }
 
     private void handleGetOnPost(String result) {
@@ -127,12 +133,14 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        onWaitFragmentInteractionHide();
+        if (mActivity != null) {
+            onWaitFragmentInteractionHide();
+        }
     }
 
     @Override
     public void onWaitFragmentInteractionShow() {
-        getActivity().getSupportFragmentManager()
+        Objects.requireNonNull(mActivity).getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.frame_home_container, new WaitFragment(), "WAIT")
                 .addToBackStack(null)
@@ -141,15 +149,16 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
 
     @Override
     public void onWaitFragmentInteractionHide() {
-        getActivity().getSupportFragmentManager()
+        Objects.requireNonNull(mActivity).getSupportFragmentManager()
                 .beginTransaction()
-                .remove(getActivity().getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .remove(Objects.requireNonNull(mActivity.getSupportFragmentManager().findFragmentByTag("WAIT")))
                 .commit();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mActivity = getActivity();
         mListener = (OnConnectionInteractionListener) this;
         if(context instanceof OnListFragmentInteractionListener) {
             mListListener = (OnListFragmentInteractionListener) context;

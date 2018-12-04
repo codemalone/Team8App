@@ -48,13 +48,6 @@ public class ConnectionsFragment extends Fragment {
                 mPager.setCurrentItem(2);
             }
         }
-
-        return v;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         mAdapter = new MyAdapter(getChildFragmentManager());
         mPager = v.findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
@@ -81,6 +74,13 @@ public class ConnectionsFragment extends Fragment {
             }
         });
         mPager.setCurrentItem(1);
+
+        return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     public static class MyAdapter extends FragmentStatePagerAdapter {
