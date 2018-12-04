@@ -61,7 +61,7 @@ public class ConnectionsFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-                Log.e("INVITEACCEPTED", "" + prefs.getBoolean("inviteAccepted", false));
+                //Log.e("INVITEACCEPTED", "" + prefs.getBoolean("inviteAccepted", false));
                 if (prefs.getBoolean("inviteAccepted", false)) {
                     mAdapter.notifyDataSetChanged();
                     prefs.edit().putBoolean("inviteAccepted", false).apply();

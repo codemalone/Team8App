@@ -28,5 +28,6 @@
     <string name="ep_remove">remove</string>
     <string name="ep_change">change</string>
     <string name="ep_details">details</string>
+    <string name="ep_possible">possible</string>
     <string name="ep_users">users</string>
 </resources>
