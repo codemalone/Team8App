@@ -1,17 +1,31 @@
 package tcss450.uw.edu.team8app.chat;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Conversation;
+import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +54,7 @@ public class ConversationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
         if (getArguments() != null && getArguments().getSerializable(TAG) != null) {
             mConversationList = new ArrayList<>(Arrays.asList((Conversation[]) getArguments().getSerializable(TAG)));
         } else {
@@ -65,6 +79,23 @@ public class ConversationFragment extends Fragment {
             recyclerView.setAdapter(new MyConversationRecyclerViewAdapter(mConversationList, mListener));
         }
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.messages, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_chat_create:
+                //loadFragment(new ConnectionsAddFragment());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
