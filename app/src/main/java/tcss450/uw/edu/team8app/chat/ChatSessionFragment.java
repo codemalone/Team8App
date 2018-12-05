@@ -316,7 +316,7 @@ public class ChatSessionFragment extends Fragment {
                 return true;
             case R.id.manage_leave:
                 leaveConversation();
-                returnConversation();
+                //returnConversation();
                 //loadFragment(new ConversationFragment());
                 return true;
             default:
@@ -324,27 +324,26 @@ public class ChatSessionFragment extends Fragment {
         }
     }
 
-    private void returnConversation() {
-        Uri uri = new Uri.Builder()
-                .scheme(getString(R.string.ep_scheme))
-                .encodedAuthority(getString(R.string.ep_base_url))
-                .appendPath(getString(R.string.ep_chats))
-                .appendPath(getString(R.string.ep_details))
-                .build();
-        JSONObject messageJson = new JSONObject();
-        try {
-            messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("ERROR!", e.getMessage());
-        }
-        new SendPostAsyncTask.Builder(uri.toString(), messageJson)
-                .onPreExecute(this::onWaitFragmentInteractionShow)
-                .onPostExecute(this::handleMessageListGetOnPostExecute)
-                .onCancelled(error -> Log.e("ERROR!", error))
-                .build().execute();
-        setHasOptionsMenu(false);
+    private void returnToChatList() {
+            Uri uri = new Uri.Builder()
+                    .scheme(getString(R.string.ep_scheme))
+                    .encodedAuthority(getString(R.string.ep_base_url)).appendPath(getString(R.string.ep_chats))
+                    .appendPath(getString(R.string.ep_details))
+                    .build();
+            JSONObject messageJson = new JSONObject();
+            try {
+                messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("ERROR!", e.getMessage());
+            }
+            new SendPostAsyncTask.Builder(uri.toString(), messageJson)
+                    .onPreExecute(this::onWaitFragmentInteractionShow)
+                    .onPostExecute(this::handleMessageListGetOnPostExecute)
+                    .onCancelled(error -> Log.e("ERROR!", error))
+                    .build().execute();
     }
+
 
     private void leaveConversation() {
         Uri uri = new Uri.Builder()
@@ -371,15 +370,21 @@ public class ChatSessionFragment extends Fragment {
     }
 
     public void handleLeaveConversationPost(String result) {
-        try {
-            onWaitFragmentInteractionHide();
-            JSONObject root = new JSONObject(result);
-            System.out.println("");
-        } catch (JSONException e) {
-            Log.e("ERROR!", e.getMessage());
-            e.printStackTrace();
-            onWaitFragmentInteractionHide();
-        }
+//        try {
+//            onWaitFragmentInteractionHide();
+//            JSONObject root = new JSONObject(result);
+//            System.out.println("");
+//            returnConversation();
+//
+//        } catch (JSONException e) {
+//            Log.e("ERROR!", e.getMessage());
+//            e.printStackTrace();
+//            onWaitFragmentInteractionHide();
+//        }
+        onWaitFragmentInteractionHide();
+//        getActivity().getSupportFragmentManager().popBackStack();
+//        returnConversation();
+        returnToChatList();
     }
 
     private void handleMessageListGetOnPostExecute(final String result) {

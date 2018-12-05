@@ -18,7 +18,7 @@
     <string name="hint_email">Enter Email Address</string>
     <string name="hint_password1">Enter a password</string>
     <string name="hint_password2">Reenter the same password</string>
-    <string name="hint_username">Enter a username (Optional)</string>
+    <string name="hint_username">Enter a username</string>
     <string name="hint_first_name">Enter your first name</string>
     <string name="hint_last_name">Enter your last name</string>
     <string name="hint_reset_code">Enter Reset Code</string>
