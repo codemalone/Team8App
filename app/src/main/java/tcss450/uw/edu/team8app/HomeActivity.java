@@ -377,24 +377,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_item_connections) {
             loadFragment(new ConnectionsFragment());
         } else if (id == R.id.nav_item_messages) {
-            Uri uri = new Uri.Builder()
-                    .scheme(getString(R.string.ep_scheme))
-                    .encodedAuthority(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_chats))
-                    .appendPath(getString(R.string.ep_details))
-                    .build();
-            JSONObject messageJson = new JSONObject();
-            try {
-                messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.e("ERROR!", e.getMessage());
-            }
-            new SendPostAsyncTask.Builder(uri.toString(), messageJson)
-                    .onPreExecute(this::onWaitFragmentInteractionShow)
-                    .onPostExecute(this::handleMessageListGetOnPostExecute)
-                    .onCancelled(error -> Log.e("ERROR!", error))
-                    .build().execute();
+            onCreateChat();
         } else if (id == R.id.nav_item_settings) {
             loadFragmentNoBackStack(new SettingsFragment());
         } else if (id == R.id.nav_item_logout) {
@@ -515,6 +498,27 @@ public class HomeActivity extends AppCompatActivity
                 .onPostExecute(this::handleConnectionMessagesGetOnPostExecute)
                 .onCancelled(error -> Log.e("ERROR!", error))
                 .build().execute();
+    }
+
+    @Override
+    public void onCreateChat() {
+            Uri uri = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+              .encodedAuthority(getString(R.string.ep_base_url)).appendPath(getString(R.string.ep_chats))
+         .appendPath(getString(R.string.ep_details))
+         .build();
+         JSONObject messageJson = new JSONObject();
+         try {
+         messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
+         } catch (JSONException e) {
+         e.printStackTrace();
+         Log.e("ERROR!", e.getMessage());
+         }
+         new SendPostAsyncTask.Builder(uri.toString(), messageJson)
+         .onPreExecute(this::onWaitFragmentInteractionShow)
+         .onPostExecute(this::handleMessageListGetOnPostExecute)
+         .onCancelled(error -> Log.e("ERROR!", error))
+         .build().execute();
     }
 
     /**private void handleIdChatGetOnPostExecute(final String result) {

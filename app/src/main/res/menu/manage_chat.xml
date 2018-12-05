@@ -5,9 +5,6 @@
         android:id="@+id/manage_add_user"
         android:title="Add Connection"
         app:showAsAction="never"/>
-    <item android:id="@+id/manage_remove_user"
-        android:title="Remove Connection"
-        app:showAsAction="never"/>
     <item android:id="@+id/manage_leave"
         android:title="Leave Conversation"
         app:showAsAction="never"/>
