@@ -43,6 +43,8 @@ import java.util.Objects;
 import tcss450.uw.edu.team8app.DisplayMessageDialog;
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.home.LandingPageFragment;
+import tcss450.uw.edu.team8app.model.Conversation;
+import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.model.Message;
 import tcss450.uw.edu.team8app.utils.MyFirebaseMessagingService;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
@@ -63,6 +65,8 @@ public class ChatSessionFragment extends Fragment {
     private ChatMessageListAdapter mMessageListAdapter;
     private List<Message> mMessages;
     private String mChatId;
+    //private Credentials mCredentials;
+    private String mUsername;
     private JSONArray mPossible;
     private String mAddedUsername;
 
@@ -85,6 +89,7 @@ public class ChatSessionFragment extends Fragment {
                         Context.MODE_PRIVATE);
         if (prefs.contains(getString(R.string.keys_prefs_email))) {
             mEmail = prefs.getString(getString(R.string.keys_prefs_email), "");
+            mUsername = prefs.getString(getString(R.string.keys_prefs_username), "");
         } else {
             throw new IllegalStateException("No EMAIL in prefs!");
         }
@@ -281,7 +286,6 @@ public class ChatSessionFragment extends Fragment {
     }
 
     private void handleSendClick(final View theButton) {
-        openAddDialog();
         String msg = mMessageInputEditText.getText().toString();
         JSONObject messageJson = new JSONObject();
         try {
@@ -308,21 +312,45 @@ public class ChatSessionFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.manage_add_user:
-                //TODO: Add Jake's code for adding users to conversation here.
+                openAddDialog();
                 return true;
             case R.id.manage_leave:
                 leaveConversation();
-                loadFragment(new LandingPageFragment());
+                returnConversation();
+                //loadFragment(new ConversationFragment());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void returnConversation() {
+        Uri uri = new Uri.Builder()
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_chats))
+                .appendPath(getString(R.string.ep_details))
+                .build();
+        JSONObject messageJson = new JSONObject();
+        try {
+            messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+        }
+        new SendPostAsyncTask.Builder(uri.toString(), messageJson)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleMessageListGetOnPostExecute)
+                .onCancelled(error -> Log.e("ERROR!", error))
+                .build().execute();
+        setHasOptionsMenu(false);
+    }
+
     private void leaveConversation() {
         Uri uri = new Uri.Builder()
                 .scheme(getString(R.string.ep_scheme))
                 .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_chats))
                 .appendPath(getString(R.string.ep_users))
                 .appendPath(getString(R.string.ep_remove))
                 .build();
@@ -346,14 +374,52 @@ public class ChatSessionFragment extends Fragment {
         try {
             onWaitFragmentInteractionHide();
             JSONObject root = new JSONObject(result);
-            if(root.has("success")) {
-                if(root.getBoolean("success")) {
-
-                }
-            }
+            System.out.println("");
         } catch (JSONException e) {
             Log.e("ERROR!", e.getMessage());
             e.printStackTrace();
+            onWaitFragmentInteractionHide();
+        }
+    }
+
+    private void handleMessageListGetOnPostExecute(final String result) {
+        try {
+            JSONObject root = new JSONObject(result);
+            if(root.has("success") && root.getBoolean("success")) {
+                if(root.has("data")) {
+                    JSONArray jsonArray = root.getJSONArray("data");
+                    List<Conversation> conversations = new ArrayList<>();
+                    for(int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        String chatid = object.getString("chatid");
+                        JSONArray users = object.getJSONArray("users");
+                        List<String> userString = new ArrayList<>();
+                        for(int j = 0; j < users.length(); j++) {
+                            if(!users.getString(j).equalsIgnoreCase(mUsername)
+                                    && !users.getString(j).equalsIgnoreCase(mEmail)) {
+                                userString.add(users.getString(j));
+                            }
+                        }
+                        String lastMessage = object.getString("recentMessage");
+                        Conversation conversation = new Conversation(chatid, userString, lastMessage);
+                        conversations.add(conversation);
+                    }
+                    Bundle bundle = new Bundle();
+                    Conversation[] conversationsAsArray = new Conversation[conversations.size()];
+                    conversationsAsArray = conversations.toArray(conversationsAsArray);
+                    bundle.putSerializable(ConversationFragment.TAG, conversationsAsArray);
+                    Fragment frag = new ConversationFragment();
+                    frag.setArguments(bundle);
+                    onWaitFragmentInteractionHide();
+                    //getActivity().getSupportActionBar().setTitle("Messages");
+                    Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Message");
+                    loadFragment(frag);
+                }
+            }
+
+        } catch(JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
             onWaitFragmentInteractionHide();
         }
     }
@@ -374,10 +440,11 @@ public class ChatSessionFragment extends Fragment {
     }
 
     private void loadFragment(Fragment frag) {
-        FragmentTransaction transaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+        getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_home_container, frag);
-        transaction.commit();
+                .add(R.id.frame_home_container, frag, "messages")
+                .addToBackStack(null)
+                .commit();
     }
 
     private void endOfSendMsgTask(final String result) {

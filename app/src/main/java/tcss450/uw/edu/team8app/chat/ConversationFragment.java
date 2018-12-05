@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,10 +30,12 @@ import org.json.JSONObject;
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Conversation;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A fragment representing a list of Items.
@@ -47,12 +51,30 @@ public class ConversationFragment extends Fragment {
     private List<Conversation> mConversationList;
     private JSONArray mPossible;
     private int mChatId;
+    private ArrayList mSelectedItems;
+    private String mUsername;
+    private String mEmail;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public ConversationFragment() {
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(
+                        getString(R.string.keys_shared_prefs),
+                        Context.MODE_PRIVATE);
+        if (prefs.contains(getString(R.string.keys_prefs_email))) {
+            mEmail = prefs.getString(getString(R.string.keys_prefs_email), "");
+            mUsername = prefs.getString(getString(R.string.keys_prefs_username), "");
+        } else {
+            throw new IllegalStateException("No EMAIL in prefs!");
+        }
     }
 
     @Override
@@ -170,7 +192,7 @@ public class ConversationFragment extends Fragment {
             }
             //String[] asArray = (String[]) items.toArray();
             String[] asArray = items.toArray(new String[items.size()]);
-            final ArrayList itemsSelected = new ArrayList();
+            mSelectedItems = new ArrayList();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Add user(s):");
             builder.setMultiChoiceItems(asArray, null,
@@ -179,31 +201,35 @@ public class ConversationFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int selectedItemId,
                                             boolean isSelected) {
                             if (isSelected) {
-                                itemsSelected.add(selectedItemId);
-                            } else if (itemsSelected.contains(selectedItemId)) {
-                                itemsSelected.remove(Integer.valueOf(selectedItemId));
+                                mSelectedItems.add(selectedItemId);
+                            } else if (mSelectedItems.contains(selectedItemId)) {
+                                mSelectedItems.remove(Integer.valueOf(selectedItemId));
                             }
                         }
                     })
                     .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-                            for (int i = 0; i < itemsSelected.size(); i++) {
+                            if (mSelectedItems.size() > 0) {
+                                createChatWithUser();
+                            }
+/**                            for (int i = 0; i < itemsSelected.size(); i++) {
                                 if (i == 0) {
                                     createChatWithUser((Integer) itemsSelected.get(i));
                                 } else {
                                     addUserToChat((Integer) itemsSelected.get(i));
                                 }
-                            }
+                            }*/
                             // chats/add (token, theirEmail, chatId)
                             AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
                             //Log.e()
-                            builderInner.setMessage("Chat created with " + itemsSelected.size() + " user(s).");
+                            builderInner.setMessage("Chat created with " + mSelectedItems.size() + " user(s).");
                             builderInner.setTitle("Success");
                             builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
+                                    //mListener.onConversationInteraction(new Conversation("" + mChatId, null, null));
                                 }
                             });
                             builderInner.show();
@@ -218,13 +244,15 @@ public class ConversationFragment extends Fragment {
             dialog = builder.create();
             //((AlertDialog) dialog).setView(getLayoutInflater().inflate(R.layout.scrollview_add_dialog, null));
             dialog.show();
+            //TODO
+           // mListener.onConversationInteraction(new Conversation("" + mChatId, null, null));
         }
     }
 
-    private void createChatWithUser(Integer index) {
+    private void createChatWithUser() {
         try {
            // mAddedUsername = mPossible.getJSONObject(index).getString("username");
-            String theirEmail = mPossible.getJSONObject(index).getString("email");
+            String theirEmail = mPossible.getJSONObject((Integer) mSelectedItems.get(0)).getString("email");
             Uri.Builder uriBuilder = new Uri.Builder()
                     .scheme(getString(R.string.ep_scheme))
                     .encodedAuthority(getString(R.string.ep_base_url))
@@ -254,6 +282,9 @@ public class ConversationFragment extends Fragment {
             Log.e("TEST", result);
             Log.e("TEST", "" + json.getJSONObject("data").getInt("chatId"));
             mChatId = json.getJSONObject("data").getInt("chatId");
+            for (int i = 1; i < mSelectedItems.size(); i++) {
+                addUserToChat((Integer) mSelectedItems.get(i));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -287,6 +318,30 @@ public class ConversationFragment extends Fragment {
         }
     }
 
+    private void loadFragment(Fragment frag) {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_home_container, frag, "messages")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void onWaitFragmentInteractionShow() {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_home_container, new WaitFragment(), "WAIT")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void onWaitFragmentInteractionHide() {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getActivity().getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -299,5 +354,6 @@ public class ConversationFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         void onConversationInteraction(Conversation item);
+        void onCreateChat();
     }
 }
