@@ -58,22 +58,19 @@ public class Conversation implements Serializable {
         String users = "";
         int index = 0;
 
-        // if only one other then add their name
-        if (mUsers.size() == 1) {
+        if (mUsers.size() == 0) {
+            users = "No Friends In Chat";
+        } else if (mUsers.size() == 1) {
+            // if only one other then add their name
             users += mUsers.get(0);
-        } else if (mUsers.size() > 0) {
+        } else {
             while (users.length() < 30 && index < mUsers.size()) {
                 users += mUsers.get(index++) + ", ";
             }
-
-            // remove last comma and add "& you"
-
+            // remove last comma
             users = users.substring(0, users.length() - 2);
-        }
 
-
-        // if end of list add "& you" otherwise add count
-        if (mUsers.size() > 1) {
+            // add suffix for group chat
             if (index == mUsers.size()) {
                 users += " & you";
             } else {
@@ -81,15 +78,6 @@ public class Conversation implements Serializable {
                 users += " & " + remaining + " more";
             }
         }
-//
-//        char[] parse = users.toCharArray();
-//        String parsedString = "";
-//        for(int i = 0; i < characters && i < parse.length; i++) {
-//            parsedString += parse[i];
-//        }
-//        if(characters < parse.length) {
-//            parsedString += "...";
-//        }
         return users;
     }
 

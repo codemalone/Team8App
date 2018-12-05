@@ -229,7 +229,7 @@ public class ConversationFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    //mListener.onConversationInteraction(new Conversation("" + mChatId, null, null));
+                                    mListener.onConversationInteraction(new Conversation("" + mChatId, null, null));
                                 }
                             });
                             builderInner.show();
