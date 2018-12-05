@@ -69,6 +69,7 @@ public class ChatSessionFragment extends Fragment {
     private String mUsername;
     private JSONArray mPossible;
     private String mAddedUsername;
+    private ChatSessionListener mListener;
 
     private String mEmail;
     private String mSendUrl;
@@ -105,6 +106,23 @@ public class ChatSessionFragment extends Fragment {
 
         generatePossible();
         openAddDialog();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ChatSessionListener) {
+            mListener = (ChatSessionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     private void generatePossible() {
@@ -324,24 +342,8 @@ public class ChatSessionFragment extends Fragment {
         }
     }
 
-    private void returnToChatList() {
-            Uri uri = new Uri.Builder()
-                    .scheme(getString(R.string.ep_scheme))
-                    .encodedAuthority(getString(R.string.ep_base_url)).appendPath(getString(R.string.ep_chats))
-                    .appendPath(getString(R.string.ep_details))
-                    .build();
-            JSONObject messageJson = new JSONObject();
-            try {
-                messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.e("ERROR!", e.getMessage());
-            }
-            new SendPostAsyncTask.Builder(uri.toString(), messageJson)
-                    .onPreExecute(this::onWaitFragmentInteractionShow)
-                    .onPostExecute(this::handleMessageListGetOnPostExecute)
-                    .onCancelled(error -> Log.e("ERROR!", error))
-                    .build().execute();
+    public interface ChatSessionListener {
+        void returnToChatList();
     }
 
 
@@ -384,7 +386,8 @@ public class ChatSessionFragment extends Fragment {
         onWaitFragmentInteractionHide();
 //        getActivity().getSupportFragmentManager().popBackStack();
 //        returnConversation();
-        returnToChatList();
+        mListener.returnToChatList();
+//        returnToChatList();
     }
 
     private void handleMessageListGetOnPostExecute(final String result) {

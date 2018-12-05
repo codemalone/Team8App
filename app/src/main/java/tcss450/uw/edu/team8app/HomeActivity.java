@@ -68,7 +68,7 @@ public class HomeActivity extends AppCompatActivity
         SettingsFragment.OnFragmentInteractionListener, ChangeThemeFragment.OnFragmentInteractionListener,
         ConnectionsFragment.OnListFragmentInteractionListener, ChangePasswordFragment.OnFragmentInteractionListener,
         ChangeUserFragment.OnFragmentInteractionListener,
-        ConversationFragment.OnListFragmentInteractionListener {
+        ConversationFragment.OnListFragmentInteractionListener, ChatSessionFragment.ChatSessionListener {
 
     static boolean active = false;
     Toolbar toolbar;
@@ -575,6 +575,11 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onStartChatInteraction(Connection connection) {
         callAsyncTaskGetConnectionMessages(connection.getEmail());
+    }
+
+    @Override
+    public void returnToChatList() {
+        onCreateChat();
     }
 
     // Deleting the InstanceId (Firebase token) must be done asynchronously. Good thing
