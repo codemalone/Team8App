@@ -270,6 +270,19 @@ public class HomeActivity extends AppCompatActivity
         SharedPreferences prefs = getSharedPreferences(getString(R.string.keys_shared_prefs),
                 Context.MODE_PRIVATE);
         prefs.edit().putString(getString(R.string.keys_prefs_username), newUsername).apply();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View header = navigationView.getHeaderView(0);
+        TextView username = header.findViewById(R.id.textView_nav_header_username);
+
+        mCredentials = new Credentials.Builder(mCredentials.getEmail(), mCredentials.getPassword())
+                .addFirstName(mCredentials.getFirstName())
+                .addLastName(mCredentials.getFirstName())
+                .addUsername(newUsername)
+                .build();
+
+        username.setText(newUsername);
+
         if (checkPermission()) {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
