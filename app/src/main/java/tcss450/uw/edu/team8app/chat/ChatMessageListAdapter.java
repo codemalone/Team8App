@@ -14,8 +14,6 @@ import tcss450.uw.edu.team8app.model.Message;
 
 public class ChatMessageListAdapter extends RecyclerView.Adapter<ChatMessageListAdapter.ViewHolder> {
     private List<Message> mValues;
-    //private final OnListFragmentInteractionListener mListener;
-
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -33,13 +31,11 @@ public class ChatMessageListAdapter extends RecyclerView.Adapter<ChatMessageList
     // Provide a suitable constructor (depends on the kind of dataset)
     public ChatMessageListAdapter(List<Message> myDataset) {
         mValues = myDataset;
-        //mListener = listener;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_message, parent, false);
 
@@ -53,19 +49,7 @@ public class ChatMessageListAdapter extends RecyclerView.Adapter<ChatMessageList
         holder.mEmail.setTypeface(null, Typeface.BOLD);
         holder.mMessage.setText(mValues.get(position).getMessage());
         holder.mTimestamp.setText(mValues.get(position).getmTimestamp());
-
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != mListener) {
-//                    // Notify the active callbacks interface (the activity, if the
-//                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(holder.mItem);
-//                }
-//            }
-//        });
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
@@ -88,7 +72,6 @@ public class ChatMessageListAdapter extends RecyclerView.Adapter<ChatMessageList
             return super.toString() + " '" + mEmail.getText() + "'";
         }
     }
-
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override

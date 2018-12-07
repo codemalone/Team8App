@@ -141,7 +141,6 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
     private SendPostAsyncTask(final Builder builder) {
         mUrl = builder.mUrl;
         mJsonMsg = builder.mJsonMsg;
-
         mOnPre = builder.onPre;
         mOnProgress = builder.onProg;
         mOnPost = builder.onPost;
@@ -175,9 +174,11 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
             InputStream content = urlConnection.getInputStream();
             BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
             String s = "";
+
             while ((s = buffer.readLine()) != null) {
                 response.append(s);
             }
+
             publishProgress();
         } catch (Exception e) {
             response = new StringBuilder("Unable to connect, Reason: "

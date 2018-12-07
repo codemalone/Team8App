@@ -33,7 +33,6 @@ public class ConnectionsFragment extends Fragment {
     private View v;
 
     public ConnectionsFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -42,25 +41,25 @@ public class ConnectionsFragment extends Fragment {
         v = inflater.inflate(R.layout.fragment_connections, container, false);
 
         onResume();
+
         if (getArguments() != null) {
             if (getArguments().getBoolean("from_connection_notification")) {
                 mPager.setCurrentItem(2);
             }
         }
+
         mAdapter = new MyAdapter(getChildFragmentManager());
         mPager = v.findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
             @Override
             public void onPageScrolled(int i, float v, int i1) {
-
             }
 
             @Override
             public void onPageSelected(int position) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-                //Log.e("INVITEACCEPTED", "" + prefs.getBoolean("inviteAccepted", false));
+
                 if (prefs.getBoolean("inviteAccepted", false)) {
                     mAdapter.notifyDataSetChanged();
                     prefs.edit().putBoolean("inviteAccepted", false).apply();
@@ -69,7 +68,6 @@ public class ConnectionsFragment extends Fragment {
 
             @Override
             public void onPageScrollStateChanged(int i) {
-
             }
         });
         mPager.setCurrentItem(1);

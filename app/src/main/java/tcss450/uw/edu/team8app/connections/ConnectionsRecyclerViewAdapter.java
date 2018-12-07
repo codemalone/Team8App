@@ -52,6 +52,7 @@ public class ConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<Connect
         holder.mFirstView.setText(mData.get(position).getFirstName());
         holder.mLastView.setText(mData.get(position).getLastName());
         holder.mUsernameView.setText(mData.get(position).getUsername());
+
         if (mData.get(position).getVerified() == 1) {
             holder.mButton.setText("Start Chat");
         } else {
@@ -64,6 +65,7 @@ public class ConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<Connect
                 holder.mDeleteButton.setVisibility(View.INVISIBLE);
             }
         }
+
         holder.mButton.setOnClickListener(view -> primaryButtonOnClick(view, mData.get(position).getEmail(), position, holder, holder.mItem));
         holder.mDeleteButton.setOnClickListener(view -> deleteButtonOnClick(view, mData.get(position).getEmail(), position, holder, holder.mItem));
     }
@@ -75,6 +77,7 @@ public class ConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<Connect
 
     private void primaryButtonOnClick(View view, String email, int position, ViewHolder holder, Connection mItem) {
         Button button = (Button) view;
+
         if (button.getText().toString().equals("Start Chat")) {
             mListListener.onStartChatInteraction(holder.mItem);
         } else {
@@ -87,9 +90,9 @@ public class ConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<Connect
             } else {
                 buttonHelper(mContext.getString(R.string.ep_add), email, position);
             }
+
             mListener.OnConnectionInteraction(holder.mItem);
         }
-        //mListener.OnConnectionInteraction(holder.mItem);
     }
 
     private void buttonHelper(String endpoint, String email, int position) {
@@ -100,15 +103,15 @@ public class ConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<Connect
                 .appendPath(endpoint);
         Uri uri = uriBuilder.build();
         JSONObject msg = new JSONObject();
+
         try {
             msg.put("token", FirebaseInstanceId.getInstance().getToken());
             msg.put("email", email);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         new SendPostAsyncTask.Builder(uri.toString(), msg)
-                //.onPreExecute(this::handleButtonOnPre)
-                //.onPostExecute(view -> handleButtonOnPost(position))
                 .onCancelled(this::handleErrorsInTask)
                 .build().execute();
     }
@@ -121,7 +124,6 @@ public class ConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<Connect
     public int getItemCount() {
         return mData.size();
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;

@@ -31,7 +31,6 @@ public class PasswordResetRequestCodeFragment extends Fragment {
     private String mEmail;
 
     public PasswordResetRequestCodeFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -39,8 +38,8 @@ public class PasswordResetRequestCodeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_password_reset_request_code, container, false);
-
         Bundle args = getArguments();
+
         if (args != null) {
             mEmail = args.getString("email");
         }
@@ -54,6 +53,7 @@ public class PasswordResetRequestCodeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnCodeCheckListener) {
             mListener = (OnCodeCheckListener) context;
         } else {
@@ -123,6 +123,7 @@ public class PasswordResetRequestCodeFragment extends Fragment {
             JSONObject resultsJSON = new JSONObject(result);
             boolean success = resultsJSON.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
+
             if (success) {
                 mListener.onCodeSubmitSuccess(mEmail,
                         ((EditText) getView().findViewById(R.id.requestcode_code_edit))

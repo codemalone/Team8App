@@ -16,7 +16,7 @@ public enum Themes {
     public static final String TAG = "Theme";
     private int mId;
 
-    private Themes(int id) {
+    Themes(int id) {
         mId = id;
     }
 

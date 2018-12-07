@@ -37,6 +37,7 @@ public class MyConversationRecyclerViewAdapter extends RecyclerView.Adapter<MyCo
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_conversation, parent, false);
+
         return new ViewHolder(view);
     }
 
@@ -45,16 +46,12 @@ public class MyConversationRecyclerViewAdapter extends RecyclerView.Adapter<MyCo
         holder.mItem = mValues.get(position);
 
         holder.mUsersView.setText(mValues.get(position).parsedUsers(20));
-        //holder.mNumbersView.setText("Other Users: " + mValues.get(position).getUsers().size());
         holder.mLastMessageView.setText(mValues.get(position).getLastMessage());
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onConversationInteraction(holder.mItem);
-                }
+        holder.mView.setOnClickListener(v -> {
+            if (null != mListener) {
+                // Notify the active callbacks interface (the activity, if the
+                // fragment is attached to one) that an item has been selected.
+                mListener.onConversationInteraction(holder.mItem);
             }
         });
     }
@@ -67,7 +64,6 @@ public class MyConversationRecyclerViewAdapter extends RecyclerView.Adapter<MyCo
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mUsersView;
-        //public final TextView mNumbersView;
         public final TextView mLastMessageView;
         public Conversation mItem;
 
@@ -75,7 +71,6 @@ public class MyConversationRecyclerViewAdapter extends RecyclerView.Adapter<MyCo
             super(view);
             mView = view;
             mUsersView = view.findViewById(R.id.conversation_user_names);
-            //mNumbersView = view.findViewById(R.id.conversation_user_number);
             mLastMessageView = view.findViewById(R.id.conversation_last_message);
         }
 

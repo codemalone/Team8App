@@ -25,9 +25,7 @@ public class SettingsFragment extends Fragment {
     private Credentials mCredentials;
 
     public SettingsFragment() {
-        // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +44,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
+
         if (getArguments() != null) {
             mCredentials = (Credentials) getArguments().getSerializable(Credentials.CREDIT_TAG);
         }
@@ -54,6 +53,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -105,7 +105,6 @@ public class SettingsFragment extends Fragment {
      * This fragment listener handles the interaction for the settings fragment.
      */
     public interface OnFragmentInteractionListener {
-
         /**
          * Opens the Change theme fragment.
          */

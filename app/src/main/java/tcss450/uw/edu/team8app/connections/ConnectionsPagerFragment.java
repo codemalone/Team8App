@@ -74,6 +74,7 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
                 .encodedAuthority(getString(R.string.ep_base_url))
                 .appendPath(getString(R.string.ep_connections))
                 .appendPath(getString(R.string.ep_get));
+
         if (getArguments() != null) {
             if (getArguments().getInt("position") == 0) {
                 uriBuilder.appendPath(getString(R.string.ep_pending));
@@ -82,13 +83,16 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
             } else if (getArguments().getInt("position") == 2) {
                 uriBuilder.appendPath(getString(R.string.ep_received));
             }
+
             Uri uri = uriBuilder.build();
             JSONObject msg = new JSONObject();
+
             try {
                 msg.put("token", FirebaseInstanceId.getInstance().getToken());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             new SendPostAsyncTask.Builder(uri.toString(), msg)
                     .onPreExecute(this::handleGetOnPre)
                     .onPostExecute(this::handleGetOnPost)
@@ -106,15 +110,17 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
     private void handleGetOnPost(String result) {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView_connections_pager);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         try {
             JSONObject json = new JSONObject(result);
             JSONArray data = json.getJSONArray("data");
             int myID = json.getInt("id");
-            //Log.e("TEST", "" + data);
+
             for (int i = 0; i < data.length(); i++) {
                 JSONObject currentMember = data.getJSONObject(i);
                 int verified = 0;
                 int sender = 0;
+
                 if (!currentMember.isNull("verified")) {
                     verified = currentMember.getInt("verified");
                     if (currentMember.getInt("memberid_a") == myID) {
@@ -123,13 +129,16 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
                         sender = 2;
                     }
                 }
+
                 mConnections.add(new Connection(currentMember.getString("firstname"), currentMember.getString("lastname"), currentMember.getString("username"), currentMember.getString("email"), verified, sender));
             }
+
             mAdapter = new ConnectionsRecyclerViewAdapter(mConnections, getContext(), mListener, mListListener);
             recyclerView.setAdapter(mAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         if (mActivity != null) {
             onWaitFragmentInteractionHide();
         }
@@ -156,7 +165,8 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
     public void onAttach(Context context) {
         super.onAttach(context);
         mActivity = getActivity();
-        mListener = (OnConnectionInteractionListener) this;
+        mListener = this;
+
         if (context instanceof OnListFragmentInteractionListener) {
             mListListener = (OnListFragmentInteractionListener) context;
         } else {

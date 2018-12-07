@@ -35,7 +35,6 @@ public class ChangePasswordFragment extends Fragment {
     private Credentials mCredentials;
 
     public ChangePasswordFragment() {
-        // Required empty public constructor
     }
 
 
@@ -54,6 +53,7 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
+
         if (getArguments() != null) {
             mCredentials = (Credentials) getArguments().getSerializable(Credentials.CREDIT_TAG);
         }
@@ -62,6 +62,7 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -114,8 +115,8 @@ public class ChangePasswordFragment extends Fragment {
                         .appendPath(getString(R.string.ep_password))
                         .appendPath(getString(R.string.ep_change))
                         .build();
-
                 JSONObject msgObject = new JSONObject();
+
                 try {
                     msgObject.put("email", mCredentials.getEmail());
                     msgObject.put("oldPassword", mOldPassword.getText().toString());
@@ -124,6 +125,7 @@ public class ChangePasswordFragment extends Fragment {
                     Log.e("ERROR!", e.getMessage());
                     e.printStackTrace();
                 }
+
                 new SendPostAsyncTask.Builder(uri.toString(), msgObject)
                         .onPreExecute(this::handleSubmitOnPre)
                         .onPostExecute(this::handleSubmitOnPost)
@@ -142,6 +144,7 @@ public class ChangePasswordFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(result);
             boolean success = jsonObject.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
+
             if (success) {
                 mListener.changePasswordSuccess(mNewPassword.getText().toString());
             } else {

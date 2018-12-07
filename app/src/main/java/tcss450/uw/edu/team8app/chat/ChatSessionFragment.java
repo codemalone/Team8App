@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -52,14 +51,12 @@ public class ChatSessionFragment extends Fragment {
 
     public static final String ARG_MESSAGE_LIST = "messages";
     public static final String TAG = "CHAT_FRAG";
-    private static final String CHAT_ID = "1";
     private EditText mMessageInputEditText;
     private RecyclerView mMessageDisplay;
     private RecyclerView.LayoutManager mMessageLayoutManager;
     private ChatMessageListAdapter mMessageListAdapter;
     private List<Message> mMessages;
     private String mChatId;
-    //private Credentials mCredentials;
     private String mUsername;
     private JSONArray mPossible;
     private String mAddedUsername;
@@ -71,7 +68,6 @@ public class ChatSessionFragment extends Fragment {
     private FirebaseMessageReciever mFirebaseMessageReciever;
 
     public ChatSessionFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -82,12 +78,14 @@ public class ChatSessionFragment extends Fragment {
                 getActivity().getSharedPreferences(
                         getString(R.string.keys_shared_prefs),
                         Context.MODE_PRIVATE);
+
         if (prefs.contains(getString(R.string.keys_prefs_email))) {
             mEmail = prefs.getString(getString(R.string.keys_prefs_email), "");
             mUsername = prefs.getString(getString(R.string.keys_prefs_username), "");
         } else {
             throw new IllegalStateException("No EMAIL in prefs!");
         }
+
         //We will use this url every time the user hits send. Let's only build it once, ya?
         mSendUrl = new Uri.Builder()
                 .scheme(getString(R.string.ep_scheme))
@@ -105,6 +103,7 @@ public class ChatSessionFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof ChatSessionListener) {
             mListener = (ChatSessionListener) context;
         } else {
@@ -128,12 +127,14 @@ public class ChatSessionFragment extends Fragment {
                 .appendPath(getString(R.string.ep_possible));
         Uri uri = uriBuilder.build();
         JSONObject msg = new JSONObject();
+
         try {
             msg.put("token", FirebaseInstanceId.getInstance().getToken());
             msg.put("chatId", mChatId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         new SendPostAsyncTask.Builder(uri.toString(), msg)
                 //.onPreExecute(this::handleSearchOnPre)
                 .onPostExecute(this::handleGetPossibleOnPost)
@@ -152,12 +153,10 @@ public class ChatSessionFragment extends Fragment {
 
     private void openAddDialog() {
         if (mPossible != null) {
-            //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            //builderSingle.setIcon(R.drawable.ic_launcher);
-            //builder.setTitle("Add a user:");
             Dialog dialog;
 
             final ArrayList<String> items = new ArrayList<String>();
+
             for (int i = 0; i < mPossible.length(); i++) {
                 try {
                     items.add(mPossible.getJSONObject(i).getString("username"));
@@ -165,53 +164,38 @@ public class ChatSessionFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-            //String[] asArray = (String[]) items.toArray();
+
             String[] asArray = items.toArray(new String[items.size()]);
             final ArrayList itemsSelected = new ArrayList();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Add user(s):");
             builder.setMultiChoiceItems(asArray, null,
-                    new DialogInterface.OnMultiChoiceClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int selectedItemId,
-                                            boolean isSelected) {
-                            if (isSelected) {
-                                itemsSelected.add(selectedItemId);
-                            } else if (itemsSelected.contains(selectedItemId)) {
-                                itemsSelected.remove(Integer.valueOf(selectedItemId));
-                            }
+                    (dialog1, selectedItemId, isSelected) -> {
+                        if (isSelected) {
+                            itemsSelected.add(selectedItemId);
+                        } else if (itemsSelected.contains(selectedItemId)) {
+                            itemsSelected.remove(Integer.valueOf(selectedItemId));
                         }
                     })
-                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            for (int i = 0; i < itemsSelected.size(); i++) {
-                                addUserToChat((Integer) itemsSelected.get(i));
-                            }
-                            // chats/add (token, theirEmail, chatId)
-                            AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
-                            //Log.e()
-                            if (itemsSelected.size() == 1) {
-                                builderInner.setMessage("1 user has been added to the chat.");
-                            } else {
-                                builderInner.setMessage(itemsSelected.size() + " users have been added to the chat.");
-                            }
-                            builderInner.setTitle("Success");
-                            builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            builderInner.show();
-                            generatePossible();
+                    .setPositiveButton("Add", (dialog12, id) -> {
+                        for (int i = 0; i < itemsSelected.size(); i++) {
+                            addUserToChat((Integer) itemsSelected.get(i));
                         }
+
+                        AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
+
+                        if (itemsSelected.size() == 1) {
+                            builderInner.setMessage("1 user has been added to the chat.");
+                        } else {
+                            builderInner.setMessage(itemsSelected.size() + " users have been added to the chat.");
+                        }
+
+                        builderInner.setTitle("Success");
+                        builderInner.setPositiveButton("Ok", (dialog121, which) -> dialog121.dismiss());
+                        builderInner.show();
+                        generatePossible();
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
+                    .setNegativeButton("Cancel", (dialog13, id) -> {});
             dialog = builder.create();
             dialog.show();
         }
@@ -228,6 +212,7 @@ public class ChatSessionFragment extends Fragment {
                     .appendPath(getString(R.string.ep_add));
             Uri uri = uriBuilder.build();
             JSONObject msg = new JSONObject();
+
             try {
                 msg.put("token", FirebaseInstanceId.getInstance().getToken());
                 msg.put("theirEmail", theirEmail);
@@ -235,10 +220,8 @@ public class ChatSessionFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    //.onPreExecute(this::handleSearchOnPre)
-                    //.onPostExecute(this::handleAddUserOnPost)
-                    //.onCancelled(this::handleErrorsInTask)
                     .build().execute();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -256,15 +239,18 @@ public class ChatSessionFragment extends Fragment {
         } else {
             mMessages = new ArrayList<Message>();
         }
+
         setHasOptionsMenu(true);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         if (mFirebaseMessageReciever == null) {
             mFirebaseMessageReciever = new FirebaseMessageReciever();
         }
+
         IntentFilter iFilter = new IntentFilter(MyFirebaseMessagingService.RECEIVED_NEW_MESSAGE);
         getActivity().registerReceiver(mFirebaseMessageReciever, iFilter);
     }
@@ -272,6 +258,7 @@ public class ChatSessionFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+
         if (mFirebaseMessageReciever != null) {
             getActivity().unregisterReceiver(mFirebaseMessageReciever);
         }
@@ -283,7 +270,6 @@ public class ChatSessionFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootLayout = inflater.inflate(R.layout.fragment_chat_session, container, false);
 
-        // initialize recycler view
         mMessageDisplay = (RecyclerView) rootLayout.findViewById(R.id.recycler_view_chat_session);
         mMessageLayoutManager = new LinearLayoutManager(this.getActivity());
         ((LinearLayoutManager) mMessageLayoutManager).setReverseLayout(true);
@@ -300,6 +286,7 @@ public class ChatSessionFragment extends Fragment {
     private void handleSendClick(final View theButton) {
         String msg = mMessageInputEditText.getText().toString();
         JSONObject messageJson = new JSONObject();
+
         try {
             //messageJson.put("email", mEmail);
             messageJson.put("message", msg);
@@ -308,6 +295,7 @@ public class ChatSessionFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         new SendPostAsyncTask.Builder(mSendUrl, messageJson)
                 .onPostExecute(this::endOfSendMsgTask)
                 .onCancelled(error -> Log.e(TAG, error))
@@ -350,6 +338,7 @@ public class ChatSessionFragment extends Fragment {
                 .appendPath(getString(R.string.ep_remove))
                 .build();
         JSONObject msgObject = new JSONObject();
+
         try {
             msgObject.put("token", FirebaseInstanceId.getInstance().getToken());
             msgObject.put("chatId", mChatId);
@@ -357,6 +346,7 @@ public class ChatSessionFragment extends Fragment {
             Log.e("ERROR!", e.getMessage());
             e.printStackTrace();
         }
+
         new SendPostAsyncTask.Builder(uri.toString(), msgObject)
                 .onPreExecute(this::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleLeaveConversationPost)
@@ -366,46 +356,37 @@ public class ChatSessionFragment extends Fragment {
     }
 
     public void handleLeaveConversationPost(String result) {
-//        try {
-//            onWaitFragmentInteractionHide();
-//            JSONObject root = new JSONObject(result);
-//            System.out.println("");
-//            returnConversation();
-//
-//        } catch (JSONException e) {
-//            Log.e("ERROR!", e.getMessage());
-//            e.printStackTrace();
-//            onWaitFragmentInteractionHide();
-//        }
         onWaitFragmentInteractionHide();
-//        getActivity().getSupportFragmentManager().popBackStack();
-//        returnConversation();
         mListener.returnToChatList();
-//        returnToChatList();
     }
 
     private void handleMessageListGetOnPostExecute(final String result) {
         try {
             JSONObject root = new JSONObject(result);
+
             if (root.has("success") && root.getBoolean("success")) {
                 if (root.has("data")) {
                     JSONArray jsonArray = root.getJSONArray("data");
                     List<Conversation> conversations = new ArrayList<>();
+
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
                         String chatid = object.getString("chatid");
                         JSONArray users = object.getJSONArray("users");
                         List<String> userString = new ArrayList<>();
+
                         for (int j = 0; j < users.length(); j++) {
                             if (!users.getString(j).equalsIgnoreCase(mUsername)
                                     && !users.getString(j).equalsIgnoreCase(mEmail)) {
                                 userString.add(users.getString(j));
                             }
                         }
+
                         String lastMessage = object.getString("recentMessage");
                         Conversation conversation = new Conversation(chatid, userString, lastMessage);
                         conversations.add(conversation);
                     }
+
                     Bundle bundle = new Bundle();
                     Conversation[] conversationsAsArray = new Conversation[conversations.size()];
                     conversationsAsArray = conversations.toArray(conversationsAsArray);
@@ -413,12 +394,10 @@ public class ChatSessionFragment extends Fragment {
                     Fragment frag = new ConversationFragment();
                     frag.setArguments(bundle);
                     onWaitFragmentInteractionHide();
-                    //getActivity().getSupportActionBar().setTitle("Messages");
                     Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Message");
                     loadFragment(frag);
                 }
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
@@ -454,6 +433,7 @@ public class ChatSessionFragment extends Fragment {
             //This is the result from the web service
             JSONObject res = new JSONObject(result);
             Log.i("chat response: ", res.toString());
+
             if (res.has("success") && res.getBoolean("success")) {
                 //The web service got our message. Time to clear out the input EditText
                 mMessageInputEditText.setText("");
@@ -466,38 +446,13 @@ public class ChatSessionFragment extends Fragment {
     }
 
     private void endOfGetAllMsgTask(final String result) {
-        Log.i("called getAllPostExec", "blah");
-
         try {
             JSONObject res = new JSONObject(result);
             Log.v("getAll", res.toString());
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
     }
-
-    ;
-
-
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p/>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnListFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onListFragmentInteraction(Message item);
-//    }
-
 
     /**
      * A BroadcastReceiver setup to listen for messages sent from
@@ -507,14 +462,14 @@ public class ChatSessionFragment extends Fragment {
     private class FirebaseMessageReciever extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //Log.i("FCM Chat Frag", "start onRecieve:" + intent.toString());
             if (intent.hasExtra("DATA")) {
                 String data = intent.getStringExtra("DATA");
                 Log.i("msg received", data);
                 JSONObject jObj = null;
+
                 try {
                     jObj = new JSONObject(data);
-                    Log.i("data", data.toString());
+
                     if (jObj.has("message") && jObj.has("sender")) {
 
                         String sender = jObj.getString("sender");

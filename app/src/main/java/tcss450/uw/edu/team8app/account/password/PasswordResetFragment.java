@@ -32,14 +32,12 @@ public class PasswordResetFragment extends Fragment {
     private String mCode;
 
     public PasswordResetFragment() {
-        // Required empty public constructor
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_reset_password, container, false);
 
         Bundle args = getArguments();
@@ -157,6 +155,7 @@ public class PasswordResetFragment extends Fragment {
             JSONObject resultsJSON = new JSONObject(result);
             boolean success = resultsJSON.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
+
             if (success) {
                 mListener.onPasswordResetSuccess();
             } else {

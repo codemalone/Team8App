@@ -15,16 +15,12 @@ import tcss450.uw.edu.team8app.R;
  */
 public class ChatTitleFragment extends Fragment {
 
-
     public ChatTitleFragment() {
-        // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_chat_title, container, false);
     }
 

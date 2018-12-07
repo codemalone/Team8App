@@ -66,6 +66,7 @@ public class ConversationFragment extends Fragment {
                 getActivity().getSharedPreferences(
                         getString(R.string.keys_shared_prefs),
                         Context.MODE_PRIVATE);
+
         if (prefs.contains(getString(R.string.keys_prefs_email))) {
             mEmail = prefs.getString(getString(R.string.keys_prefs_email), "");
             mUsername = prefs.getString(getString(R.string.keys_prefs_username), "");
@@ -78,6 +79,7 @@ public class ConversationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
         if (getArguments() != null && getArguments().getSerializable(TAG) != null) {
             mConversationList = new ArrayList<>(Arrays.asList((Conversation[]) getArguments().getSerializable(TAG)));
         } else {
@@ -94,6 +96,7 @@ public class ConversationFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
+
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -101,7 +104,9 @@ public class ConversationFragment extends Fragment {
             }
             recyclerView.setAdapter(new MyConversationRecyclerViewAdapter(mConversationList, mListener));
         }
+
         generatePossible();
+
         return view;
     }
 
@@ -115,7 +120,6 @@ public class ConversationFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_chat_create:
-                //loadFragment(new ConnectionsAddFragment());
                 openAddDialog();
                 return true;
             default:
@@ -127,6 +131,7 @@ public class ConversationFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
@@ -150,16 +155,15 @@ public class ConversationFragment extends Fragment {
                 .appendPath(getString(R.string.ep_active));
         Uri uri = uriBuilder.build();
         JSONObject msg = new JSONObject();
+
         try {
             msg.put("token", FirebaseInstanceId.getInstance().getToken());
-            //msg.put("chatId", mChatId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         new SendPostAsyncTask.Builder(uri.toString(), msg)
-                //.onPreExecute(this::handleSearchOnPre)
                 .onPostExecute(this::handleGetPossibleOnPost)
-                //.onCancelled(this::handleErrorsInTask)
                 .build().execute();
     }
 
@@ -174,12 +178,9 @@ public class ConversationFragment extends Fragment {
 
     private void openAddDialog() {
         if (mPossible != null) {
-            //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            //builderSingle.setIcon(R.drawable.ic_launcher);
-            //builder.setTitle("Add a user:");
             Dialog dialog;
-
             final ArrayList<String> items = new ArrayList<String>();
+
             for (int i = 0; i < mPossible.length(); i++) {
                 try {
                     items.add(mPossible.getJSONObject(i).getString("username"));
@@ -187,68 +188,44 @@ public class ConversationFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+
             //String[] asArray = (String[]) items.toArray();
             String[] asArray = items.toArray(new String[items.size()]);
             mSelectedItems = new ArrayList();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Add user(s):");
             builder.setMultiChoiceItems(asArray, null,
-                    new DialogInterface.OnMultiChoiceClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int selectedItemId,
-                                            boolean isSelected) {
-                            if (isSelected) {
-                                mSelectedItems.add(selectedItemId);
-                            } else if (mSelectedItems.contains(selectedItemId)) {
-                                mSelectedItems.remove(Integer.valueOf(selectedItemId));
-                            }
+                    (dialog1, selectedItemId, isSelected) -> {
+                        if (isSelected) {
+                            mSelectedItems.add(selectedItemId);
+                        } else if (mSelectedItems.contains(selectedItemId)) {
+                            mSelectedItems.remove(Integer.valueOf(selectedItemId));
                         }
                     })
-                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            if (mSelectedItems.size() > 0) {
-                                createChatWithUser();
-                            }
-/**                            for (int i = 0; i < itemsSelected.size(); i++) {
- if (i == 0) {
- createChatWithUser((Integer) itemsSelected.get(i));
- } else {
- addUserToChat((Integer) itemsSelected.get(i));
- }
- }*/
-                            // chats/add (token, theirEmail, chatId)
-                            AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
-                            //Log.e()
-                            builderInner.setMessage("Chat created with " + mSelectedItems.size() + " user(s).");
-                            builderInner.setTitle("Success");
-                            builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    mListener.onConversationInteraction(new Conversation("" + mChatId, null, null));
-                                }
-                            });
-                            builderInner.show();
-                            generatePossible();
+                    .setPositiveButton("Add", (dialog12, id) -> {
+                        if (mSelectedItems.size() > 0) {
+                            createChatWithUser();
                         }
+
+                        // chats/add (token, theirEmail, chatId)
+                        AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
+                        builderInner.setMessage("Chat created with " + mSelectedItems.size() + " user(s).");
+                        builderInner.setTitle("Success");
+                        builderInner.setPositiveButton("Ok", (dialog121, which) -> {
+                            dialog121.dismiss();
+                            mListener.onConversationInteraction(new Conversation("" + mChatId, null, null));
+                        });
+                        builderInner.show();
+                        generatePossible();
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
+                    .setNegativeButton("Cancel", (dialog13, id) -> {});
             dialog = builder.create();
-            //((AlertDialog) dialog).setView(getLayoutInflater().inflate(R.layout.scrollview_add_dialog, null));
             dialog.show();
-            //TODO
-            // mListener.onConversationInteraction(new Conversation("" + mChatId, null, null));
         }
     }
 
     private void createChatWithUser() {
         try {
-            // mAddedUsername = mPossible.getJSONObject(index).getString("username");
             String theirEmail = mPossible.getJSONObject((Integer) mSelectedItems.get(0)).getString("email");
             Uri.Builder uriBuilder = new Uri.Builder()
                     .scheme(getString(R.string.ep_scheme))
@@ -257,16 +234,16 @@ public class ConversationFragment extends Fragment {
                     .appendPath(getString(R.string.ep_add));
             Uri uri = uriBuilder.build();
             JSONObject msg = new JSONObject();
+
             try {
                 msg.put("token", FirebaseInstanceId.getInstance().getToken());
                 msg.put("theirEmail", theirEmail);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    //.onPreExecute(this::handleSearchOnPre)
                     .onPostExecute(this::handleCreateChatOnPost)
-                    //.onCancelled(this::handleErrorsInTask)
                     .build().execute();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -276,9 +253,8 @@ public class ConversationFragment extends Fragment {
     private void handleCreateChatOnPost(String result) {
         try {
             JSONObject json = new JSONObject(result);
-            Log.e("TEST", result);
-            Log.e("TEST", "" + json.getJSONObject("data").getInt("chatId"));
             mChatId = json.getJSONObject("data").getInt("chatId");
+
             for (int i = 1; i < mSelectedItems.size(); i++) {
                 addUserToChat((Integer) mSelectedItems.get(i));
             }
@@ -289,7 +265,6 @@ public class ConversationFragment extends Fragment {
 
     private void addUserToChat(int index) {
         try {
-            //mAddedUsername = mPossible.getJSONObject(index).getString("username");
             String theirEmail = mPossible.getJSONObject(index).getString("email");
             Uri.Builder uriBuilder = new Uri.Builder()
                     .scheme(getString(R.string.ep_scheme))
@@ -298,6 +273,7 @@ public class ConversationFragment extends Fragment {
                     .appendPath(getString(R.string.ep_add));
             Uri uri = uriBuilder.build();
             JSONObject msg = new JSONObject();
+
             try {
                 msg.put("token", FirebaseInstanceId.getInstance().getToken());
                 msg.put("theirEmail", theirEmail);
@@ -305,10 +281,8 @@ public class ConversationFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             new SendPostAsyncTask.Builder(uri.toString(), msg)
-                    //.onPreExecute(this::handleSearchOnPre)
-                    //.onPostExecute(this::handleAddUserOnPost)
-                    //.onCancelled(this::handleErrorsInTask)
                     .build().execute();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -337,7 +311,6 @@ public class ConversationFragment extends Fragment {
                 .remove(getActivity().getSupportFragmentManager().findFragmentByTag("WAIT"))
                 .commit();
     }
-
 
     /**
      * This interface must be implemented by activities that contain this

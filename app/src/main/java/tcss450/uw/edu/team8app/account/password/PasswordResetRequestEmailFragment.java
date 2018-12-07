@@ -29,7 +29,6 @@ public class PasswordResetRequestEmailFragment extends Fragment {
     private OnInitiateResetListener mListener;
 
     public PasswordResetRequestEmailFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -115,6 +114,7 @@ public class PasswordResetRequestEmailFragment extends Fragment {
             JSONObject resultsJSON = new JSONObject(result);
             boolean success = resultsJSON.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
+
             if (success) {
                 mListener.onEmailSubmitSuccess(((EditText) getView().findViewById(R.id.requestemail_email_edit))
                         .getText().toString());

@@ -59,11 +59,12 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     public void onLoginSuccess(Credentials credentials) {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra(Credentials.CREDIT_TAG, credentials);
+
         if (getIntent().getBooleanExtra("from_connection_notification", false)) {
             intent.putExtra("from_connection_notification", true);
         }
+
         startActivity(intent);
-        //End this activity and remove it from the Activity back stack.
         finish();
     }
 
@@ -133,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     public void onPasswordResetSuccess() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        //End this activity and remove it from the Activity back stack.
         finish();
     }
 }

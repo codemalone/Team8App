@@ -45,7 +45,6 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
     private OnListFragmentInteractionListener mListListener;
 
     public ConnectionsAddFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -58,33 +57,9 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
         ImageButton imageButton = view.findViewById(R.id.imageButton_connections_add_search);
         imageButton.setOnClickListener(this::searchUsers);
         mSearchInput = view.findViewById(R.id.editText_connections_add_search_bar);
-        //LoadPreferences();
 
         return view;
     }
-
-    //    @Override
-//    public void onPause() {
-//        Log.e("ASYNC_TASK_ERROR", "2112412142412");
-//        SavePreferences();
-//        super.onPause();
-//    }
-//
-//    private void SavePreferences(){
-//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putString("searchInput", mSearchInput.getText().toString());
-//        editor.commit();
-//    }
-//
-//    private void LoadPreferences(){
-//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-//        String searchInput = sharedPreferences.getString("state", null);
-//        if (searchInput != null) {
-//            mSearchInput.setText(searchInput);
-//            searchUsers(mSearchButton);
-//        }
-//    }
 
     private void returnToConnections(final View button) {
         FragmentTransaction transaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager()
@@ -103,12 +78,14 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
                     .appendPath(getString(R.string.ep_search));
             Uri uri = uriBuilder.build();
             JSONObject msg = new JSONObject();
+
             try {
                 msg.put("token", FirebaseInstanceId.getInstance().getToken());
                 msg.put("string", mSearchInput.getText());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             new SendPostAsyncTask.Builder(uri.toString(), msg)
                     .onPreExecute(this::handleSearchOnPre)
                     .onPostExecute(this::handleSearchOnPost)
@@ -135,25 +112,31 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
             int myID = json.getInt("id");
             Log.e("TEST", "" + data);
             ArrayList<Connection> connectionsList = new ArrayList<Connection>();
+
             for (int i = 0; i < data.length(); i++) {
                 JSONObject currentMember = data.getJSONObject(i);
                 int verified = 0;
                 int sender = 0;
+
                 if (!currentMember.isNull("verified")) {
                     verified = currentMember.getInt("verified");
+
                     if (currentMember.getInt("memberid_a") == myID) {
                         sender = 1;
                     } else {
                         sender = 2;
                     }
                 }
+
                 connectionsList.add(new Connection(currentMember.getString("firstname"), currentMember.getString("lastname"), currentMember.getString("username"), currentMember.getString("email"), verified, sender));
             }
+
             mAdapter = new ConnectionsRecyclerViewAdapter(connectionsList, getActivity(), mListener, mListListener);
             recyclerView.setAdapter(mAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         onWaitFragmentInteractionHide();
     }
 
@@ -177,7 +160,8 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (OnConnectionInteractionListener) this;
+        mListener = this;
+
         if (context instanceof OnListFragmentInteractionListener) {
             mListListener = (OnListFragmentInteractionListener) context;
         } else {

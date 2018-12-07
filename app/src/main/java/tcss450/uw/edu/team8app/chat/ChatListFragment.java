@@ -27,21 +27,17 @@ public class ChatListFragment extends Fragment {
     private OnConnectionInteractionListener mListener;
 
     public ChatListFragment() {
-        // Required empty public constructor
     }
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setTitle("Messages");
-        //onCreateOptionsMenu();
-        //setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_chat_list, container, false);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.e("AGSAGSAGSAGS", "AGSAGSAGSGASGS");
         inflater.inflate(R.menu.messages, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -56,7 +52,6 @@ public class ChatListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_chat_create:
-                //loadFragment(new ConnectionsAddFragment());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

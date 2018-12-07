@@ -49,7 +49,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
     private double mLng;
 
     public MapFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -89,6 +88,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
         ImageButton updateWeatherButton = rootView.findViewById(R.id.imageButton_map_continue);
         updateWeatherButton.setOnClickListener((View v) -> {
             String zip = mCurrentZip.getText().toString();
+
             if (!zip.equals("")) {
                 LatLng newLatLng = getLatLngByZipcode(zip);
                 if (newLatLng != null) {
@@ -97,6 +97,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
                     mMap.addMarker(mMarkerOptions);
                 }
             }
+
             Uri uri = new Uri.Builder()
                     .scheme(getString(R.string.ep_scheme))
                     .encodedAuthority(getString(R.string.ep_base_url))
@@ -104,10 +105,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
                     .build();
             //build the JSONObject
             JSONObject msg = new JSONObject();
+
             try {
                 msg.put("latitude", mMarkerOptions.getPosition().latitude);
                 msg.put("longitude", mMarkerOptions.getPosition().longitude);
                 List<Address> addresses = mGeocoder.getFromLocation(mMarkerOptions.getPosition().latitude, mMarkerOptions.getPosition().longitude, 1);
+
                 if (addresses.size() == 0) {
                     msg.put("zipcode", "");
                 } else {
@@ -116,6 +119,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
             } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }
+
             new SendPostAsyncTask.Builder(uri.toString(), msg)
                     .onPreExecute(this::onWaitFragmentInteractionShow)
                     .onPostExecute(this::handleHomeOnPostExecute)
@@ -147,6 +151,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
         mMap = googleMap;
         mMap.setOnMapClickListener((LatLng latLng) -> {
             mMap.clear();
+
             try {
                 List<Address> addresses = mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
                 if (addresses.size() > 0) {
@@ -157,6 +162,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             mMarkerOptions = new MarkerOptions().position(latLng).title("" + latLng);
             mMap.addMarker(mMarkerOptions);
         });
@@ -164,9 +170,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
         double lat = -90 + 180 * r.nextDouble();
         double lng = -180 + 360 * r.nextDouble();
         LatLng initialLatLng = new LatLng(lat, lng);
+
         if (mLat != 0.0 && mLng != 0.0) {
             initialLatLng = new LatLng(mLat, mLng);
         }
+
         try {
             List<Address> addresses = mGeocoder.getFromLocation(lat, lng, 1);
             if (addresses.size() > 0) {
@@ -175,6 +183,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         mMarkerOptions = new MarkerOptions().position(initialLatLng).title("" + initialLatLng);
         mMap.addMarker(mMarkerOptions);
         // For zooming automatically to the location of the marker
@@ -184,11 +193,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, WaitFra
 
     private LatLng getLatLngByZipcode(String zipcode) {
         List<Address> addresses = null;
+
         try {
             addresses = mGeocoder.getFromLocationName(zipcode, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         if (addresses != null && !addresses.isEmpty()) {
             return new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
         } else {

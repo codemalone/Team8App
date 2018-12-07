@@ -36,7 +36,6 @@ public class RegisterFragment extends Fragment {
     private Credentials mCredientials;
 
     public RegisterFragment() {
-        // Required empty public constructor
     }
 
 
@@ -163,6 +162,7 @@ public class RegisterFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(result);
             boolean success = jsonObject.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
+
             if (success) {
                 mListener.onRegisterSuccess(mCredientials);
             } else {
@@ -180,6 +180,7 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

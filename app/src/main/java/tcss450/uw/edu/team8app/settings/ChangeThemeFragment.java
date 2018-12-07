@@ -23,7 +23,6 @@ public class ChangeThemeFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public ChangeThemeFragment() {
-        // Required empty public constructor
     }
 
 
@@ -61,6 +60,7 @@ public class ChangeThemeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

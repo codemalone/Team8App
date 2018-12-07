@@ -25,11 +25,7 @@ public class VerifyAccountDialog extends AppCompatDialogFragment {
 
         return new AlertDialog.Builder(getActivity()).setTitle("Email Not Verified")
                 .setMessage(warningDialog)
-                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
+                .setNeutralButton("OK", (dialog, which) -> {})
                 .setPositiveButton("RESEND EMAIL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

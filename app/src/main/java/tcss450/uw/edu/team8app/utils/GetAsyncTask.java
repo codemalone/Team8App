@@ -133,7 +133,6 @@ public class GetAsyncTask extends AsyncTask<Void, String, String> {
      */
     private GetAsyncTask(final Builder builder) {
         mUrl = builder.mUrl;
-
         mOnPre = builder.onPre;
         mOnProgress = builder.onProg;
         mOnPost = builder.onPost;
@@ -148,7 +147,6 @@ public class GetAsyncTask extends AsyncTask<Void, String, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
-
         StringBuilder response = new StringBuilder();
         HttpURLConnection urlConnection = null;
 
@@ -159,9 +157,11 @@ public class GetAsyncTask extends AsyncTask<Void, String, String> {
             InputStream content = urlConnection.getInputStream();
             BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
             String s = "";
+
             while ((s = buffer.readLine()) != null) {
                 response.append(s);
             }
+
             publishProgress();
         } catch (Exception e) {
             response = new StringBuilder("Unable to connect, Reason: "
@@ -172,6 +172,7 @@ public class GetAsyncTask extends AsyncTask<Void, String, String> {
                 urlConnection.disconnect();
             }
         }
+
         return response.toString();
     }
 

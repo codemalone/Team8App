@@ -67,6 +67,7 @@ public class Conversation implements Serializable {
             while (users.length() < 30 && index < mUsers.size()) {
                 users += mUsers.get(index++) + ", ";
             }
+
             // remove last comma
             users = users.substring(0, users.length() - 2);
 
@@ -78,6 +79,7 @@ public class Conversation implements Serializable {
                 users += " & " + remaining + " more";
             }
         }
+
         return users;
     }
 

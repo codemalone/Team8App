@@ -267,6 +267,7 @@ public class LoginFragment extends Fragment {
             JSONObject resultsJSON = new JSONObject(result);
             boolean success = resultsJSON.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
+
             if (success) {
                 if (resultsJSON.has("user")) {
                     JSONObject userJSON = resultsJSON.getJSONObject("user");

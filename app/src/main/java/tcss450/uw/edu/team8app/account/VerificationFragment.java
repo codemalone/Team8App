@@ -21,14 +21,12 @@ public class VerificationFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public VerificationFragment() {
-        // Required empty public constructor
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_verification, container, false);
     }
 
@@ -47,9 +45,6 @@ public class VerificationFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        //int myTheme = R.style.DarkTheme;
-        //getActivity().setTheme(myTheme);
-        //saveTheme(myTheme);
     }
 
     /**

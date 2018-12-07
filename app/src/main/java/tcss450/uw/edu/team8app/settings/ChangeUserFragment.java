@@ -34,14 +34,11 @@ public class ChangeUserFragment extends Fragment {
     private Credentials mCredentials;
 
     public ChangeUserFragment() {
-        // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_change_user, container, false);
         mUsernameTextView = view.findViewById(R.id.change_username_edit);
         Button button = view.findViewById(R.id.change_username_button);
@@ -63,6 +60,7 @@ public class ChangeUserFragment extends Fragment {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
+
         if (getArguments() != null) {
             mCredentials = (Credentials) getArguments().getSerializable(Credentials.CREDIT_TAG);
         }
@@ -78,10 +76,12 @@ public class ChangeUserFragment extends Fragment {
         if (mListener != null) {
             String newUsername = mUsernameTextView.getText().toString();
             boolean error = false;
+
             if (TextUtils.isEmpty(newUsername)) {
                 error = true;
                 mUsernameTextView.setError("Field cannot be empty");
             }
+
             if (!error) {
                 Uri uri = new Uri.Builder()
                         .scheme(getString(R.string.ep_scheme))
@@ -91,6 +91,7 @@ public class ChangeUserFragment extends Fragment {
                         .appendPath(getString(R.string.ep_change))
                         .build();
                 JSONObject msgObject = new JSONObject();
+
                 try {
                     msgObject.put("token", FirebaseInstanceId.getInstance().getToken());
                     msgObject.put("newUsername", newUsername);
@@ -98,6 +99,7 @@ public class ChangeUserFragment extends Fragment {
                     Log.e("ERROR!", e.getMessage());
                     e.printStackTrace();
                 }
+
                 new SendPostAsyncTask.Builder(uri.toString(), msgObject)
                         .onPreExecute(this::handleSubmitOnPre)
                         .onPostExecute(this::handleSubmitOnPost)
@@ -121,7 +123,7 @@ public class ChangeUserFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(result);
             boolean success = jsonObject.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
-            System.out.println(result);
+
             if (success) {
                 mListener.onSuccessChangeUsername(mUsernameTextView.getText().toString());
             } else {
