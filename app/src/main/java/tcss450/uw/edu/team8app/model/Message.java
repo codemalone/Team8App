@@ -4,9 +4,8 @@ import java.io.Serializable;
 
 /**
  * Class to encapsulate a message. Required fields are email, message, timestamp.
- *
+ * <p>
  * Optional fields include username.
- *
  *
  * @author Charles Bryan
  * @author Jared Malone
@@ -29,14 +28,14 @@ public class Message implements Serializable {
         private final String mEmail;
         private final String mMessage;
         private final String mTimestamp;
-        private  String mUsername = "";
+        private String mUsername = "";
 
 
         /**
          * Constructs a new Builder.
          *
-         * @param email the email of the author
-         * @param message the message body
+         * @param email     the email of the author
+         * @param message   the message body
          * @param timestamp the timestamp of the message
          */
         public Builder(String email, String message, String timestamp) {
@@ -47,6 +46,7 @@ public class Message implements Serializable {
 
         /**
          * Add an optional author username (display name)
+         *
          * @param username optional
          * @return the Builder of this BlogPost
          */
@@ -68,12 +68,20 @@ public class Message implements Serializable {
         this.mTimestamp = builder.mTimestamp;
     }
 
-    public String getEmail() { return mEmail; }
+    public String getEmail() {
+        return mEmail;
+    }
 
-    public String getUsername() { return mUsername; }
+    public String getUsername() {
+        return mUsername;
+    }
 
-    public String getMessage() { return mMessage; }
+    public String getMessage() {
+        return mMessage;
+    }
 
-    public String getmTimestamp() { return mTimestamp; }
+    public String getmTimestamp() {
+        return mTimestamp;
+    }
 
 }

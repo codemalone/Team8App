@@ -21,12 +21,11 @@ import org.json.JSONObject;
 import java.util.List;
 
 import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.connections.ConnectionsFragment.OnListFragmentInteractionListener;
 import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
-import tcss450.uw.edu.team8app.connections.ConnectionsFragment.OnListFragmentInteractionListener;
-import tcss450.uw.edu.team8app.utils.WaitFragment;
 
-public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder> {
+public class ConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder> {
 
     private List<Connection> mData;
     private Context mContext;
@@ -66,7 +65,7 @@ public class ConnectionsRecyclerViewAdapter  extends RecyclerView.Adapter<Connec
             }
         }
         holder.mButton.setOnClickListener(view -> primaryButtonOnClick(view, mData.get(position).getEmail(), position, holder, holder.mItem));
-        holder.mDeleteButton.setOnClickListener(view -> deleteButtonOnClick(view, mData.get(position).getEmail(), position,  holder, holder.mItem));
+        holder.mDeleteButton.setOnClickListener(view -> deleteButtonOnClick(view, mData.get(position).getEmail(), position, holder, holder.mItem));
     }
 
     private void deleteButtonOnClick(View view, String email, int position, ViewHolder holder, Connection mItem) {

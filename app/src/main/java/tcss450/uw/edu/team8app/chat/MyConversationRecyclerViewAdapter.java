@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.chat.ConversationFragment.OnListFragmentInteractionListener;
 import tcss450.uw.edu.team8app.model.Conversation;
-
-import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a conversation and makes a call to the

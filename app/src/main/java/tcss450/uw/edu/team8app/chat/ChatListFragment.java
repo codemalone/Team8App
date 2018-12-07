@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import java.util.Objects;
 
 import tcss450.uw.edu.team8app.R;
-import tcss450.uw.edu.team8app.connections.ConnectionsAddFragment;
 import tcss450.uw.edu.team8app.connections.OnConnectionInteractionListener;
 
 

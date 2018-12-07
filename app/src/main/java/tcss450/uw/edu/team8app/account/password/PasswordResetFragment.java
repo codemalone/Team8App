@@ -17,9 +17,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import tcss450.uw.edu.team8app.R;
-import tcss450.uw.edu.team8app.utils.WaitFragment;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.ValidationUtils;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 
 /**
@@ -131,6 +131,7 @@ public class PasswordResetFragment extends Fragment {
 
     /**
      * Handle errors that may occur during the AsyncTask.
+     *
      * @param result the error message provide from the AsyncTask
      */
     private void handleErrorsInTask(String result) {
@@ -141,16 +142,18 @@ public class PasswordResetFragment extends Fragment {
     /**
      * Handle the setup of the UI before the HTTP call to the website.
      */
-    private void handleSubmitOnPre() { }
+    private void handleSubmitOnPre() {
+    }
 
     /**
      * Handle onPostExecute of the AsynceTask. The result from our webservice is
      * a JSON formatted String. Parse it for success or failure.
+     *
      * @param result the JSON formatted String response from the web service
      */
     private void handleSubmitOnPost(String result) {
         try {
-            Log.d("JSON result",result);
+            Log.d("JSON result", result);
             JSONObject resultsJSON = new JSONObject(result);
             boolean success = resultsJSON.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();

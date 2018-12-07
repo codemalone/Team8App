@@ -13,18 +13,18 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,20 +42,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import tcss450.uw.edu.team8app.chat.ChatListFragment;
 import tcss450.uw.edu.team8app.chat.ChatSessionFragment;
 import tcss450.uw.edu.team8app.chat.ConversationFragment;
-import tcss450.uw.edu.team8app.connections.OnConnectionInteractionListener;
+import tcss450.uw.edu.team8app.connections.ConnectionsFragment;
 import tcss450.uw.edu.team8app.home.LandingPageFragment;
 import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.model.Conversation;
-import tcss450.uw.edu.team8app.settings.ChangePasswordFragment;
-import tcss450.uw.edu.team8app.settings.ChangeUserFragment;
-import tcss450.uw.edu.team8app.settings.SettingsFragment;
-import tcss450.uw.edu.team8app.connections.ConnectionsFragment;
 import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.model.Message;
+import tcss450.uw.edu.team8app.settings.ChangePasswordFragment;
 import tcss450.uw.edu.team8app.settings.ChangeThemeFragment;
+import tcss450.uw.edu.team8app.settings.ChangeUserFragment;
+import tcss450.uw.edu.team8app.settings.SettingsFragment;
 import tcss450.uw.edu.team8app.utils.GcmKeepAlive;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.Themes;
@@ -493,11 +491,11 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onConversationInteraction(Conversation item) {
         Uri uri = new Uri.Builder()
-            .scheme(getString(R.string.ep_scheme))
-            .encodedAuthority(getString(R.string.ep_base_url))
-            .appendPath(getString(R.string.ep_chats))
-            .appendPath(getString(R.string.ep_messaging_base)).appendPath(getString(R.string.ep_get_all))
-            .build();
+                .scheme(getString(R.string.ep_scheme))
+                .encodedAuthority(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_chats))
+                .appendPath(getString(R.string.ep_messaging_base)).appendPath(getString(R.string.ep_get_all))
+                .build();
         JSONObject messageJson = new JSONObject();
         try {
             messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
@@ -515,49 +513,51 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onCreateChat() {
-            Uri uri = new Uri.Builder()
+        Uri uri = new Uri.Builder()
                 .scheme(getString(R.string.ep_scheme))
-              .encodedAuthority(getString(R.string.ep_base_url)).appendPath(getString(R.string.ep_chats))
-         .appendPath(getString(R.string.ep_details))
-         .build();
-         JSONObject messageJson = new JSONObject();
-         try {
-         messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
-         } catch (JSONException e) {
-         e.printStackTrace();
-         Log.e("ERROR!", e.getMessage());
-         }
-         new SendPostAsyncTask.Builder(uri.toString(), messageJson)
-         .onPreExecute(this::onWaitFragmentInteractionShow)
-         .onPostExecute(this::handleMessageListGetOnPostExecute)
-         .onCancelled(error -> Log.e("ERROR!", error))
-         .build().execute();
-    }
-
-    /**private void handleIdChatGetOnPostExecute(final String result) {
+                .encodedAuthority(getString(R.string.ep_base_url)).appendPath(getString(R.string.ep_chats))
+                .appendPath(getString(R.string.ep_details))
+                .build();
+        JSONObject messageJson = new JSONObject();
         try {
-
+            messageJson.put("token", FirebaseInstanceId.getInstance().getToken());
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
-            onWaitFragmentInteractionHide();
         }
-    }*/
+        new SendPostAsyncTask.Builder(uri.toString(), messageJson)
+                .onPreExecute(this::onWaitFragmentInteractionShow)
+                .onPostExecute(this::handleMessageListGetOnPostExecute)
+                .onCancelled(error -> Log.e("ERROR!", error))
+                .build().execute();
+    }
+
+    /**
+     * private void handleIdChatGetOnPostExecute(final String result) {
+     * try {
+     * <p>
+     * } catch (JSONException e) {
+     * e.printStackTrace();
+     * Log.e("ERROR!", e.getMessage());
+     * onWaitFragmentInteractionHide();
+     * }
+     * }
+     */
 
     private void handleMessageListGetOnPostExecute(final String result) {
         try {
             JSONObject root = new JSONObject(result);
-            if(root.has("success") && root.getBoolean("success")) {
-                if(root.has("data")) {
+            if (root.has("success") && root.getBoolean("success")) {
+                if (root.has("data")) {
                     JSONArray jsonArray = root.getJSONArray("data");
                     List<Conversation> conversations = new ArrayList<>();
-                    for(int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
                         String chatid = object.getString("chatid");
                         JSONArray users = object.getJSONArray("users");
                         List<String> userString = new ArrayList<>();
-                        for(int j = 0; j < users.length(); j++) {
-                            if(!users.getString(j).equals(mCredentials.getUsername())
+                        for (int j = 0; j < users.length(); j++) {
+                            if (!users.getString(j).equals(mCredentials.getUsername())
                                     && !users.getString(j).equals(mCredentials.getEmail())) {
                                 userString.add(users.getString(j));
                             }
@@ -578,7 +578,7 @@ public class HomeActivity extends AppCompatActivity
                 }
             }
 
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
             onWaitFragmentInteractionHide();

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import java.util.List;
 
 import tcss450.uw.edu.team8app.R;
@@ -22,6 +23,7 @@ public class ChatMessageListAdapter extends RecyclerView.Adapter<ChatMessageList
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mTextView;
+
         public MyViewHolder(TextView v) {
             super(v);
             mTextView = v;
@@ -63,7 +65,6 @@ public class ChatMessageListAdapter extends RecyclerView.Adapter<ChatMessageList
 //            }
 //        });
     }
-
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {

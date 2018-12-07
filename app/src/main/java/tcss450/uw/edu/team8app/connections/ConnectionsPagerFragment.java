@@ -1,7 +1,6 @@
 package tcss450.uw.edu.team8app.connections;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,8 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -26,10 +23,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import tcss450.uw.edu.team8app.R;
+import tcss450.uw.edu.team8app.connections.ConnectionsFragment.OnListFragmentInteractionListener;
 import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.WaitFragment;
-import tcss450.uw.edu.team8app.connections.ConnectionsFragment.OnListFragmentInteractionListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -118,7 +115,7 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
                 JSONObject currentMember = data.getJSONObject(i);
                 int verified = 0;
                 int sender = 0;
-                if (!currentMember.isNull("verified")){
+                if (!currentMember.isNull("verified")) {
                     verified = currentMember.getInt("verified");
                     if (currentMember.getInt("memberid_a") == myID) {
                         sender = 1;
@@ -160,7 +157,7 @@ public class ConnectionsPagerFragment extends Fragment implements WaitFragment.O
         super.onAttach(context);
         mActivity = getActivity();
         mListener = (OnConnectionInteractionListener) this;
-        if(context instanceof OnListFragmentInteractionListener) {
+        if (context instanceof OnListFragmentInteractionListener) {
             mListListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()

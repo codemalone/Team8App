@@ -17,9 +17,8 @@ import org.json.JSONObject;
 
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Credentials;
-import tcss450.uw.edu.team8app.utils.ValidationUtils;
-import tcss450.uw.edu.team8app.utils.WaitFragment;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
+import tcss450.uw.edu.team8app.utils.ValidationUtils;
 
 /**
  * A simple {@link Fragment} subclass.

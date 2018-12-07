@@ -12,9 +12,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -40,11 +37,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import tcss450.uw.edu.team8app.DisplayMessageDialog;
 import tcss450.uw.edu.team8app.R;
-import tcss450.uw.edu.team8app.home.LandingPageFragment;
 import tcss450.uw.edu.team8app.model.Conversation;
-import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.model.Message;
 import tcss450.uw.edu.team8app.utils.MyFirebaseMessagingService;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
@@ -278,7 +272,7 @@ public class ChatSessionFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mFirebaseMessageReciever != null){
+        if (mFirebaseMessageReciever != null) {
             getActivity().unregisterReceiver(mFirebaseMessageReciever);
         }
     }
@@ -393,17 +387,17 @@ public class ChatSessionFragment extends Fragment {
     private void handleMessageListGetOnPostExecute(final String result) {
         try {
             JSONObject root = new JSONObject(result);
-            if(root.has("success") && root.getBoolean("success")) {
-                if(root.has("data")) {
+            if (root.has("success") && root.getBoolean("success")) {
+                if (root.has("data")) {
                     JSONArray jsonArray = root.getJSONArray("data");
                     List<Conversation> conversations = new ArrayList<>();
-                    for(int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
                         String chatid = object.getString("chatid");
                         JSONArray users = object.getJSONArray("users");
                         List<String> userString = new ArrayList<>();
-                        for(int j = 0; j < users.length(); j++) {
-                            if(!users.getString(j).equalsIgnoreCase(mUsername)
+                        for (int j = 0; j < users.length(); j++) {
+                            if (!users.getString(j).equalsIgnoreCase(mUsername)
                                     && !users.getString(j).equalsIgnoreCase(mEmail)) {
                                 userString.add(users.getString(j));
                             }
@@ -425,7 +419,7 @@ public class ChatSessionFragment extends Fragment {
                 }
             }
 
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR!", e.getMessage());
             onWaitFragmentInteractionHide();
@@ -460,7 +454,7 @@ public class ChatSessionFragment extends Fragment {
             //This is the result from the web service
             JSONObject res = new JSONObject(result);
             Log.i("chat response: ", res.toString());
-            if(res.has("success") && res.getBoolean("success")) {
+            if (res.has("success") && res.getBoolean("success")) {
                 //The web service got our message. Time to clear out the input EditText
                 mMessageInputEditText.setText("");
                 //its up to you to decide if you want to send the message to the output here
@@ -479,17 +473,14 @@ public class ChatSessionFragment extends Fragment {
             Log.v("getAll", res.toString());
 
 
-
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
+    }
 
-
-    };
+    ;
 
 
 //    /**
@@ -508,25 +499,23 @@ public class ChatSessionFragment extends Fragment {
 //    }
 
 
-
-
     /**
      * A BroadcastReceiver setup to listen for messages sent from
-     MyFirebaseMessagingService
+     * MyFirebaseMessagingService
      * that Android allows to run all the time.
      */
     private class FirebaseMessageReciever extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             //Log.i("FCM Chat Frag", "start onRecieve:" + intent.toString());
-            if(intent.hasExtra("DATA")) {
+            if (intent.hasExtra("DATA")) {
                 String data = intent.getStringExtra("DATA");
                 Log.i("msg received", data);
                 JSONObject jObj = null;
                 try {
                     jObj = new JSONObject(data);
                     Log.i("data", data.toString());
-                    if(jObj.has("message") && jObj.has("sender")) {
+                    if (jObj.has("message") && jObj.has("sender")) {
 
                         String sender = jObj.getString("sender");
                         String body = jObj.getString("message");

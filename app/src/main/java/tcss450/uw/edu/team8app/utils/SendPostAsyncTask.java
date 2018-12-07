@@ -15,17 +15,17 @@ import java.util.function.Consumer;
 /**
  * Implemented AsyncTask that sends a JSON string via POST to a web service.  Builds the Task
  * requiring a fully formed URL and JSON object.
- *
+ * <p>
  * Optional parameters include actions for onPreExecute, onProgressUpdate, onPostExecute, and
  * onCancelled.
- *
+ * <p>
  * An action for onProgressUpdate is included but a call to publishProgress is never made in
  * doInBackground rendering onProgressUpdate unused.
- *
+ * <p>
  * The method cancel() is called in doInBackGround during exception handling. Use the action
  * onCnCancelled to respond to exceptional situations resulting from doInBackground execution.
  * Note that external cancellation will cause the same action to execute.
- *
+ * <p>
  * Created by Charles Bryan on 3/22/2018.
  *
  * @author Charles Bryan
@@ -53,15 +53,19 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
         private final JSONObject mJsonMsg;
 
         //Optional Parameters
-        private Runnable onPre = () -> {};
-        private Consumer<String[]> onProg = X -> {};
-        private Consumer<String> onPost = x -> {};
-        private Consumer<String> onCancel = x -> {};
+        private Runnable onPre = () -> {
+        };
+        private Consumer<String[]> onProg = X -> {
+        };
+        private Consumer<String> onPost = x -> {
+        };
+        private Consumer<String> onCancel = x -> {
+        };
 
         /**
          * Constructs a new Builder.
          *
-         * @param url the fully-formed url of the web service this task will connect to
+         * @param url  the fully-formed url of the web service this task will connect to
          * @param json the JSON message to send
          */
         public Builder(final String url, final JSONObject json) {
@@ -171,7 +175,7 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
             InputStream content = urlConnection.getInputStream();
             BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
             String s = "";
-            while((s = buffer.readLine()) != null) {
+            while ((s = buffer.readLine()) != null) {
                 response.append(s);
             }
             publishProgress();
@@ -180,7 +184,7 @@ public class SendPostAsyncTask extends AsyncTask<Void, String, String> {
                     + e.getMessage());
             cancel(true);
         } finally {
-            if(urlConnection != null) {
+            if (urlConnection != null) {
                 urlConnection.disconnect();
             }
         }

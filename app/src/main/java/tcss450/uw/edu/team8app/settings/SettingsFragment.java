@@ -46,7 +46,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             mCredentials = (Credentials) getArguments().getSerializable(Credentials.CREDIT_TAG);
         }
     }
@@ -74,7 +74,7 @@ public class SettingsFragment extends Fragment {
      * @param view The view.
      */
     private void openTheme(View view) {
-        if(mListener != null) {
+        if (mListener != null) {
             mListener.clickedChangeTheme();
         }
     }
@@ -85,7 +85,7 @@ public class SettingsFragment extends Fragment {
      * @param view The view.
      */
     private void openPassword(View view) {
-        if(mListener != null) {
+        if (mListener != null) {
             mListener.clickedChangePassword();
         }
     }
@@ -96,7 +96,7 @@ public class SettingsFragment extends Fragment {
      * @param view The view.
      */
     private void openUsername(View view) {
-        if(mListener != null) {
+        if (mListener != null) {
             mListener.clickedChangeUsername();
         }
     }

@@ -22,10 +22,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import tcss450.uw.edu.team8app.R;
-import tcss450.uw.edu.team8app.utils.WaitFragment;
 import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.ValidationUtils;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -122,13 +122,13 @@ public class LoginFragment extends Fragment {
     }
 
     private void resetPassword(View view) {
-        if(mListener != null) {
+        if (mListener != null) {
             mListener.onResetPasswordClicked();
         }
     }
 
     private void registerButton(View view) {
-        if(mListener != null) {
+        if (mListener != null) {
             mListener.onRegisterClicked();
         }
     }
@@ -168,12 +168,14 @@ public class LoginFragment extends Fragment {
                     + "underscore, and apostrophe characters only");
         }
 
-        if(!error) {
+        if (!error) {
             getFirebaseToken(email, password, useEmail);
         }
     }
 
-    /** Firebase **/
+    /**
+     * Firebase
+     **/
     private void getFirebaseToken(final String email, final String password, final boolean useEmail) {
         mListener.onWaitFragmentInteractionShow();
 
@@ -239,6 +241,7 @@ public class LoginFragment extends Fragment {
 
     /**
      * Handle errors that may occur during the AsyncTask.
+     *
      * @param result the error message provide from the AsyncTask
      */
     private void handleErrorsInTask(String result) {
@@ -249,16 +252,18 @@ public class LoginFragment extends Fragment {
     /**
      * Handle the setup of the UI before the HTTP call to the website.
      */
-    private void handleLoginOnPre() { }
+    private void handleLoginOnPre() {
+    }
 
     /**
      * Handle onPostExecute of the AsynceTask. The result from our webservice is
      * a JSON formatted String. Parse it for success or failure.
+     *
      * @param result the JSON formatted String response from the web service
      */
     private void handleLoginOnPost(String result) {
         try {
-            Log.d("JSON result",result);
+            Log.d("JSON result", result);
             JSONObject resultsJSON = new JSONObject(result);
             boolean success = resultsJSON.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
@@ -312,8 +317,11 @@ public class LoginFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
         void onRegisterClicked();
+
         void onResetPasswordClicked();
+
         void onLoginSuccess(Credentials credentials);
+
         void tellUserToVerify(Credentials credentials);
     }
 }

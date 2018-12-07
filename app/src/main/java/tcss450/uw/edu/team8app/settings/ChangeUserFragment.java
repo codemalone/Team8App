@@ -16,7 +16,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Credentials;
@@ -76,14 +75,14 @@ public class ChangeUserFragment extends Fragment {
     }
 
     private void submitChangeUsername(View view) {
-        if(mListener != null) {
+        if (mListener != null) {
             String newUsername = mUsernameTextView.getText().toString();
             boolean error = false;
-            if(TextUtils.isEmpty(newUsername)) {
+            if (TextUtils.isEmpty(newUsername)) {
                 error = true;
                 mUsernameTextView.setError("Field cannot be empty");
             }
-            if(!error) {
+            if (!error) {
                 Uri uri = new Uri.Builder()
                         .scheme(getString(R.string.ep_scheme))
                         .encodedAuthority(getString(R.string.ep_base_url))
@@ -123,7 +122,7 @@ public class ChangeUserFragment extends Fragment {
             boolean success = jsonObject.getBoolean("success");
             mListener.onWaitFragmentInteractionHide();
             System.out.println(result);
-            if(success) {
+            if (success) {
                 mListener.onSuccessChangeUsername(mUsernameTextView.getText().toString());
             } else {
                 mUsernameTextView.setError(getString(R.string.change_username_error));
@@ -147,7 +146,9 @@ public class ChangeUserFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onWaitFragmentInteractionShow();
+
         void onWaitFragmentInteractionHide();
+
         void onSuccessChangeUsername(String newUsername);
     }
 }

@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import tcss450.uw.edu.team8app.R;
-import tcss450.uw.edu.team8app.utils.WaitFragment;
+import tcss450.uw.edu.team8app.connections.ConnectionsFragment.OnListFragmentInteractionListener;
 import tcss450.uw.edu.team8app.model.Connection;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
-import tcss450.uw.edu.team8app.connections.ConnectionsFragment.OnListFragmentInteractionListener;
+import tcss450.uw.edu.team8app.utils.WaitFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -139,7 +139,7 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
                 JSONObject currentMember = data.getJSONObject(i);
                 int verified = 0;
                 int sender = 0;
-                if (!currentMember.isNull("verified")){
+                if (!currentMember.isNull("verified")) {
                     verified = currentMember.getInt("verified");
                     if (currentMember.getInt("memberid_a") == myID) {
                         sender = 1;
@@ -178,7 +178,7 @@ public class ConnectionsAddFragment extends Fragment implements WaitFragment.OnF
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (OnConnectionInteractionListener) this;
-        if(context instanceof OnListFragmentInteractionListener) {
+        if (context instanceof OnListFragmentInteractionListener) {
             mListListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()

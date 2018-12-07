@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -154,7 +153,7 @@ public class LandingPageFragment extends Fragment {
                                             JSONObject msg = new JSONObject();
                                             try {
                                                 msg.put("latitude", addresses.get(0).getLatitude());
-                                                msg.put("longitude",addresses.get(0).getLongitude());
+                                                msg.put("longitude", addresses.get(0).getLongitude());
                                                 if (addresses.size() == 0) {
                                                     msg.put("zipcode", "");
                                                 } else {

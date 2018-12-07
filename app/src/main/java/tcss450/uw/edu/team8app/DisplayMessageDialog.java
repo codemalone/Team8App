@@ -13,10 +13,10 @@ public class DisplayMessageDialog extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if(mMessage == null) {
+        if (mMessage == null) {
             mMessage = "";
         }
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             mMessage = (String) getArguments().getSerializable(TAG);
         }
         return new AlertDialog.Builder(getActivity()).setTitle("Information")

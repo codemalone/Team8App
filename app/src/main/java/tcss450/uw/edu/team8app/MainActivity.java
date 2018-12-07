@@ -1,22 +1,17 @@
 package tcss450.uw.edu.team8app;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import tcss450.uw.edu.team8app.account.LoginFragment;
 import tcss450.uw.edu.team8app.account.RegisterFragment;
 import tcss450.uw.edu.team8app.account.VerifyAccountDialog;
+import tcss450.uw.edu.team8app.account.password.PasswordResetFragment;
 import tcss450.uw.edu.team8app.account.password.PasswordResetRequestCodeFragment;
 import tcss450.uw.edu.team8app.account.password.PasswordResetRequestEmailFragment;
-import tcss450.uw.edu.team8app.account.password.PasswordResetFragment;
 import tcss450.uw.edu.team8app.model.Credentials;
 import tcss450.uw.edu.team8app.utils.WaitFragment;
 
@@ -26,18 +21,18 @@ import tcss450.uw.edu.team8app.utils.WaitFragment;
  * @author Jim Phan akari0@uw.edu
  */
 public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener,
-    RegisterFragment.OnFragmentInteractionListener,
-    PasswordResetRequestEmailFragment.OnInitiateResetListener,
-    PasswordResetRequestCodeFragment.OnCodeCheckListener,
-    PasswordResetFragment.OnResetPasswordListener {
+        RegisterFragment.OnFragmentInteractionListener,
+        PasswordResetRequestEmailFragment.OnInitiateResetListener,
+        PasswordResetRequestCodeFragment.OnCodeCheckListener,
+        PasswordResetFragment.OnResetPasswordListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(savedInstanceState == null) {
-            if(findViewById(R.id.main_fragment_container) != null) {
+        if (savedInstanceState == null) {
+            if (findViewById(R.id.main_fragment_container) != null) {
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.main_fragment_container, new LoginFragment())
                         .commit();

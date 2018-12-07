@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -27,15 +25,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.model.Conversation;
 import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 import tcss450.uw.edu.team8app.utils.WaitFragment;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * A fragment representing a list of Items.
@@ -214,12 +211,12 @@ public class ConversationFragment extends Fragment {
                                 createChatWithUser();
                             }
 /**                            for (int i = 0; i < itemsSelected.size(); i++) {
-                                if (i == 0) {
-                                    createChatWithUser((Integer) itemsSelected.get(i));
-                                } else {
-                                    addUserToChat((Integer) itemsSelected.get(i));
-                                }
-                            }*/
+ if (i == 0) {
+ createChatWithUser((Integer) itemsSelected.get(i));
+ } else {
+ addUserToChat((Integer) itemsSelected.get(i));
+ }
+ }*/
                             // chats/add (token, theirEmail, chatId)
                             AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
                             //Log.e()
@@ -245,13 +242,13 @@ public class ConversationFragment extends Fragment {
             //((AlertDialog) dialog).setView(getLayoutInflater().inflate(R.layout.scrollview_add_dialog, null));
             dialog.show();
             //TODO
-           // mListener.onConversationInteraction(new Conversation("" + mChatId, null, null));
+            // mListener.onConversationInteraction(new Conversation("" + mChatId, null, null));
         }
     }
 
     private void createChatWithUser() {
         try {
-           // mAddedUsername = mPossible.getJSONObject(index).getString("username");
+            // mAddedUsername = mPossible.getJSONObject(index).getString("username");
             String theirEmail = mPossible.getJSONObject((Integer) mSelectedItems.get(0)).getString("email");
             Uri.Builder uriBuilder = new Uri.Builder()
                     .scheme(getString(R.string.ep_scheme))
@@ -354,6 +351,7 @@ public class ConversationFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         void onConversationInteraction(Conversation item);
+
         void onCreateChat();
     }
 }

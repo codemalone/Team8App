@@ -4,6 +4,7 @@ import tcss450.uw.edu.team8app.R;
 
 /**
  * A utility class used to get the themes from the styles.xml file.
+ *
  * @author Jim Phan akari0@uw.edu
  */
 public enum Themes {
@@ -24,9 +25,9 @@ public enum Themes {
     }
 
     public static Themes getTheme(String theme) {
-        if(theme.equalsIgnoreCase(Dark.toString())) {
+        if (theme.equalsIgnoreCase(Dark.toString())) {
             return Dark;
-        } else if(theme.equalsIgnoreCase(FruitSalad.toString()) || theme.equalsIgnoreCase("Fruit Salad")) {
+        } else if (theme.equalsIgnoreCase(FruitSalad.toString()) || theme.equalsIgnoreCase("Fruit Salad")) {
             return FruitSalad;
         } else {
             return Default;

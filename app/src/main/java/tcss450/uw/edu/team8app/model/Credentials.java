@@ -9,9 +9,8 @@ import java.io.Serializable;
 
 /**
  * Class to encapsulate credentials fields. Building an Object requires a email and password.
- *
+ * <p>
  * Optional fields include username, first and last name.
- *
  *
  * @author Charles Bryan
  * @version 1 October 2018
@@ -44,11 +43,11 @@ public class Credentials implements Serializable {
 
         /**
          * Constructs a new Builder.
-         *
+         * <p>
          * No validation is performed. Ensure that the argument is a
          * valid email before adding here if you wish to perform validation.
          *
-         * @param email the email
+         * @param email    the email
          * @param password the password
          */
         public Builder(String email, String password) {
@@ -59,6 +58,7 @@ public class Credentials implements Serializable {
 
         /**
          * Add an optional first name.
+         *
          * @param val an optional first name
          * @return
          */
@@ -69,6 +69,7 @@ public class Credentials implements Serializable {
 
         /**
          * Add an optional last name.
+         *
          * @param val an optional last name
          * @return
          */
@@ -79,6 +80,7 @@ public class Credentials implements Serializable {
 
         /**
          * Add an optional Uuername.
+         *
          * @param val an optional Uuername
          * @return
          */
@@ -107,6 +109,7 @@ public class Credentials implements Serializable {
 
     /**
      * Get the Username.
+     *
      * @return the username
      */
     public String getUsername() {
@@ -115,6 +118,7 @@ public class Credentials implements Serializable {
 
     /**
      * Get the password.
+     *
      * @return the password
      */
     public String getPassword() {
@@ -123,6 +127,7 @@ public class Credentials implements Serializable {
 
     /**
      * Get the first name or the empty string if no first name was provided.
+     *
      * @return the first name or the empty string if no first name was provided.
      */
     public String getFirstName() {
@@ -131,6 +136,7 @@ public class Credentials implements Serializable {
 
     /**
      * Get the last name or the empty string if no first name was provided.
+     *
      * @return the last name or the empty string if no first name was provided.
      */
     public String getLastName() {
@@ -139,6 +145,7 @@ public class Credentials implements Serializable {
 
     /**
      * Get the email or the empty string if no first name was provided.
+     *
      * @return the email or the empty string if no first name was provided.
      */
     public String getEmail() {
@@ -149,7 +156,7 @@ public class Credentials implements Serializable {
      * Get all of the fields in a single JSON object. Note, if no values were provided for the
      * optional fields via the Builder, the JSON object will include the empty string for those
      * fields.
-     *
+     * <p>
      * Keys: username, password, first, last, email
      *
      * @return all of the fields in a single JSON object

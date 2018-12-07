@@ -4,8 +4,9 @@
     <item
         android:id="@+id/manage_add_user"
         android:title="Add Connection"
-        app:showAsAction="never"/>
-    <item android:id="@+id/manage_leave"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/manage_leave"
         android:title="Leave Conversation"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

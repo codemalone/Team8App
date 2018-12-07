@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatDialogFragment;
 
 import tcss450.uw.edu.team8app.R;
 import tcss450.uw.edu.team8app.utils.GetAsyncTask;
-import tcss450.uw.edu.team8app.utils.SendPostAsyncTask;
 
 public class VerifyAccountDialog extends AppCompatDialogFragment {
     public static final String DIALOG_TAG = "verify dialog";
@@ -20,7 +19,7 @@ public class VerifyAccountDialog extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if(warningDialog == null) {
+        if (warningDialog == null) {
             warningDialog = "";
         }
 
@@ -56,9 +55,14 @@ public class VerifyAccountDialog extends AppCompatDialogFragment {
                                 .build().execute();
                     }
 
-                    private void handleVerificationSendOnPre() { }
-                    private void handleVerificationSendOnPost(String result) { }
-                    private void handleErrorsInTask(String result) { }
+                    private void handleVerificationSendOnPre() {
+                    }
+
+                    private void handleVerificationSendOnPost(String result) {
+                    }
+
+                    private void handleErrorsInTask(String result) {
+                    }
                 })
                 .create();
     }
@@ -67,6 +71,11 @@ public class VerifyAccountDialog extends AppCompatDialogFragment {
         warningDialog = message;
     }
 
-    public void setEmail(String theEmail) { email = theEmail; }
-    public void setUsername(String theUsername){ username = theUsername; }
+    public void setEmail(String theEmail) {
+        email = theEmail;
+    }
+
+    public void setUsername(String theUsername) {
+        username = theUsername;
+    }
 }

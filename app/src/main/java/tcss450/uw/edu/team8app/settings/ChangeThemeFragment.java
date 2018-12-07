@@ -87,6 +87,7 @@ public class ChangeThemeFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void clickedChangeTheme();
+
         void selectTheme(Themes theme);
     }
 }
